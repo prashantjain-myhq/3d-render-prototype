@@ -1,0 +1,928 @@
+const TECH_PARK_DATA = {
+  name: "Prestige Tech Park",
+  buildings: [
+    // ═══════════════════════════════════════════════════════════════
+    // PHASE I — Planet Names (north-west of campus)
+    // ═══════════════════════════════════════════════════════════════
+    {
+      id: "mercury",
+      name: "Mercury",
+      phase: "Phase I",
+      totalFloors: 10,
+      totalArea: 360000,
+      yearBuilt: 2008,
+      color: "#6366f1",
+      position: { x: -15, z: -11 },
+      width: 6,
+      depth: 3.5,
+      height: 4.5,
+      rotation: 0.15,
+      shape: "rect",
+      grade: "A",
+      certification: "IGBC Gold",
+      camCharges: 16,
+      escalation: "15% every 3 years",
+      powerBackup: "100% DG + Dual Feed",
+      parkingRatio: 1.1,
+      floorPlateSize: 36000,
+      efficiencyRatio: 70,
+      amenities: ["Cafeteria", "Gym", "ATM", "EV Charging", "Conference Center", "Creche"],
+      capitalValuePerSqft: 10500,
+      capitalValueTrend: [
+        { year: 2020, value: 7800 },
+        { year: 2021, value: 8300 },
+        { year: 2022, value: 8900 },
+        { year: 2023, value: 9600 },
+        { year: 2024, value: 10500 }
+      ],
+      microMarket: "Outer Ring Road",
+      microMarketAvgRent: 72,
+      absorptionRate: 85,
+      upcomingSupply: "2.1M sqft by 2026",
+      floors: [
+        // JPMorgan Chase F1-F4
+        { floor: 1, tenant: "JPMorgan Chase", occupancy: 100, rentPerSqft: 60, area: 36000, leaseStart: "2021-04", leaseEnd: "2030-04", status: "Fully Occupied", carpetArea: 25200, superBuiltUp: 36000, lockInPeriod: "5 years", lockInEnd: "2026-04", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((60 * 36000 * 12) / (36000 * 10500) * 100).toFixed(1)), monthlyRevenue: 60 * 36000, annualRevenue: 60 * 36000 * 12, history: [{ year: 2020, occupancy: 92, rent: 50 }, { year: 2021, occupancy: 95, rent: 52 }, { year: 2022, occupancy: 98, rent: 55 }, { year: 2023, occupancy: 100, rent: 57 }, { year: 2024, occupancy: 100, rent: 60 }] },
+        { floor: 2, tenant: "JPMorgan Chase", occupancy: 100, rentPerSqft: 60, area: 36000, leaseStart: "2021-04", leaseEnd: "2030-04", status: "Fully Occupied", carpetArea: 25200, superBuiltUp: 36000, lockInPeriod: "5 years", lockInEnd: "2026-04", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((60 * 36000 * 12) / (36000 * 10500) * 100).toFixed(1)), monthlyRevenue: 60 * 36000, annualRevenue: 60 * 36000 * 12, history: [{ year: 2020, occupancy: 90, rent: 50 }, { year: 2021, occupancy: 94, rent: 52 }, { year: 2022, occupancy: 97, rent: 55 }, { year: 2023, occupancy: 100, rent: 57 }, { year: 2024, occupancy: 100, rent: 60 }] },
+        { floor: 3, tenant: "JPMorgan Chase", occupancy: 100, rentPerSqft: 61, area: 36000, leaseStart: "2021-04", leaseEnd: "2030-04", status: "Fully Occupied", carpetArea: 25200, superBuiltUp: 36000, lockInPeriod: "5 years", lockInEnd: "2026-04", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((61 * 36000 * 12) / (36000 * 10500) * 100).toFixed(1)), monthlyRevenue: 61 * 36000, annualRevenue: 61 * 36000 * 12, history: [{ year: 2020, occupancy: 88, rent: 51 }, { year: 2021, occupancy: 93, rent: 53 }, { year: 2022, occupancy: 96, rent: 56 }, { year: 2023, occupancy: 99, rent: 58 }, { year: 2024, occupancy: 100, rent: 61 }] },
+        { floor: 4, tenant: "JPMorgan Chase", occupancy: 95, rentPerSqft: 60, area: 36000, leaseStart: "2021-04", leaseEnd: "2030-04", status: "Partially Vacant", carpetArea: 25200, superBuiltUp: 36000, lockInPeriod: "5 years", lockInEnd: "2026-04", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((60 * 36000 * 12) / (36000 * 10500) * 100).toFixed(1)), monthlyRevenue: 60 * 36000, annualRevenue: 60 * 36000 * 12, history: [{ year: 2020, occupancy: 85, rent: 50 }, { year: 2021, occupancy: 90, rent: 52 }, { year: 2022, occupancy: 93, rent: 55 }, { year: 2023, occupancy: 95, rent: 57 }, { year: 2024, occupancy: 95, rent: 60 }] },
+        // WeWork F5-F7
+        { floor: 5, tenant: "WeWork", occupancy: 90, rentPerSqft: 58, area: 36000, leaseStart: "2022-01", leaseEnd: "2027-01", status: "Partially Vacant", carpetArea: 25200, superBuiltUp: 36000, lockInPeriod: "3 years", lockInEnd: "2025-01", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((58 * 36000 * 12) / (36000 * 10500) * 100).toFixed(1)), monthlyRevenue: 58 * 36000, annualRevenue: 58 * 36000 * 12, history: [{ year: 2020, occupancy: 75, rent: 48 }, { year: 2021, occupancy: 80, rent: 50 }, { year: 2022, occupancy: 85, rent: 53 }, { year: 2023, occupancy: 88, rent: 55 }, { year: 2024, occupancy: 90, rent: 58 }] },
+        { floor: 6, tenant: "WeWork", occupancy: 92, rentPerSqft: 58, area: 36000, leaseStart: "2022-01", leaseEnd: "2027-01", status: "Fully Occupied", carpetArea: 25200, superBuiltUp: 36000, lockInPeriod: "3 years", lockInEnd: "2025-01", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((58 * 36000 * 12) / (36000 * 10500) * 100).toFixed(1)), monthlyRevenue: 58 * 36000, annualRevenue: 58 * 36000 * 12, history: [{ year: 2020, occupancy: 78, rent: 48 }, { year: 2021, occupancy: 82, rent: 50 }, { year: 2022, occupancy: 87, rent: 53 }, { year: 2023, occupancy: 90, rent: 55 }, { year: 2024, occupancy: 92, rent: 58 }] },
+        { floor: 7, tenant: "WeWork", occupancy: 88, rentPerSqft: 57, area: 36000, leaseStart: "2022-01", leaseEnd: "2027-01", status: "Partially Vacant", carpetArea: 25200, superBuiltUp: 36000, lockInPeriod: "3 years", lockInEnd: "2025-01", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((57 * 36000 * 12) / (36000 * 10500) * 100).toFixed(1)), monthlyRevenue: 57 * 36000, annualRevenue: 57 * 36000 * 12, history: [{ year: 2020, occupancy: 72, rent: 47 }, { year: 2021, occupancy: 78, rent: 49 }, { year: 2022, occupancy: 83, rent: 52 }, { year: 2023, occupancy: 86, rent: 54 }, { year: 2024, occupancy: 88, rent: 57 }] },
+        // Cisco Systems F8-F10
+        { floor: 8, tenant: "Cisco Systems", occupancy: 55, rentPerSqft: 62, area: 36000, leaseStart: "2020-07", leaseEnd: "2028-07", status: "Partially Vacant", carpetArea: 25200, superBuiltUp: 36000, lockInPeriod: "5 years", lockInEnd: "2025-07", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: 3.9, monthlyRevenue: 1227600, annualRevenue: 14731200, history: [{ year: 2020, occupancy: 95, rent: 52 }, { year: 2021, occupancy: 97, rent: 54 }, { year: 2022, occupancy: 100, rent: 57 }, { year: 2023, occupancy: 100, rent: 59 }, { year: 2024, occupancy: 55, rent: 62 }] },
+        { floor: 9, tenant: "Cisco Systems", occupancy: 100, rentPerSqft: 63, area: 36000, leaseStart: "2020-07", leaseEnd: "2028-07", status: "Fully Occupied", carpetArea: 25200, superBuiltUp: 36000, lockInPeriod: "5 years", lockInEnd: "2025-07", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((63 * 36000 * 12) / (36000 * 10500) * 100).toFixed(1)), monthlyRevenue: 63 * 36000, annualRevenue: 63 * 36000 * 12, history: [{ year: 2020, occupancy: 96, rent: 53 }, { year: 2021, occupancy: 98, rent: 55 }, { year: 2022, occupancy: 100, rent: 58 }, { year: 2023, occupancy: 100, rent: 60 }, { year: 2024, occupancy: 100, rent: 63 }] },
+        { floor: 10, tenant: "Vacant", occupancy: 0, rentPerSqft: 64, area: 36000, leaseStart: "-", leaseEnd: "-", status: "Vacant", carpetArea: 25200, superBuiltUp: 36000, lockInPeriod: null, lockInEnd: null, securityDeposit: 0, fitOut: "Bare Shell", vacancyDuration: "6 months", rentalYield: 0, monthlyRevenue: 0, annualRevenue: 0, history: [{ year: 2020, occupancy: 94, rent: 54 }, { year: 2021, occupancy: 97, rent: 56 }, { year: 2022, occupancy: 100, rent: 59 }, { year: 2023, occupancy: 100, rent: 61 }, { year: 2024, occupancy: 0, rent: 64 }] }
+      ]
+    },
+    {
+      id: "venus",
+      name: "Venus",
+      phase: "Phase I",
+      totalFloors: 10,
+      totalArea: 350000,
+      yearBuilt: 2008,
+      color: "#8b5cf6",
+      position: { x: -6, z: -11 },
+      width: 6,
+      depth: 3.5,
+      height: 4.5,
+      rotation: 0.15,
+      shape: "rect",
+      grade: "A",
+      certification: "IGBC Gold",
+      camCharges: 15,
+      escalation: "15% every 3 years",
+      powerBackup: "100% DG + Dual Feed",
+      parkingRatio: 1.0,
+      floorPlateSize: 35000,
+      efficiencyRatio: 70,
+      amenities: ["Cafeteria", "Gym", "ATM", "EV Charging", "Conference Center", "Creche"],
+      capitalValuePerSqft: 10200,
+      capitalValueTrend: [
+        { year: 2020, value: 7600 },
+        { year: 2021, value: 8100 },
+        { year: 2022, value: 8700 },
+        { year: 2023, value: 9400 },
+        { year: 2024, value: 10200 }
+      ],
+      microMarket: "Outer Ring Road",
+      microMarketAvgRent: 72,
+      absorptionRate: 85,
+      upcomingSupply: "2.1M sqft by 2026",
+      floors: [
+        // Awfis F1-F2
+        { floor: 1, tenant: "Awfis", occupancy: 85, rentPerSqft: 55, area: 35000, leaseStart: "2023-03", leaseEnd: "2026-03", status: "Partially Vacant", carpetArea: 24500, superBuiltUp: 35000, lockInPeriod: "2 years", lockInEnd: "2025-03", securityDeposit: 6, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((55 * 35000 * 12) / (35000 * 10200) * 100).toFixed(1)), monthlyRevenue: 55 * 35000, annualRevenue: 55 * 35000 * 12, history: [{ year: 2020, occupancy: 70, rent: 46 }, { year: 2021, occupancy: 75, rent: 48 }, { year: 2022, occupancy: 80, rent: 50 }, { year: 2023, occupancy: 83, rent: 52 }, { year: 2024, occupancy: 85, rent: 55 }] },
+        { floor: 2, tenant: "Awfis", occupancy: 88, rentPerSqft: 56, area: 35000, leaseStart: "2023-03", leaseEnd: "2026-03", status: "Partially Vacant", carpetArea: 24500, superBuiltUp: 35000, lockInPeriod: "2 years", lockInEnd: "2025-03", securityDeposit: 6, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((56 * 35000 * 12) / (35000 * 10200) * 100).toFixed(1)), monthlyRevenue: 56 * 35000, annualRevenue: 56 * 35000 * 12, history: [{ year: 2020, occupancy: 72, rent: 47 }, { year: 2021, occupancy: 77, rent: 49 }, { year: 2022, occupancy: 82, rent: 51 }, { year: 2023, occupancy: 85, rent: 53 }, { year: 2024, occupancy: 88, rent: 56 }] },
+        // Goldman Sachs F3-F6
+        { floor: 3, tenant: "Goldman Sachs", occupancy: 100, rentPerSqft: 65, area: 35000, leaseStart: "2020-09", leaseEnd: "2029-09", status: "Fully Occupied", carpetArea: 24500, superBuiltUp: 35000, lockInPeriod: "5 years", lockInEnd: "2025-09", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((65 * 35000 * 12) / (35000 * 10200) * 100).toFixed(1)), monthlyRevenue: 65 * 35000, annualRevenue: 65 * 35000 * 12, history: [{ year: 2020, occupancy: 95, rent: 54 }, { year: 2021, occupancy: 97, rent: 56 }, { year: 2022, occupancy: 100, rent: 59 }, { year: 2023, occupancy: 100, rent: 62 }, { year: 2024, occupancy: 100, rent: 65 }] },
+        { floor: 4, tenant: "Goldman Sachs", occupancy: 100, rentPerSqft: 65, area: 35000, leaseStart: "2020-09", leaseEnd: "2029-09", status: "Fully Occupied", carpetArea: 24500, superBuiltUp: 35000, lockInPeriod: "5 years", lockInEnd: "2025-09", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((65 * 35000 * 12) / (35000 * 10200) * 100).toFixed(1)), monthlyRevenue: 65 * 35000, annualRevenue: 65 * 35000 * 12, history: [{ year: 2020, occupancy: 93, rent: 54 }, { year: 2021, occupancy: 96, rent: 56 }, { year: 2022, occupancy: 98, rent: 59 }, { year: 2023, occupancy: 100, rent: 62 }, { year: 2024, occupancy: 100, rent: 65 }] },
+        { floor: 5, tenant: "Goldman Sachs", occupancy: 100, rentPerSqft: 66, area: 35000, leaseStart: "2020-09", leaseEnd: "2029-09", status: "Fully Occupied", carpetArea: 24500, superBuiltUp: 35000, lockInPeriod: "5 years", lockInEnd: "2025-09", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((66 * 35000 * 12) / (35000 * 10200) * 100).toFixed(1)), monthlyRevenue: 66 * 35000, annualRevenue: 66 * 35000 * 12, history: [{ year: 2020, occupancy: 94, rent: 55 }, { year: 2021, occupancy: 97, rent: 57 }, { year: 2022, occupancy: 99, rent: 60 }, { year: 2023, occupancy: 100, rent: 63 }, { year: 2024, occupancy: 100, rent: 66 }] },
+        { floor: 6, tenant: "Goldman Sachs", occupancy: 100, rentPerSqft: 66, area: 35000, leaseStart: "2020-09", leaseEnd: "2029-09", status: "Fully Occupied", carpetArea: 24500, superBuiltUp: 35000, lockInPeriod: "5 years", lockInEnd: "2025-09", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((66 * 35000 * 12) / (35000 * 10200) * 100).toFixed(1)), monthlyRevenue: 66 * 35000, annualRevenue: 66 * 35000 * 12, history: [{ year: 2020, occupancy: 92, rent: 55 }, { year: 2021, occupancy: 95, rent: 57 }, { year: 2022, occupancy: 98, rent: 60 }, { year: 2023, occupancy: 100, rent: 63 }, { year: 2024, occupancy: 100, rent: 66 }] },
+        // Akamai Technologies F7-F10
+        { floor: 7, tenant: "Akamai Technologies", occupancy: 50, rentPerSqft: 62, area: 35000, leaseStart: "2021-06", leaseEnd: "2028-06", status: "Partially Vacant", carpetArea: 24500, superBuiltUp: 35000, lockInPeriod: "3 years", lockInEnd: "2024-06", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: 3.6, monthlyRevenue: 1085000, annualRevenue: 13020000, history: [{ year: 2020, occupancy: 90, rent: 52 }, { year: 2021, occupancy: 93, rent: 54 }, { year: 2022, occupancy: 96, rent: 57 }, { year: 2023, occupancy: 98, rent: 59 }, { year: 2024, occupancy: 50, rent: 62 }] },
+        { floor: 8, tenant: "Akamai Technologies", occupancy: 100, rentPerSqft: 63, area: 35000, leaseStart: "2021-06", leaseEnd: "2028-06", status: "Fully Occupied", carpetArea: 24500, superBuiltUp: 35000, lockInPeriod: "3 years", lockInEnd: "2024-06", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((63 * 35000 * 12) / (35000 * 10200) * 100).toFixed(1)), monthlyRevenue: 63 * 35000, annualRevenue: 63 * 35000 * 12, history: [{ year: 2020, occupancy: 88, rent: 53 }, { year: 2021, occupancy: 92, rent: 55 }, { year: 2022, occupancy: 95, rent: 58 }, { year: 2023, occupancy: 98, rent: 60 }, { year: 2024, occupancy: 100, rent: 63 }] },
+        { floor: 9, tenant: "Vacant", occupancy: 0, rentPerSqft: 62, area: 35000, leaseStart: "-", leaseEnd: "-", status: "Vacant", carpetArea: 24500, superBuiltUp: 35000, lockInPeriod: null, lockInEnd: null, securityDeposit: 0, fitOut: "Bare Shell", vacancyDuration: "3 months", rentalYield: 0, monthlyRevenue: 0, annualRevenue: 0, history: [{ year: 2020, occupancy: 85, rent: 52 }, { year: 2021, occupancy: 88, rent: 54 }, { year: 2022, occupancy: 91, rent: 57 }, { year: 2023, occupancy: 93, rent: 59 }, { year: 2024, occupancy: 0, rent: 62 }] },
+        { floor: 10, tenant: "Akamai Technologies", occupancy: 100, rentPerSqft: 64, area: 35000, leaseStart: "2021-06", leaseEnd: "2028-06", status: "Fully Occupied", carpetArea: 24500, superBuiltUp: 35000, lockInPeriod: "3 years", lockInEnd: "2024-06", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((64 * 35000 * 12) / (35000 * 10200) * 100).toFixed(1)), monthlyRevenue: 64 * 35000, annualRevenue: 64 * 35000 * 12, history: [{ year: 2020, occupancy: 89, rent: 54 }, { year: 2021, occupancy: 93, rent: 56 }, { year: 2022, occupancy: 96, rent: 59 }, { year: 2023, occupancy: 99, rent: 61 }, { year: 2024, occupancy: 100, rent: 64 }] }
+      ]
+    },
+    {
+      id: "jupiter",
+      name: "Jupiter",
+      phase: "Phase I",
+      totalFloors: 8,
+      totalArea: 360000,
+      yearBuilt: 2008,
+      color: "#7c3aed",
+      position: { x: -10.5, z: -5 },
+      width: 7,
+      depth: 4,
+      height: 3.5,
+      rotation: 0.1,
+      shape: "rect",
+      grade: "A",
+      certification: "IGBC Gold",
+      camCharges: 17,
+      escalation: "15% every 3 years",
+      powerBackup: "100% DG + Dual Feed",
+      parkingRatio: 1.2,
+      floorPlateSize: 45000,
+      efficiencyRatio: 70,
+      amenities: ["Cafeteria", "Gym", "ATM", "EV Charging", "Conference Center", "Creche"],
+      capitalValuePerSqft: 10800,
+      capitalValueTrend: [
+        { year: 2020, value: 8000 },
+        { year: 2021, value: 8500 },
+        { year: 2022, value: 9200 },
+        { year: 2023, value: 9900 },
+        { year: 2024, value: 10800 }
+      ],
+      microMarket: "Outer Ring Road",
+      microMarketAvgRent: 72,
+      absorptionRate: 85,
+      upcomingSupply: "2.1M sqft by 2026",
+      floors: [
+        // WeWork F1-F3
+        { floor: 1, tenant: "WeWork", occupancy: 92, rentPerSqft: 57, area: 45000, leaseStart: "2022-06", leaseEnd: "2027-06", status: "Fully Occupied", carpetArea: 31500, superBuiltUp: 45000, lockInPeriod: "3 years", lockInEnd: "2025-06", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((57 * 45000 * 12) / (45000 * 10800) * 100).toFixed(1)), monthlyRevenue: 57 * 45000, annualRevenue: 57 * 45000 * 12, history: [{ year: 2020, occupancy: 76, rent: 47 }, { year: 2021, occupancy: 80, rent: 49 }, { year: 2022, occupancy: 85, rent: 52 }, { year: 2023, occupancy: 89, rent: 54 }, { year: 2024, occupancy: 92, rent: 57 }] },
+        { floor: 2, tenant: "WeWork", occupancy: 90, rentPerSqft: 56, area: 45000, leaseStart: "2022-06", leaseEnd: "2027-06", status: "Partially Vacant", carpetArea: 31500, superBuiltUp: 45000, lockInPeriod: "3 years", lockInEnd: "2025-06", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((56 * 45000 * 12) / (45000 * 10800) * 100).toFixed(1)), monthlyRevenue: 56 * 45000, annualRevenue: 56 * 45000 * 12, history: [{ year: 2020, occupancy: 74, rent: 46 }, { year: 2021, occupancy: 78, rent: 48 }, { year: 2022, occupancy: 83, rent: 51 }, { year: 2023, occupancy: 87, rent: 53 }, { year: 2024, occupancy: 90, rent: 56 }] },
+        { floor: 3, tenant: "WeWork", occupancy: 88, rentPerSqft: 56, area: 45000, leaseStart: "2022-06", leaseEnd: "2027-06", status: "Partially Vacant", carpetArea: 31500, superBuiltUp: 45000, lockInPeriod: "3 years", lockInEnd: "2025-06", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((56 * 45000 * 12) / (45000 * 10800) * 100).toFixed(1)), monthlyRevenue: 56 * 45000, annualRevenue: 56 * 45000 * 12, history: [{ year: 2020, occupancy: 72, rent: 46 }, { year: 2021, occupancy: 77, rent: 48 }, { year: 2022, occupancy: 81, rent: 51 }, { year: 2023, occupancy: 85, rent: 53 }, { year: 2024, occupancy: 88, rent: 56 }] },
+        // Bank of America F4-F6
+        { floor: 4, tenant: "Bank of America", occupancy: 100, rentPerSqft: 64, area: 45000, leaseStart: "2020-01", leaseEnd: "2029-01", status: "Fully Occupied", carpetArea: 31500, superBuiltUp: 45000, lockInPeriod: "5 years", lockInEnd: "2025-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((64 * 45000 * 12) / (45000 * 10800) * 100).toFixed(1)), monthlyRevenue: 64 * 45000, annualRevenue: 64 * 45000 * 12, history: [{ year: 2020, occupancy: 95, rent: 53 }, { year: 2021, occupancy: 97, rent: 55 }, { year: 2022, occupancy: 100, rent: 58 }, { year: 2023, occupancy: 100, rent: 61 }, { year: 2024, occupancy: 100, rent: 64 }] },
+        { floor: 5, tenant: "Bank of America", occupancy: 100, rentPerSqft: 65, area: 45000, leaseStart: "2020-01", leaseEnd: "2029-01", status: "Fully Occupied", carpetArea: 31500, superBuiltUp: 45000, lockInPeriod: "5 years", lockInEnd: "2025-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((65 * 45000 * 12) / (45000 * 10800) * 100).toFixed(1)), monthlyRevenue: 65 * 45000, annualRevenue: 65 * 45000 * 12, history: [{ year: 2020, occupancy: 96, rent: 54 }, { year: 2021, occupancy: 98, rent: 56 }, { year: 2022, occupancy: 100, rent: 59 }, { year: 2023, occupancy: 100, rent: 62 }, { year: 2024, occupancy: 100, rent: 65 }] },
+        { floor: 6, tenant: "Bank of America", occupancy: 60, rentPerSqft: 65, area: 45000, leaseStart: "2020-01", leaseEnd: "2029-01", status: "Partially Vacant", carpetArea: 31500, superBuiltUp: 45000, lockInPeriod: "5 years", lockInEnd: "2025-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: 4.3, monthlyRevenue: 1755000, annualRevenue: 21060000, history: [{ year: 2020, occupancy: 94, rent: 54 }, { year: 2021, occupancy: 97, rent: 56 }, { year: 2022, occupancy: 99, rent: 59 }, { year: 2023, occupancy: 100, rent: 62 }, { year: 2024, occupancy: 60, rent: 65 }] },
+        // Nielsen F7-F8
+        { floor: 7, tenant: "Nielsen", occupancy: 100, rentPerSqft: 60, area: 45000, leaseStart: "2021-03", leaseEnd: "2027-03", status: "Fully Occupied", carpetArea: 31500, superBuiltUp: 45000, lockInPeriod: "3 years", lockInEnd: "2024-03", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((60 * 45000 * 12) / (45000 * 10800) * 100).toFixed(1)), monthlyRevenue: 60 * 45000, annualRevenue: 60 * 45000 * 12, history: [{ year: 2020, occupancy: 90, rent: 50 }, { year: 2021, occupancy: 93, rent: 52 }, { year: 2022, occupancy: 96, rent: 55 }, { year: 2023, occupancy: 98, rent: 57 }, { year: 2024, occupancy: 100, rent: 60 }] },
+        { floor: 8, tenant: "Vacant", occupancy: 0, rentPerSqft: 60, area: 45000, leaseStart: "-", leaseEnd: "-", status: "Vacant", carpetArea: 31500, superBuiltUp: 45000, lockInPeriod: null, lockInEnd: null, securityDeposit: 0, fitOut: "Bare Shell", vacancyDuration: "4 months", rentalYield: 0, monthlyRevenue: 0, annualRevenue: 0, history: [{ year: 2020, occupancy: 87, rent: 50 }, { year: 2021, occupancy: 90, rent: 52 }, { year: 2022, occupancy: 93, rent: 55 }, { year: 2023, occupancy: 95, rent: 57 }, { year: 2024, occupancy: 0, rent: 60 }] }
+      ]
+    },
+    {
+      id: "neptune-1",
+      name: "Neptune Tower 1",
+      phase: "Phase I",
+      totalFloors: 5,
+      totalArea: 166000,
+      yearBuilt: 2008,
+      color: "#a78bfa",
+      position: { x: -17, z: -6 },
+      width: 3,
+      depth: 3,
+      height: 2.2,
+      rotation: 0.2,
+      shape: "rect",
+      grade: "A",
+      certification: "IGBC Gold",
+      camCharges: 15,
+      escalation: "15% every 3 years",
+      powerBackup: "100% DG + Dual Feed",
+      parkingRatio: 1.0,
+      floorPlateSize: 33200,
+      efficiencyRatio: 70,
+      amenities: ["Cafeteria", "Gym", "ATM", "EV Charging", "Conference Center", "Creche"],
+      capitalValuePerSqft: 10000,
+      capitalValueTrend: [
+        { year: 2020, value: 7400 },
+        { year: 2021, value: 7900 },
+        { year: 2022, value: 8500 },
+        { year: 2023, value: 9200 },
+        { year: 2024, value: 10000 }
+      ],
+      microMarket: "Outer Ring Road",
+      microMarketAvgRent: 72,
+      absorptionRate: 85,
+      upcomingSupply: "2.1M sqft by 2026",
+      floors: [
+        // JPMorgan Chase F1-F3
+        { floor: 1, tenant: "JPMorgan Chase", occupancy: 100, rentPerSqft: 58, area: 33200, leaseStart: "2021-01", leaseEnd: "2029-01", status: "Fully Occupied", carpetArea: 23240, superBuiltUp: 33200, lockInPeriod: "5 years", lockInEnd: "2026-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((58 * 33200 * 12) / (33200 * 10000) * 100).toFixed(1)), monthlyRevenue: 58 * 33200, annualRevenue: 58 * 33200 * 12, history: [{ year: 2020, occupancy: 92, rent: 48 }, { year: 2021, occupancy: 95, rent: 50 }, { year: 2022, occupancy: 97, rent: 53 }, { year: 2023, occupancy: 100, rent: 55 }, { year: 2024, occupancy: 100, rent: 58 }] },
+        { floor: 2, tenant: "JPMorgan Chase", occupancy: 100, rentPerSqft: 58, area: 33200, leaseStart: "2021-01", leaseEnd: "2029-01", status: "Fully Occupied", carpetArea: 23240, superBuiltUp: 33200, lockInPeriod: "5 years", lockInEnd: "2026-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((58 * 33200 * 12) / (33200 * 10000) * 100).toFixed(1)), monthlyRevenue: 58 * 33200, annualRevenue: 58 * 33200 * 12, history: [{ year: 2020, occupancy: 90, rent: 48 }, { year: 2021, occupancy: 94, rent: 50 }, { year: 2022, occupancy: 96, rent: 53 }, { year: 2023, occupancy: 99, rent: 55 }, { year: 2024, occupancy: 100, rent: 58 }] },
+        { floor: 3, tenant: "JPMorgan Chase", occupancy: 100, rentPerSqft: 59, area: 33200, leaseStart: "2021-01", leaseEnd: "2029-01", status: "Fully Occupied", carpetArea: 23240, superBuiltUp: 33200, lockInPeriod: "5 years", lockInEnd: "2026-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((59 * 33200 * 12) / (33200 * 10000) * 100).toFixed(1)), monthlyRevenue: 59 * 33200, annualRevenue: 59 * 33200 * 12, history: [{ year: 2020, occupancy: 91, rent: 49 }, { year: 2021, occupancy: 94, rent: 51 }, { year: 2022, occupancy: 97, rent: 54 }, { year: 2023, occupancy: 99, rent: 56 }, { year: 2024, occupancy: 100, rent: 59 }] },
+        // Schneider Electric F4-F5
+        { floor: 4, tenant: "Schneider Electric", occupancy: 100, rentPerSqft: 60, area: 33200, leaseStart: "2022-04", leaseEnd: "2027-04", status: "Fully Occupied", carpetArea: 23240, superBuiltUp: 33200, lockInPeriod: "3 years", lockInEnd: "2025-04", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((60 * 33200 * 12) / (33200 * 10000) * 100).toFixed(1)), monthlyRevenue: 60 * 33200, annualRevenue: 60 * 33200 * 12, history: [{ year: 2020, occupancy: 88, rent: 50 }, { year: 2021, occupancy: 92, rent: 52 }, { year: 2022, occupancy: 95, rent: 55 }, { year: 2023, occupancy: 98, rent: 57 }, { year: 2024, occupancy: 100, rent: 60 }] },
+        { floor: 5, tenant: "Schneider Electric", occupancy: 95, rentPerSqft: 59, area: 33200, leaseStart: "2022-04", leaseEnd: "2027-04", status: "Partially Vacant", carpetArea: 23240, superBuiltUp: 33200, lockInPeriod: "3 years", lockInEnd: "2025-04", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((59 * 33200 * 12) / (33200 * 10000) * 100).toFixed(1)), monthlyRevenue: 59 * 33200, annualRevenue: 59 * 33200 * 12, history: [{ year: 2020, occupancy: 85, rent: 49 }, { year: 2021, occupancy: 88, rent: 51 }, { year: 2022, occupancy: 91, rent: 54 }, { year: 2023, occupancy: 93, rent: 56 }, { year: 2024, occupancy: 95, rent: 59 }] }
+      ]
+    },
+    {
+      id: "neptune-2",
+      name: "Neptune Tower 2",
+      phase: "Phase I",
+      totalFloors: 5,
+      totalArea: 165000,
+      yearBuilt: 2008,
+      color: "#a78bfa",
+      position: { x: -17, z: -2.5 },
+      width: 3,
+      depth: 3,
+      height: 2.2,
+      rotation: 0.2,
+      shape: "rect",
+      grade: "A",
+      certification: "IGBC Gold",
+      camCharges: 15,
+      escalation: "15% every 3 years",
+      powerBackup: "100% DG + Dual Feed",
+      parkingRatio: 1.0,
+      floorPlateSize: 33000,
+      efficiencyRatio: 70,
+      amenities: ["Cafeteria", "Gym", "ATM", "EV Charging", "Conference Center", "Creche"],
+      capitalValuePerSqft: 10000,
+      capitalValueTrend: [
+        { year: 2020, value: 7400 },
+        { year: 2021, value: 7900 },
+        { year: 2022, value: 8500 },
+        { year: 2023, value: 9200 },
+        { year: 2024, value: 10000 }
+      ],
+      microMarket: "Outer Ring Road",
+      microMarketAvgRent: 72,
+      absorptionRate: 85,
+      upcomingSupply: "2.1M sqft by 2026",
+      floors: [
+        // AIG F1-F2
+        { floor: 1, tenant: "AIG", occupancy: 100, rentPerSqft: 57, area: 33000, leaseStart: "2021-07", leaseEnd: "2026-07", status: "Fully Occupied", carpetArea: 23100, superBuiltUp: 33000, lockInPeriod: "3 years", lockInEnd: "2024-07", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((57 * 33000 * 12) / (33000 * 10000) * 100).toFixed(1)), monthlyRevenue: 57 * 33000, annualRevenue: 57 * 33000 * 12, history: [{ year: 2020, occupancy: 90, rent: 47 }, { year: 2021, occupancy: 93, rent: 49 }, { year: 2022, occupancy: 96, rent: 52 }, { year: 2023, occupancy: 98, rent: 54 }, { year: 2024, occupancy: 100, rent: 57 }] },
+        { floor: 2, tenant: "AIG", occupancy: 95, rentPerSqft: 56, area: 33000, leaseStart: "2021-07", leaseEnd: "2026-07", status: "Partially Vacant", carpetArea: 23100, superBuiltUp: 33000, lockInPeriod: "3 years", lockInEnd: "2024-07", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((56 * 33000 * 12) / (33000 * 10000) * 100).toFixed(1)), monthlyRevenue: 56 * 33000, annualRevenue: 56 * 33000 * 12, history: [{ year: 2020, occupancy: 87, rent: 46 }, { year: 2021, occupancy: 90, rent: 48 }, { year: 2022, occupancy: 93, rent: 51 }, { year: 2023, occupancy: 95, rent: 53 }, { year: 2024, occupancy: 95, rent: 56 }] },
+        // Mphasis F3-F5
+        { floor: 3, tenant: "Mphasis", occupancy: 100, rentPerSqft: 58, area: 33000, leaseStart: "2022-01", leaseEnd: "2027-01", status: "Fully Occupied", carpetArea: 23100, superBuiltUp: 33000, lockInPeriod: "3 years", lockInEnd: "2025-01", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((58 * 33000 * 12) / (33000 * 10000) * 100).toFixed(1)), monthlyRevenue: 58 * 33000, annualRevenue: 58 * 33000 * 12, history: [{ year: 2020, occupancy: 88, rent: 48 }, { year: 2021, occupancy: 92, rent: 50 }, { year: 2022, occupancy: 95, rent: 53 }, { year: 2023, occupancy: 98, rent: 55 }, { year: 2024, occupancy: 100, rent: 58 }] },
+        { floor: 4, tenant: "Mphasis", occupancy: 100, rentPerSqft: 59, area: 33000, leaseStart: "2022-01", leaseEnd: "2027-01", status: "Fully Occupied", carpetArea: 23100, superBuiltUp: 33000, lockInPeriod: "3 years", lockInEnd: "2025-01", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((59 * 33000 * 12) / (33000 * 10000) * 100).toFixed(1)), monthlyRevenue: 59 * 33000, annualRevenue: 59 * 33000 * 12, history: [{ year: 2020, occupancy: 89, rent: 49 }, { year: 2021, occupancy: 93, rent: 51 }, { year: 2022, occupancy: 96, rent: 54 }, { year: 2023, occupancy: 99, rent: 56 }, { year: 2024, occupancy: 100, rent: 59 }] },
+        { floor: 5, tenant: "Mphasis", occupancy: 100, rentPerSqft: 58, area: 33000, leaseStart: "2022-01", leaseEnd: "2027-01", status: "Fully Occupied", carpetArea: 23100, superBuiltUp: 33000, lockInPeriod: "3 years", lockInEnd: "2025-01", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((58 * 33000 * 12) / (33000 * 10000) * 100).toFixed(1)), monthlyRevenue: 58 * 33000, annualRevenue: 58 * 33000 * 12, history: [{ year: 2020, occupancy: 86, rent: 48 }, { year: 2021, occupancy: 90, rent: 50 }, { year: 2022, occupancy: 94, rent: 53 }, { year: 2023, occupancy: 97, rent: 55 }, { year: 2024, occupancy: 100, rent: 58 }] }
+      ]
+    },
+
+    // ═══════════════════════════════════════════════════════════════
+    // PHASE II — Star Names (center-west, LARGEST footprints)
+    // ═══════════════════════════════════════════════════════════════
+    {
+      id: "elnath",
+      name: "Elnath",
+      phase: "Phase II",
+      totalFloors: 10,
+      totalArea: 798000,
+      yearBuilt: 2012,
+      color: "#0ea5e9",
+      position: { x: -14, z: 4 },
+      width: 9,
+      depth: 4.5,
+      height: 4.5,
+      rotation: -0.25,
+      shape: "rect",
+      grade: "A+",
+      certification: "LEED Gold",
+      camCharges: 20,
+      escalation: "15% every 3 years",
+      powerBackup: "100% DG + Dual Feed",
+      parkingRatio: 1.3,
+      floorPlateSize: 79800,
+      efficiencyRatio: 73,
+      amenities: ["Cafeteria", "Gym", "ATM", "EV Charging", "Conference Center", "Creche"],
+      capitalValuePerSqft: 12800,
+      capitalValueTrend: [
+        { year: 2020, value: 9500 },
+        { year: 2021, value: 10200 },
+        { year: 2022, value: 10900 },
+        { year: 2023, value: 11800 },
+        { year: 2024, value: 12800 }
+      ],
+      microMarket: "Outer Ring Road",
+      microMarketAvgRent: 72,
+      absorptionRate: 85,
+      upcomingSupply: "2.1M sqft by 2026",
+      floors: [
+        // JPMorgan Chase F1-F4
+        { floor: 1, tenant: "JPMorgan Chase", occupancy: 100, rentPerSqft: 72, area: 79800, leaseStart: "2020-06", leaseEnd: "2029-06", status: "Fully Occupied", carpetArea: 58254, superBuiltUp: 79800, lockInPeriod: "5 years", lockInEnd: "2025-06", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((72 * 79800 * 12) / (79800 * 12800) * 100).toFixed(1)), monthlyRevenue: 72 * 79800, annualRevenue: 72 * 79800 * 12, history: [{ year: 2020, occupancy: 95, rent: 60 }, { year: 2021, occupancy: 97, rent: 63 }, { year: 2022, occupancy: 100, rent: 66 }, { year: 2023, occupancy: 100, rent: 69 }, { year: 2024, occupancy: 100, rent: 72 }] },
+        { floor: 2, tenant: "JPMorgan Chase", occupancy: 100, rentPerSqft: 72, area: 79800, leaseStart: "2020-06", leaseEnd: "2029-06", status: "Fully Occupied", carpetArea: 58254, superBuiltUp: 79800, lockInPeriod: "5 years", lockInEnd: "2025-06", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((72 * 79800 * 12) / (79800 * 12800) * 100).toFixed(1)), monthlyRevenue: 72 * 79800, annualRevenue: 72 * 79800 * 12, history: [{ year: 2020, occupancy: 93, rent: 60 }, { year: 2021, occupancy: 96, rent: 63 }, { year: 2022, occupancy: 99, rent: 66 }, { year: 2023, occupancy: 100, rent: 69 }, { year: 2024, occupancy: 100, rent: 72 }] },
+        { floor: 3, tenant: "JPMorgan Chase", occupancy: 100, rentPerSqft: 73, area: 79800, leaseStart: "2020-06", leaseEnd: "2029-06", status: "Fully Occupied", carpetArea: 58254, superBuiltUp: 79800, lockInPeriod: "5 years", lockInEnd: "2025-06", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((73 * 79800 * 12) / (79800 * 12800) * 100).toFixed(1)), monthlyRevenue: 73 * 79800, annualRevenue: 73 * 79800 * 12, history: [{ year: 2020, occupancy: 94, rent: 61 }, { year: 2021, occupancy: 97, rent: 64 }, { year: 2022, occupancy: 100, rent: 67 }, { year: 2023, occupancy: 100, rent: 70 }, { year: 2024, occupancy: 100, rent: 73 }] },
+        { floor: 4, tenant: "JPMorgan Chase", occupancy: 95, rentPerSqft: 71, area: 79800, leaseStart: "2020-06", leaseEnd: "2029-06", status: "Partially Vacant", carpetArea: 58254, superBuiltUp: 79800, lockInPeriod: "5 years", lockInEnd: "2025-06", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((71 * 79800 * 12) / (79800 * 12800) * 100).toFixed(1)), monthlyRevenue: 71 * 79800, annualRevenue: 71 * 79800 * 12, history: [{ year: 2020, occupancy: 88, rent: 59 }, { year: 2021, occupancy: 91, rent: 62 }, { year: 2022, occupancy: 93, rent: 65 }, { year: 2023, occupancy: 95, rent: 68 }, { year: 2024, occupancy: 95, rent: 71 }] },
+        // Adobe Systems F5-F7
+        { floor: 5, tenant: "Adobe Systems", occupancy: 100, rentPerSqft: 75, area: 79800, leaseStart: "2021-01", leaseEnd: "2030-01", status: "Fully Occupied", carpetArea: 58254, superBuiltUp: 79800, lockInPeriod: "5 years", lockInEnd: "2026-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((75 * 79800 * 12) / (79800 * 12800) * 100).toFixed(1)), monthlyRevenue: 75 * 79800, annualRevenue: 75 * 79800 * 12, history: [{ year: 2020, occupancy: 96, rent: 62 }, { year: 2021, occupancy: 98, rent: 65 }, { year: 2022, occupancy: 100, rent: 68 }, { year: 2023, occupancy: 100, rent: 72 }, { year: 2024, occupancy: 100, rent: 75 }] },
+        { floor: 6, tenant: "Adobe Systems", occupancy: 100, rentPerSqft: 76, area: 79800, leaseStart: "2021-01", leaseEnd: "2030-01", status: "Fully Occupied", carpetArea: 58254, superBuiltUp: 79800, lockInPeriod: "5 years", lockInEnd: "2026-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((76 * 79800 * 12) / (79800 * 12800) * 100).toFixed(1)), monthlyRevenue: 76 * 79800, annualRevenue: 76 * 79800 * 12, history: [{ year: 2020, occupancy: 95, rent: 63 }, { year: 2021, occupancy: 98, rent: 66 }, { year: 2022, occupancy: 100, rent: 69 }, { year: 2023, occupancy: 100, rent: 73 }, { year: 2024, occupancy: 100, rent: 76 }] },
+        { floor: 7, tenant: "Adobe Systems", occupancy: 100, rentPerSqft: 75, area: 79800, leaseStart: "2021-01", leaseEnd: "2030-01", status: "Fully Occupied", carpetArea: 58254, superBuiltUp: 79800, lockInPeriod: "5 years", lockInEnd: "2026-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((75 * 79800 * 12) / (79800 * 12800) * 100).toFixed(1)), monthlyRevenue: 75 * 79800, annualRevenue: 75 * 79800 * 12, history: [{ year: 2020, occupancy: 94, rent: 62 }, { year: 2021, occupancy: 97, rent: 65 }, { year: 2022, occupancy: 100, rent: 68 }, { year: 2023, occupancy: 100, rent: 72 }, { year: 2024, occupancy: 100, rent: 75 }] },
+        // Oracle F8-F10
+        { floor: 8, tenant: "Oracle", occupancy: 45, rentPerSqft: 74, area: 79800, leaseStart: "2022-03", leaseEnd: "2031-03", status: "Partially Vacant", carpetArea: 58254, superBuiltUp: 79800, lockInPeriod: "5 years", lockInEnd: "2027-03", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: 3.1, monthlyRevenue: 2657340, annualRevenue: 31888080, history: [{ year: 2020, occupancy: 92, rent: 62 }, { year: 2021, occupancy: 95, rent: 65 }, { year: 2022, occupancy: 98, rent: 68 }, { year: 2023, occupancy: 100, rent: 71 }, { year: 2024, occupancy: 45, rent: 74 }] },
+        { floor: 9, tenant: "Oracle", occupancy: 40, rentPerSqft: 74, area: 79800, leaseStart: "2022-03", leaseEnd: "2031-03", status: "Partially Vacant", carpetArea: 58254, superBuiltUp: 79800, lockInPeriod: "5 years", lockInEnd: "2027-03", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: 2.8, monthlyRevenue: 2362080, annualRevenue: 28344960, history: [{ year: 2020, occupancy: 91, rent: 62 }, { year: 2021, occupancy: 94, rent: 65 }, { year: 2022, occupancy: 97, rent: 68 }, { year: 2023, occupancy: 99, rent: 71 }, { year: 2024, occupancy: 40, rent: 74 }] },
+        { floor: 10, tenant: "Oracle", occupancy: 0, rentPerSqft: 0, area: 79800, leaseStart: null, leaseEnd: null, status: "Vacant", carpetArea: 58254, superBuiltUp: 79800, lockInPeriod: null, lockInEnd: null, securityDeposit: 0, fitOut: "Bare Shell", vacancyDuration: 4, rentalYield: 0, monthlyRevenue: 0, annualRevenue: 0, history: [{ year: 2020, occupancy: 85, rent: 60 }, { year: 2021, occupancy: 80, rent: 62 }, { year: 2022, occupancy: 50, rent: 65 }, { year: 2023, occupancy: 20, rent: 0 }, { year: 2024, occupancy: 0, rent: 0 }] }
+      ]
+    },
+    {
+      id: "etamin",
+      name: "Etamin",
+      phase: "Phase II",
+      totalFloors: 10,
+      totalArea: 700000,
+      yearBuilt: 2012,
+      color: "#0284c7",
+      position: { x: -3, z: 4 },
+      width: 8.5,
+      depth: 4.5,
+      height: 4.5,
+      rotation: -0.15,
+      shape: "rect",
+      grade: "A+",
+      certification: "LEED Gold",
+      camCharges: 19,
+      escalation: "15% every 3 years",
+      powerBackup: "100% DG + Dual Feed",
+      parkingRatio: 1.2,
+      floorPlateSize: 70000,
+      efficiencyRatio: 73,
+      amenities: ["Cafeteria", "Gym", "ATM", "EV Charging", "Conference Center", "Creche"],
+      capitalValuePerSqft: 12500,
+      capitalValueTrend: [
+        { year: 2020, value: 9200 },
+        { year: 2021, value: 9900 },
+        { year: 2022, value: 10600 },
+        { year: 2023, value: 11500 },
+        { year: 2024, value: 12500 }
+      ],
+      microMarket: "Outer Ring Road",
+      microMarketAvgRent: 72,
+      absorptionRate: 85,
+      upcomingSupply: "2.1M sqft by 2026",
+      floors: [
+        // Oracle F1-F3
+        { floor: 1, tenant: "Oracle", occupancy: 100, rentPerSqft: 70, area: 70000, leaseStart: "2021-04", leaseEnd: "2030-04", status: "Fully Occupied", carpetArea: 51100, superBuiltUp: 70000, lockInPeriod: "5 years", lockInEnd: "2026-04", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((70 * 70000 * 12) / (70000 * 12500) * 100).toFixed(1)), monthlyRevenue: 70 * 70000, annualRevenue: 70 * 70000 * 12, history: [{ year: 2020, occupancy: 93, rent: 58 }, { year: 2021, occupancy: 96, rent: 61 }, { year: 2022, occupancy: 98, rent: 64 }, { year: 2023, occupancy: 100, rent: 67 }, { year: 2024, occupancy: 100, rent: 70 }] },
+        { floor: 2, tenant: "Oracle", occupancy: 100, rentPerSqft: 70, area: 70000, leaseStart: "2021-04", leaseEnd: "2030-04", status: "Fully Occupied", carpetArea: 51100, superBuiltUp: 70000, lockInPeriod: "5 years", lockInEnd: "2026-04", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((70 * 70000 * 12) / (70000 * 12500) * 100).toFixed(1)), monthlyRevenue: 70 * 70000, annualRevenue: 70 * 70000 * 12, history: [{ year: 2020, occupancy: 92, rent: 58 }, { year: 2021, occupancy: 95, rent: 61 }, { year: 2022, occupancy: 97, rent: 64 }, { year: 2023, occupancy: 100, rent: 67 }, { year: 2024, occupancy: 100, rent: 70 }] },
+        { floor: 3, tenant: "Oracle", occupancy: 95, rentPerSqft: 69, area: 70000, leaseStart: "2021-04", leaseEnd: "2030-04", status: "Partially Vacant", carpetArea: 51100, superBuiltUp: 70000, lockInPeriod: "5 years", lockInEnd: "2026-04", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((69 * 70000 * 12) / (70000 * 12500) * 100).toFixed(1)), monthlyRevenue: 69 * 70000, annualRevenue: 69 * 70000 * 12, history: [{ year: 2020, occupancy: 88, rent: 57 }, { year: 2021, occupancy: 91, rent: 60 }, { year: 2022, occupancy: 93, rent: 63 }, { year: 2023, occupancy: 95, rent: 66 }, { year: 2024, occupancy: 95, rent: 69 }] },
+        // Juniper Networks F4-F7
+        { floor: 4, tenant: "Juniper Networks", occupancy: 100, rentPerSqft: 72, area: 70000, leaseStart: "2022-01", leaseEnd: "2029-01", status: "Fully Occupied", carpetArea: 51100, superBuiltUp: 70000, lockInPeriod: "5 years", lockInEnd: "2027-01", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((72 * 70000 * 12) / (70000 * 12500) * 100).toFixed(1)), monthlyRevenue: 72 * 70000, annualRevenue: 72 * 70000 * 12, history: [{ year: 2020, occupancy: 90, rent: 60 }, { year: 2021, occupancy: 94, rent: 63 }, { year: 2022, occupancy: 97, rent: 66 }, { year: 2023, occupancy: 100, rent: 69 }, { year: 2024, occupancy: 100, rent: 72 }] },
+        { floor: 5, tenant: "Juniper Networks", occupancy: 100, rentPerSqft: 73, area: 70000, leaseStart: "2022-01", leaseEnd: "2029-01", status: "Fully Occupied", carpetArea: 51100, superBuiltUp: 70000, lockInPeriod: "5 years", lockInEnd: "2027-01", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((73 * 70000 * 12) / (70000 * 12500) * 100).toFixed(1)), monthlyRevenue: 73 * 70000, annualRevenue: 73 * 70000 * 12, history: [{ year: 2020, occupancy: 91, rent: 61 }, { year: 2021, occupancy: 95, rent: 64 }, { year: 2022, occupancy: 98, rent: 67 }, { year: 2023, occupancy: 100, rent: 70 }, { year: 2024, occupancy: 100, rent: 73 }] },
+        { floor: 6, tenant: "Juniper Networks", occupancy: 100, rentPerSqft: 72, area: 70000, leaseStart: "2022-01", leaseEnd: "2029-01", status: "Fully Occupied", carpetArea: 51100, superBuiltUp: 70000, lockInPeriod: "5 years", lockInEnd: "2027-01", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((72 * 70000 * 12) / (70000 * 12500) * 100).toFixed(1)), monthlyRevenue: 72 * 70000, annualRevenue: 72 * 70000 * 12, history: [{ year: 2020, occupancy: 89, rent: 60 }, { year: 2021, occupancy: 93, rent: 63 }, { year: 2022, occupancy: 96, rent: 66 }, { year: 2023, occupancy: 99, rent: 69 }, { year: 2024, occupancy: 100, rent: 72 }] },
+        { floor: 7, tenant: "Juniper Networks", occupancy: 100, rentPerSqft: 73, area: 70000, leaseStart: "2022-01", leaseEnd: "2029-01", status: "Fully Occupied", carpetArea: 51100, superBuiltUp: 70000, lockInPeriod: "5 years", lockInEnd: "2027-01", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((73 * 70000 * 12) / (70000 * 12500) * 100).toFixed(1)), monthlyRevenue: 73 * 70000, annualRevenue: 73 * 70000 * 12, history: [{ year: 2020, occupancy: 90, rent: 61 }, { year: 2021, occupancy: 94, rent: 64 }, { year: 2022, occupancy: 97, rent: 67 }, { year: 2023, occupancy: 100, rent: 70 }, { year: 2024, occupancy: 100, rent: 73 }] },
+        // Adobe Systems F8-F10
+        { floor: 8, tenant: "Adobe Systems", occupancy: 55, rentPerSqft: 76, area: 70000, leaseStart: "2023-01", leaseEnd: "2032-01", status: "Partially Vacant", carpetArea: 51100, superBuiltUp: 70000, lockInPeriod: "5 years", lockInEnd: "2028-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: 4.0, monthlyRevenue: 2926000, annualRevenue: 35112000, history: [{ year: 2020, occupancy: 92, rent: 63 }, { year: 2021, occupancy: 95, rent: 66 }, { year: 2022, occupancy: 98, rent: 69 }, { year: 2023, occupancy: 100, rent: 73 }, { year: 2024, occupancy: 55, rent: 76 }] },
+        { floor: 9, tenant: "Adobe Systems", occupancy: 100, rentPerSqft: 77, area: 70000, leaseStart: "2023-01", leaseEnd: "2032-01", status: "Fully Occupied", carpetArea: 51100, superBuiltUp: 70000, lockInPeriod: "5 years", lockInEnd: "2028-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((77 * 70000 * 12) / (70000 * 12500) * 100).toFixed(1)), monthlyRevenue: 77 * 70000, annualRevenue: 77 * 70000 * 12, history: [{ year: 2020, occupancy: 93, rent: 64 }, { year: 2021, occupancy: 96, rent: 67 }, { year: 2022, occupancy: 99, rent: 70 }, { year: 2023, occupancy: 100, rent: 74 }, { year: 2024, occupancy: 100, rent: 77 }] },
+        { floor: 10, tenant: "Vacant", occupancy: 0, rentPerSqft: 76, area: 70000, leaseStart: "-", leaseEnd: "-", status: "Vacant", carpetArea: 51100, superBuiltUp: 70000, lockInPeriod: null, lockInEnd: null, securityDeposit: 0, fitOut: "Bare Shell", vacancyDuration: "2 months", rentalYield: 0, monthlyRevenue: 0, annualRevenue: 0, history: [{ year: 2020, occupancy: 91, rent: 63 }, { year: 2021, occupancy: 94, rent: 66 }, { year: 2022, occupancy: 97, rent: 69 }, { year: 2023, occupancy: 100, rent: 73 }, { year: 2024, occupancy: 0, rent: 76 }] }
+      ]
+    },
+    {
+      id: "electra",
+      name: "Electra",
+      phase: "Phase II",
+      totalFloors: 10,
+      totalArea: 716000,
+      yearBuilt: 2012,
+      color: "#0369a1",
+      position: { x: -9, z: 10 },
+      width: 8.5,
+      depth: 4.5,
+      height: 4.5,
+      rotation: -0.2,
+      shape: "rect",
+      grade: "A+",
+      certification: "LEED Gold",
+      camCharges: 21,
+      escalation: "15% every 3 years",
+      powerBackup: "100% DG + Dual Feed",
+      parkingRatio: 1.3,
+      floorPlateSize: 71600,
+      efficiencyRatio: 73,
+      amenities: ["Cafeteria", "Gym", "ATM", "EV Charging", "Conference Center", "Creche"],
+      capitalValuePerSqft: 13200,
+      capitalValueTrend: [
+        { year: 2020, value: 9800 },
+        { year: 2021, value: 10500 },
+        { year: 2022, value: 11300 },
+        { year: 2023, value: 12200 },
+        { year: 2024, value: 13200 }
+      ],
+      microMarket: "Outer Ring Road",
+      microMarketAvgRent: 72,
+      absorptionRate: 85,
+      upcomingSupply: "2.1M sqft by 2026",
+      floors: [
+        // JPMorgan Chase F1-F5
+        { floor: 1, tenant: "JPMorgan Chase", occupancy: 100, rentPerSqft: 74, area: 71600, leaseStart: "2020-09", leaseEnd: "2029-09", status: "Fully Occupied", carpetArea: 52268, superBuiltUp: 71600, lockInPeriod: "5 years", lockInEnd: "2025-09", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((74 * 71600 * 12) / (71600 * 13200) * 100).toFixed(1)), monthlyRevenue: 74 * 71600, annualRevenue: 74 * 71600 * 12, history: [{ year: 2020, occupancy: 95, rent: 62 }, { year: 2021, occupancy: 97, rent: 65 }, { year: 2022, occupancy: 100, rent: 68 }, { year: 2023, occupancy: 100, rent: 71 }, { year: 2024, occupancy: 100, rent: 74 }] },
+        { floor: 2, tenant: "JPMorgan Chase", occupancy: 100, rentPerSqft: 74, area: 71600, leaseStart: "2020-09", leaseEnd: "2029-09", status: "Fully Occupied", carpetArea: 52268, superBuiltUp: 71600, lockInPeriod: "5 years", lockInEnd: "2025-09", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((74 * 71600 * 12) / (71600 * 13200) * 100).toFixed(1)), monthlyRevenue: 74 * 71600, annualRevenue: 74 * 71600 * 12, history: [{ year: 2020, occupancy: 94, rent: 62 }, { year: 2021, occupancy: 96, rent: 65 }, { year: 2022, occupancy: 99, rent: 68 }, { year: 2023, occupancy: 100, rent: 71 }, { year: 2024, occupancy: 100, rent: 74 }] },
+        { floor: 3, tenant: "JPMorgan Chase", occupancy: 100, rentPerSqft: 75, area: 71600, leaseStart: "2020-09", leaseEnd: "2029-09", status: "Fully Occupied", carpetArea: 52268, superBuiltUp: 71600, lockInPeriod: "5 years", lockInEnd: "2025-09", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((75 * 71600 * 12) / (71600 * 13200) * 100).toFixed(1)), monthlyRevenue: 75 * 71600, annualRevenue: 75 * 71600 * 12, history: [{ year: 2020, occupancy: 96, rent: 63 }, { year: 2021, occupancy: 98, rent: 66 }, { year: 2022, occupancy: 100, rent: 69 }, { year: 2023, occupancy: 100, rent: 72 }, { year: 2024, occupancy: 100, rent: 75 }] },
+        { floor: 4, tenant: "JPMorgan Chase", occupancy: 100, rentPerSqft: 74, area: 71600, leaseStart: "2020-09", leaseEnd: "2029-09", status: "Fully Occupied", carpetArea: 52268, superBuiltUp: 71600, lockInPeriod: "5 years", lockInEnd: "2025-09", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((74 * 71600 * 12) / (71600 * 13200) * 100).toFixed(1)), monthlyRevenue: 74 * 71600, annualRevenue: 74 * 71600 * 12, history: [{ year: 2020, occupancy: 93, rent: 62 }, { year: 2021, occupancy: 96, rent: 65 }, { year: 2022, occupancy: 98, rent: 68 }, { year: 2023, occupancy: 100, rent: 71 }, { year: 2024, occupancy: 100, rent: 74 }] },
+        { floor: 5, tenant: "JPMorgan Chase", occupancy: 100, rentPerSqft: 75, area: 71600, leaseStart: "2020-09", leaseEnd: "2029-09", status: "Fully Occupied", carpetArea: 52268, superBuiltUp: 71600, lockInPeriod: "5 years", lockInEnd: "2025-09", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((75 * 71600 * 12) / (71600 * 13200) * 100).toFixed(1)), monthlyRevenue: 75 * 71600, annualRevenue: 75 * 71600 * 12, history: [{ year: 2020, occupancy: 95, rent: 63 }, { year: 2021, occupancy: 97, rent: 66 }, { year: 2022, occupancy: 100, rent: 69 }, { year: 2023, occupancy: 100, rent: 72 }, { year: 2024, occupancy: 100, rent: 75 }] },
+        // Oracle F6-F8
+        { floor: 6, tenant: "Oracle", occupancy: 100, rentPerSqft: 73, area: 71600, leaseStart: "2022-06", leaseEnd: "2031-06", status: "Fully Occupied", carpetArea: 52268, superBuiltUp: 71600, lockInPeriod: "5 years", lockInEnd: "2027-06", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((73 * 71600 * 12) / (71600 * 13200) * 100).toFixed(1)), monthlyRevenue: 73 * 71600, annualRevenue: 73 * 71600 * 12, history: [{ year: 2020, occupancy: 90, rent: 61 }, { year: 2021, occupancy: 93, rent: 64 }, { year: 2022, occupancy: 96, rent: 67 }, { year: 2023, occupancy: 98, rent: 70 }, { year: 2024, occupancy: 100, rent: 73 }] },
+        { floor: 7, tenant: "Oracle", occupancy: 100, rentPerSqft: 74, area: 71600, leaseStart: "2022-06", leaseEnd: "2031-06", status: "Fully Occupied", carpetArea: 52268, superBuiltUp: 71600, lockInPeriod: "5 years", lockInEnd: "2027-06", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((74 * 71600 * 12) / (71600 * 13200) * 100).toFixed(1)), monthlyRevenue: 74 * 71600, annualRevenue: 74 * 71600 * 12, history: [{ year: 2020, occupancy: 91, rent: 62 }, { year: 2021, occupancy: 94, rent: 65 }, { year: 2022, occupancy: 97, rent: 68 }, { year: 2023, occupancy: 99, rent: 71 }, { year: 2024, occupancy: 100, rent: 74 }] },
+        { floor: 8, tenant: "Oracle", occupancy: 100, rentPerSqft: 73, area: 71600, leaseStart: "2022-06", leaseEnd: "2031-06", status: "Fully Occupied", carpetArea: 52268, superBuiltUp: 71600, lockInPeriod: "5 years", lockInEnd: "2027-06", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((73 * 71600 * 12) / (71600 * 13200) * 100).toFixed(1)), monthlyRevenue: 73 * 71600, annualRevenue: 73 * 71600 * 12, history: [{ year: 2020, occupancy: 89, rent: 61 }, { year: 2021, occupancy: 92, rent: 64 }, { year: 2022, occupancy: 95, rent: 67 }, { year: 2023, occupancy: 98, rent: 70 }, { year: 2024, occupancy: 100, rent: 73 }] },
+        // Cisco Systems F9-F10
+        { floor: 9, tenant: "Cisco Systems", occupancy: 50, rentPerSqft: 76, area: 71600, leaseStart: "2023-01", leaseEnd: "2030-01", status: "Partially Vacant", carpetArea: 52268, superBuiltUp: 71600, lockInPeriod: "5 years", lockInEnd: "2028-01", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: 3.5, monthlyRevenue: 2720800, annualRevenue: 32649600, history: [{ year: 2020, occupancy: 88, rent: 63 }, { year: 2021, occupancy: 92, rent: 66 }, { year: 2022, occupancy: 96, rent: 69 }, { year: 2023, occupancy: 100, rent: 73 }, { year: 2024, occupancy: 50, rent: 76 }] },
+        { floor: 10, tenant: "Cisco Systems", occupancy: 100, rentPerSqft: 77, area: 71600, leaseStart: "2023-01", leaseEnd: "2030-01", status: "Fully Occupied", carpetArea: 52268, superBuiltUp: 71600, lockInPeriod: "5 years", lockInEnd: "2028-01", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((77 * 71600 * 12) / (71600 * 13200) * 100).toFixed(1)), monthlyRevenue: 77 * 71600, annualRevenue: 77 * 71600 * 12, history: [{ year: 2020, occupancy: 87, rent: 64 }, { year: 2021, occupancy: 91, rent: 67 }, { year: 2022, occupancy: 95, rent: 70 }, { year: 2023, occupancy: 100, rent: 74 }, { year: 2024, occupancy: 100, rent: 77 }] }
+      ]
+    },
+
+    // ═══════════════════════════════════════════════════════════════
+    // PHASE III — Physics Names (south-west, courtyard cluster)
+    // ═══════════════════════════════════════════════════════════════
+    {
+      id: "vector",
+      name: "Vector",
+      phase: "Phase III",
+      totalFloors: 10,
+      totalArea: 362000,
+      yearBuilt: 2015,
+      color: "#059669",
+      position: { x: -2, z: -8 },
+      width: 4,
+      depth: 3.5,
+      height: 4.5,
+      rotation: 0.05,
+      shape: "rect",
+      grade: "A+",
+      certification: "LEED Gold",
+      camCharges: 18,
+      escalation: "15% every 3 years",
+      powerBackup: "100% DG + Dual Feed",
+      parkingRatio: 1.2,
+      floorPlateSize: 36200,
+      efficiencyRatio: 72,
+      amenities: ["Cafeteria", "Gym", "ATM", "EV Charging", "Conference Center", "Creche"],
+      capitalValuePerSqft: 12000,
+      capitalValueTrend: [
+        { year: 2020, value: 8800 },
+        { year: 2021, value: 9500 },
+        { year: 2022, value: 10200 },
+        { year: 2023, value: 11000 },
+        { year: 2024, value: 12000 }
+      ],
+      microMarket: "Outer Ring Road",
+      microMarketAvgRent: 72,
+      absorptionRate: 85,
+      upcomingSupply: "2.1M sqft by 2026",
+      floors: [
+        // Verizon F1-F4
+        { floor: 1, tenant: "Verizon", occupancy: 100, rentPerSqft: 68, area: 36200, leaseStart: "2021-01", leaseEnd: "2028-01", status: "Fully Occupied", carpetArea: 26064, superBuiltUp: 36200, lockInPeriod: "3 years", lockInEnd: "2024-01", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((68 * 36200 * 12) / (36200 * 12000) * 100).toFixed(1)), monthlyRevenue: 68 * 36200, annualRevenue: 68 * 36200 * 12, history: [{ year: 2020, occupancy: 92, rent: 57 }, { year: 2021, occupancy: 95, rent: 59 }, { year: 2022, occupancy: 98, rent: 62 }, { year: 2023, occupancy: 100, rent: 65 }, { year: 2024, occupancy: 100, rent: 68 }] },
+        { floor: 2, tenant: "Verizon", occupancy: 100, rentPerSqft: 68, area: 36200, leaseStart: "2021-01", leaseEnd: "2028-01", status: "Fully Occupied", carpetArea: 26064, superBuiltUp: 36200, lockInPeriod: "3 years", lockInEnd: "2024-01", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((68 * 36200 * 12) / (36200 * 12000) * 100).toFixed(1)), monthlyRevenue: 68 * 36200, annualRevenue: 68 * 36200 * 12, history: [{ year: 2020, occupancy: 90, rent: 57 }, { year: 2021, occupancy: 94, rent: 59 }, { year: 2022, occupancy: 97, rent: 62 }, { year: 2023, occupancy: 100, rent: 65 }, { year: 2024, occupancy: 100, rent: 68 }] },
+        { floor: 3, tenant: "Verizon", occupancy: 100, rentPerSqft: 69, area: 36200, leaseStart: "2021-01", leaseEnd: "2028-01", status: "Fully Occupied", carpetArea: 26064, superBuiltUp: 36200, lockInPeriod: "3 years", lockInEnd: "2024-01", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((69 * 36200 * 12) / (36200 * 12000) * 100).toFixed(1)), monthlyRevenue: 69 * 36200, annualRevenue: 69 * 36200 * 12, history: [{ year: 2020, occupancy: 91, rent: 58 }, { year: 2021, occupancy: 95, rent: 60 }, { year: 2022, occupancy: 98, rent: 63 }, { year: 2023, occupancy: 100, rent: 66 }, { year: 2024, occupancy: 100, rent: 69 }] },
+        { floor: 4, tenant: "Verizon", occupancy: 95, rentPerSqft: 67, area: 36200, leaseStart: "2021-01", leaseEnd: "2028-01", status: "Partially Vacant", carpetArea: 26064, superBuiltUp: 36200, lockInPeriod: "3 years", lockInEnd: "2024-01", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((67 * 36200 * 12) / (36200 * 12000) * 100).toFixed(1)), monthlyRevenue: 67 * 36200, annualRevenue: 67 * 36200 * 12, history: [{ year: 2020, occupancy: 85, rent: 56 }, { year: 2021, occupancy: 89, rent: 58 }, { year: 2022, occupancy: 92, rent: 61 }, { year: 2023, occupancy: 95, rent: 64 }, { year: 2024, occupancy: 95, rent: 67 }] },
+        // Western Digital F5-F7
+        { floor: 5, tenant: "Western Digital", occupancy: 100, rentPerSqft: 70, area: 36200, leaseStart: "2022-04", leaseEnd: "2029-04", status: "Fully Occupied", carpetArea: 26064, superBuiltUp: 36200, lockInPeriod: "3 years", lockInEnd: "2025-04", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((70 * 36200 * 12) / (36200 * 12000) * 100).toFixed(1)), monthlyRevenue: 70 * 36200, annualRevenue: 70 * 36200 * 12, history: [{ year: 2020, occupancy: 93, rent: 58 }, { year: 2021, occupancy: 96, rent: 61 }, { year: 2022, occupancy: 98, rent: 64 }, { year: 2023, occupancy: 100, rent: 67 }, { year: 2024, occupancy: 100, rent: 70 }] },
+        { floor: 6, tenant: "Western Digital", occupancy: 100, rentPerSqft: 71, area: 36200, leaseStart: "2022-04", leaseEnd: "2029-04", status: "Fully Occupied", carpetArea: 26064, superBuiltUp: 36200, lockInPeriod: "3 years", lockInEnd: "2025-04", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((71 * 36200 * 12) / (36200 * 12000) * 100).toFixed(1)), monthlyRevenue: 71 * 36200, annualRevenue: 71 * 36200 * 12, history: [{ year: 2020, occupancy: 94, rent: 59 }, { year: 2021, occupancy: 97, rent: 62 }, { year: 2022, occupancy: 99, rent: 65 }, { year: 2023, occupancy: 100, rent: 68 }, { year: 2024, occupancy: 100, rent: 71 }] },
+        { floor: 7, tenant: "Western Digital", occupancy: 100, rentPerSqft: 70, area: 36200, leaseStart: "2022-04", leaseEnd: "2029-04", status: "Fully Occupied", carpetArea: 26064, superBuiltUp: 36200, lockInPeriod: "3 years", lockInEnd: "2025-04", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((70 * 36200 * 12) / (36200 * 12000) * 100).toFixed(1)), monthlyRevenue: 70 * 36200, annualRevenue: 70 * 36200 * 12, history: [{ year: 2020, occupancy: 92, rent: 58 }, { year: 2021, occupancy: 95, rent: 61 }, { year: 2022, occupancy: 98, rent: 64 }, { year: 2023, occupancy: 100, rent: 67 }, { year: 2024, occupancy: 100, rent: 70 }] },
+        // Capgemini F8-F10
+        { floor: 8, tenant: "Capgemini", occupancy: 60, rentPerSqft: 66, area: 36200, leaseStart: "2023-01", leaseEnd: "2028-01", status: "Partially Vacant", carpetArea: 26064, superBuiltUp: 36200, lockInPeriod: "3 years", lockInEnd: "2026-01", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: 4.0, monthlyRevenue: 1433520, annualRevenue: 17202240, history: [{ year: 2020, occupancy: 88, rent: 55 }, { year: 2021, occupancy: 92, rent: 57 }, { year: 2022, occupancy: 95, rent: 60 }, { year: 2023, occupancy: 98, rent: 63 }, { year: 2024, occupancy: 60, rent: 66 }] },
+        { floor: 9, tenant: "Capgemini", occupancy: 100, rentPerSqft: 67, area: 36200, leaseStart: "2023-01", leaseEnd: "2028-01", status: "Fully Occupied", carpetArea: 26064, superBuiltUp: 36200, lockInPeriod: "3 years", lockInEnd: "2026-01", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((67 * 36200 * 12) / (36200 * 12000) * 100).toFixed(1)), monthlyRevenue: 67 * 36200, annualRevenue: 67 * 36200 * 12, history: [{ year: 2020, occupancy: 89, rent: 56 }, { year: 2021, occupancy: 93, rent: 58 }, { year: 2022, occupancy: 96, rent: 61 }, { year: 2023, occupancy: 99, rent: 64 }, { year: 2024, occupancy: 100, rent: 67 }] },
+        { floor: 10, tenant: "Vacant", occupancy: 0, rentPerSqft: 66, area: 36200, leaseStart: "-", leaseEnd: "-", status: "Vacant", carpetArea: 26064, superBuiltUp: 36200, lockInPeriod: null, lockInEnd: null, securityDeposit: 0, fitOut: "Bare Shell", vacancyDuration: "4 months", rentalYield: 0, monthlyRevenue: 0, annualRevenue: 0, history: [{ year: 2020, occupancy: 85, rent: 55 }, { year: 2021, occupancy: 88, rent: 57 }, { year: 2022, occupancy: 91, rent: 60 }, { year: 2023, occupancy: 93, rent: 63 }, { year: 2024, occupancy: 0, rent: 66 }] }
+      ]
+    },
+    {
+      id: "velocity",
+      name: "Velocity",
+      phase: "Phase III",
+      totalFloors: 10,
+      totalArea: 376000,
+      yearBuilt: 2015,
+      color: "#047857",
+      position: { x: 4, z: -8 },
+      width: 4,
+      depth: 3.5,
+      height: 4.5,
+      rotation: 0.05,
+      shape: "rect",
+      grade: "A+",
+      certification: "LEED Gold",
+      camCharges: 19,
+      escalation: "15% every 3 years",
+      powerBackup: "100% DG + Dual Feed",
+      parkingRatio: 1.2,
+      floorPlateSize: 37600,
+      efficiencyRatio: 72,
+      amenities: ["Cafeteria", "Gym", "ATM", "EV Charging", "Conference Center", "Creche"],
+      capitalValuePerSqft: 12200,
+      capitalValueTrend: [
+        { year: 2020, value: 9000 },
+        { year: 2021, value: 9700 },
+        { year: 2022, value: 10400 },
+        { year: 2023, value: 11200 },
+        { year: 2024, value: 12200 }
+      ],
+      microMarket: "Outer Ring Road",
+      microMarketAvgRent: 72,
+      absorptionRate: 85,
+      upcomingSupply: "2.1M sqft by 2026",
+      floors: [
+        // Oracle F1-F4
+        { floor: 1, tenant: "Oracle", occupancy: 100, rentPerSqft: 69, area: 37600, leaseStart: "2021-06", leaseEnd: "2030-06", status: "Fully Occupied", carpetArea: 27072, superBuiltUp: 37600, lockInPeriod: "5 years", lockInEnd: "2026-06", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((69 * 37600 * 12) / (37600 * 12200) * 100).toFixed(1)), monthlyRevenue: 69 * 37600, annualRevenue: 69 * 37600 * 12, history: [{ year: 2020, occupancy: 93, rent: 57 }, { year: 2021, occupancy: 96, rent: 60 }, { year: 2022, occupancy: 98, rent: 63 }, { year: 2023, occupancy: 100, rent: 66 }, { year: 2024, occupancy: 100, rent: 69 }] },
+        { floor: 2, tenant: "Oracle", occupancy: 100, rentPerSqft: 70, area: 37600, leaseStart: "2021-06", leaseEnd: "2030-06", status: "Fully Occupied", carpetArea: 27072, superBuiltUp: 37600, lockInPeriod: "5 years", lockInEnd: "2026-06", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((70 * 37600 * 12) / (37600 * 12200) * 100).toFixed(1)), monthlyRevenue: 70 * 37600, annualRevenue: 70 * 37600 * 12, history: [{ year: 2020, occupancy: 94, rent: 58 }, { year: 2021, occupancy: 97, rent: 61 }, { year: 2022, occupancy: 99, rent: 64 }, { year: 2023, occupancy: 100, rent: 67 }, { year: 2024, occupancy: 100, rent: 70 }] },
+        { floor: 3, tenant: "Oracle", occupancy: 100, rentPerSqft: 69, area: 37600, leaseStart: "2021-06", leaseEnd: "2030-06", status: "Fully Occupied", carpetArea: 27072, superBuiltUp: 37600, lockInPeriod: "5 years", lockInEnd: "2026-06", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((69 * 37600 * 12) / (37600 * 12200) * 100).toFixed(1)), monthlyRevenue: 69 * 37600, annualRevenue: 69 * 37600 * 12, history: [{ year: 2020, occupancy: 92, rent: 57 }, { year: 2021, occupancy: 95, rent: 60 }, { year: 2022, occupancy: 97, rent: 63 }, { year: 2023, occupancy: 100, rent: 66 }, { year: 2024, occupancy: 100, rent: 69 }] },
+        { floor: 4, tenant: "Oracle", occupancy: 100, rentPerSqft: 70, area: 37600, leaseStart: "2021-06", leaseEnd: "2030-06", status: "Fully Occupied", carpetArea: 27072, superBuiltUp: 37600, lockInPeriod: "5 years", lockInEnd: "2026-06", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((70 * 37600 * 12) / (37600 * 12200) * 100).toFixed(1)), monthlyRevenue: 70 * 37600, annualRevenue: 70 * 37600 * 12, history: [{ year: 2020, occupancy: 93, rent: 58 }, { year: 2021, occupancy: 96, rent: 61 }, { year: 2022, occupancy: 99, rent: 64 }, { year: 2023, occupancy: 100, rent: 67 }, { year: 2024, occupancy: 100, rent: 70 }] },
+        // Mindtree F5-F7
+        { floor: 5, tenant: "Mindtree", occupancy: 100, rentPerSqft: 66, area: 37600, leaseStart: "2022-01", leaseEnd: "2027-01", status: "Fully Occupied", carpetArea: 27072, superBuiltUp: 37600, lockInPeriod: "3 years", lockInEnd: "2025-01", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((66 * 37600 * 12) / (37600 * 12200) * 100).toFixed(1)), monthlyRevenue: 66 * 37600, annualRevenue: 66 * 37600 * 12, history: [{ year: 2020, occupancy: 88, rent: 55 }, { year: 2021, occupancy: 92, rent: 57 }, { year: 2022, occupancy: 95, rent: 60 }, { year: 2023, occupancy: 98, rent: 63 }, { year: 2024, occupancy: 100, rent: 66 }] },
+        { floor: 6, tenant: "Mindtree", occupancy: 95, rentPerSqft: 65, area: 37600, leaseStart: "2022-01", leaseEnd: "2027-01", status: "Partially Vacant", carpetArea: 27072, superBuiltUp: 37600, lockInPeriod: "3 years", lockInEnd: "2025-01", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((65 * 37600 * 12) / (37600 * 12200) * 100).toFixed(1)), monthlyRevenue: 65 * 37600, annualRevenue: 65 * 37600 * 12, history: [{ year: 2020, occupancy: 82, rent: 54 }, { year: 2021, occupancy: 86, rent: 56 }, { year: 2022, occupancy: 90, rent: 59 }, { year: 2023, occupancy: 93, rent: 62 }, { year: 2024, occupancy: 95, rent: 65 }] },
+        { floor: 7, tenant: "Mindtree", occupancy: 100, rentPerSqft: 66, area: 37600, leaseStart: "2022-01", leaseEnd: "2027-01", status: "Fully Occupied", carpetArea: 27072, superBuiltUp: 37600, lockInPeriod: "3 years", lockInEnd: "2025-01", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((66 * 37600 * 12) / (37600 * 12200) * 100).toFixed(1)), monthlyRevenue: 66 * 37600, annualRevenue: 66 * 37600 * 12, history: [{ year: 2020, occupancy: 87, rent: 55 }, { year: 2021, occupancy: 91, rent: 57 }, { year: 2022, occupancy: 94, rent: 60 }, { year: 2023, occupancy: 97, rent: 63 }, { year: 2024, occupancy: 100, rent: 66 }] },
+        // HCL Technologies F8-F10
+        { floor: 8, tenant: "HCL Technologies", occupancy: 45, rentPerSqft: 64, area: 37600, leaseStart: "2023-04", leaseEnd: "2028-04", status: "Partially Vacant", carpetArea: 27072, superBuiltUp: 37600, lockInPeriod: "3 years", lockInEnd: "2026-04", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: 2.8, monthlyRevenue: 1082880, annualRevenue: 12994560, history: [{ year: 2020, occupancy: 86, rent: 53 }, { year: 2021, occupancy: 90, rent: 55 }, { year: 2022, occupancy: 94, rent: 58 }, { year: 2023, occupancy: 97, rent: 61 }, { year: 2024, occupancy: 45, rent: 64 }] },
+        { floor: 9, tenant: "HCL Technologies", occupancy: 100, rentPerSqft: 65, area: 37600, leaseStart: "2023-04", leaseEnd: "2028-04", status: "Fully Occupied", carpetArea: 27072, superBuiltUp: 37600, lockInPeriod: "3 years", lockInEnd: "2026-04", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((65 * 37600 * 12) / (37600 * 12200) * 100).toFixed(1)), monthlyRevenue: 65 * 37600, annualRevenue: 65 * 37600 * 12, history: [{ year: 2020, occupancy: 87, rent: 54 }, { year: 2021, occupancy: 91, rent: 56 }, { year: 2022, occupancy: 95, rent: 59 }, { year: 2023, occupancy: 98, rent: 62 }, { year: 2024, occupancy: 100, rent: 65 }] },
+        { floor: 10, tenant: "Vacant", occupancy: 0, rentPerSqft: 64, area: 37600, leaseStart: "-", leaseEnd: "-", status: "Vacant", carpetArea: 27072, superBuiltUp: 37600, lockInPeriod: null, lockInEnd: null, securityDeposit: 0, fitOut: "Bare Shell", vacancyDuration: "5 months", rentalYield: 0, monthlyRevenue: 0, annualRevenue: 0, history: [{ year: 2020, occupancy: 85, rent: 53 }, { year: 2021, occupancy: 89, rent: 55 }, { year: 2022, occupancy: 93, rent: 58 }, { year: 2023, occupancy: 96, rent: 61 }, { year: 2024, occupancy: 0, rent: 64 }] }
+      ]
+    },
+    {
+      id: "valence",
+      name: "Valence",
+      phase: "Phase III",
+      totalFloors: 10,
+      totalArea: 382000,
+      yearBuilt: 2015,
+      color: "#065f46",
+      position: { x: 0.5, z: -4 },
+      width: 4,
+      depth: 3.5,
+      height: 4.5,
+      rotation: 0.1,
+      shape: "rect",
+      grade: "A+",
+      certification: "LEED Gold",
+      camCharges: 20,
+      escalation: "15% every 3 years",
+      powerBackup: "100% DG + Dual Feed",
+      parkingRatio: 1.3,
+      floorPlateSize: 38200,
+      efficiencyRatio: 72,
+      amenities: ["Cafeteria", "Gym", "ATM", "EV Charging", "Conference Center", "Creche"],
+      capitalValuePerSqft: 12500,
+      capitalValueTrend: [
+        { year: 2020, value: 9200 },
+        { year: 2021, value: 9900 },
+        { year: 2022, value: 10600 },
+        { year: 2023, value: 11500 },
+        { year: 2024, value: 12500 }
+      ],
+      microMarket: "Outer Ring Road",
+      microMarketAvgRent: 72,
+      absorptionRate: 85,
+      upcomingSupply: "2.1M sqft by 2026",
+      floors: [
+        // Awfis F1-F2
+        { floor: 1, tenant: "Awfis", occupancy: 82, rentPerSqft: 62, area: 38200, leaseStart: "2023-06", leaseEnd: "2026-06", status: "Partially Vacant", carpetArea: 27504, superBuiltUp: 38200, lockInPeriod: "2 years", lockInEnd: "2025-06", securityDeposit: 6, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((62 * 38200 * 12) / (38200 * 12500) * 100).toFixed(1)), monthlyRevenue: 62 * 38200, annualRevenue: 62 * 38200 * 12, history: [{ year: 2020, occupancy: 68, rent: 52 }, { year: 2021, occupancy: 72, rent: 54 }, { year: 2022, occupancy: 76, rent: 57 }, { year: 2023, occupancy: 80, rent: 59 }, { year: 2024, occupancy: 82, rent: 62 }] },
+        { floor: 2, tenant: "Awfis", occupancy: 85, rentPerSqft: 63, area: 38200, leaseStart: "2023-06", leaseEnd: "2026-06", status: "Partially Vacant", carpetArea: 27504, superBuiltUp: 38200, lockInPeriod: "2 years", lockInEnd: "2025-06", securityDeposit: 6, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((63 * 38200 * 12) / (38200 * 12500) * 100).toFixed(1)), monthlyRevenue: 63 * 38200, annualRevenue: 63 * 38200 * 12, history: [{ year: 2020, occupancy: 70, rent: 53 }, { year: 2021, occupancy: 74, rent: 55 }, { year: 2022, occupancy: 78, rent: 58 }, { year: 2023, occupancy: 82, rent: 60 }, { year: 2024, occupancy: 85, rent: 63 }] },
+        // Cognizant F3-F6
+        { floor: 3, tenant: "Cognizant", occupancy: 100, rentPerSqft: 70, area: 38200, leaseStart: "2021-09", leaseEnd: "2028-09", status: "Fully Occupied", carpetArea: 27504, superBuiltUp: 38200, lockInPeriod: "3 years", lockInEnd: "2024-09", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((70 * 38200 * 12) / (38200 * 12500) * 100).toFixed(1)), monthlyRevenue: 70 * 38200, annualRevenue: 70 * 38200 * 12, history: [{ year: 2020, occupancy: 92, rent: 58 }, { year: 2021, occupancy: 95, rent: 61 }, { year: 2022, occupancy: 98, rent: 64 }, { year: 2023, occupancy: 100, rent: 67 }, { year: 2024, occupancy: 100, rent: 70 }] },
+        { floor: 4, tenant: "Cognizant", occupancy: 100, rentPerSqft: 71, area: 38200, leaseStart: "2021-09", leaseEnd: "2028-09", status: "Fully Occupied", carpetArea: 27504, superBuiltUp: 38200, lockInPeriod: "3 years", lockInEnd: "2024-09", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((71 * 38200 * 12) / (38200 * 12500) * 100).toFixed(1)), monthlyRevenue: 71 * 38200, annualRevenue: 71 * 38200 * 12, history: [{ year: 2020, occupancy: 93, rent: 59 }, { year: 2021, occupancy: 96, rent: 62 }, { year: 2022, occupancy: 99, rent: 65 }, { year: 2023, occupancy: 100, rent: 68 }, { year: 2024, occupancy: 100, rent: 71 }] },
+        { floor: 5, tenant: "Cognizant", occupancy: 100, rentPerSqft: 70, area: 38200, leaseStart: "2021-09", leaseEnd: "2028-09", status: "Fully Occupied", carpetArea: 27504, superBuiltUp: 38200, lockInPeriod: "3 years", lockInEnd: "2024-09", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((70 * 38200 * 12) / (38200 * 12500) * 100).toFixed(1)), monthlyRevenue: 70 * 38200, annualRevenue: 70 * 38200 * 12, history: [{ year: 2020, occupancy: 91, rent: 58 }, { year: 2021, occupancy: 94, rent: 61 }, { year: 2022, occupancy: 97, rent: 64 }, { year: 2023, occupancy: 100, rent: 67 }, { year: 2024, occupancy: 100, rent: 70 }] },
+        { floor: 6, tenant: "Cognizant", occupancy: 100, rentPerSqft: 71, area: 38200, leaseStart: "2021-09", leaseEnd: "2028-09", status: "Fully Occupied", carpetArea: 27504, superBuiltUp: 38200, lockInPeriod: "3 years", lockInEnd: "2024-09", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((71 * 38200 * 12) / (38200 * 12500) * 100).toFixed(1)), monthlyRevenue: 71 * 38200, annualRevenue: 71 * 38200 * 12, history: [{ year: 2020, occupancy: 92, rent: 59 }, { year: 2021, occupancy: 95, rent: 62 }, { year: 2022, occupancy: 98, rent: 65 }, { year: 2023, occupancy: 100, rent: 68 }, { year: 2024, occupancy: 100, rent: 71 }] },
+        // Capgemini F7-F10
+        { floor: 7, tenant: "Capgemini", occupancy: 100, rentPerSqft: 68, area: 38200, leaseStart: "2022-03", leaseEnd: "2027-03", status: "Fully Occupied", carpetArea: 27504, superBuiltUp: 38200, lockInPeriod: "3 years", lockInEnd: "2025-03", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((68 * 38200 * 12) / (38200 * 12500) * 100).toFixed(1)), monthlyRevenue: 68 * 38200, annualRevenue: 68 * 38200 * 12, history: [{ year: 2020, occupancy: 88, rent: 57 }, { year: 2021, occupancy: 92, rent: 59 }, { year: 2022, occupancy: 95, rent: 62 }, { year: 2023, occupancy: 98, rent: 65 }, { year: 2024, occupancy: 100, rent: 68 }] },
+        { floor: 8, tenant: "Capgemini", occupancy: 50, rentPerSqft: 69, area: 38200, leaseStart: "2022-03", leaseEnd: "2027-03", status: "Partially Vacant", carpetArea: 27504, superBuiltUp: 38200, lockInPeriod: "3 years", lockInEnd: "2025-03", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: 3.3, monthlyRevenue: 1317900, annualRevenue: 15814800, history: [{ year: 2020, occupancy: 89, rent: 58 }, { year: 2021, occupancy: 93, rent: 60 }, { year: 2022, occupancy: 96, rent: 63 }, { year: 2023, occupancy: 99, rent: 66 }, { year: 2024, occupancy: 50, rent: 69 }] },
+        { floor: 9, tenant: "Capgemini", occupancy: 100, rentPerSqft: 68, area: 38200, leaseStart: "2022-03", leaseEnd: "2027-03", status: "Fully Occupied", carpetArea: 27504, superBuiltUp: 38200, lockInPeriod: "3 years", lockInEnd: "2025-03", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((68 * 38200 * 12) / (38200 * 12500) * 100).toFixed(1)), monthlyRevenue: 68 * 38200, annualRevenue: 68 * 38200 * 12, history: [{ year: 2020, occupancy: 87, rent: 57 }, { year: 2021, occupancy: 91, rent: 59 }, { year: 2022, occupancy: 94, rent: 62 }, { year: 2023, occupancy: 97, rent: 65 }, { year: 2024, occupancy: 100, rent: 68 }] },
+        { floor: 10, tenant: "Capgemini", occupancy: 0, rentPerSqft: 0, area: 38200, leaseStart: null, leaseEnd: null, status: "Vacant", carpetArea: 27504, superBuiltUp: 38200, lockInPeriod: null, lockInEnd: null, securityDeposit: 0, fitOut: "Warm Shell", vacancyDuration: 6, rentalYield: 0, monthlyRevenue: 0, annualRevenue: 0, history: [{ year: 2020, occupancy: 80, rent: 55 }, { year: 2021, occupancy: 70, rent: 57 }, { year: 2022, occupancy: 50, rent: 0 }, { year: 2023, occupancy: 15, rent: 0 }, { year: 2024, occupancy: 0, rent: 0 }] }
+      ]
+    },
+
+    // ═══════════════════════════════════════════════════════════════
+    // PHASE IV (positioned east, TALLEST buildings)
+    // ═══════════════════════════════════════════════════════════════
+    {
+      id: "phase4-block1",
+      name: "Block 1",
+      phase: "Phase IV",
+      totalFloors: 13,
+      totalArea: 416000,
+      yearBuilt: 2019,
+      color: "#dc2626",
+      position: { x: 9, z: -5 },
+      width: 3.5,
+      depth: 3.5,
+      height: 6,
+      rotation: -0.1,
+      shape: "rect",
+      grade: "A+",
+      certification: "LEED Platinum",
+      camCharges: 22,
+      escalation: "15% every 3 years",
+      powerBackup: "100% DG + Dual Feed",
+      parkingRatio: 1.4,
+      floorPlateSize: 32000,
+      efficiencyRatio: 75,
+      amenities: ["Cafeteria", "Gym", "ATM", "EV Charging", "Conference Center", "Creche"],
+      capitalValuePerSqft: 14200,
+      capitalValueTrend: [
+        { year: 2020, value: 10500 },
+        { year: 2021, value: 11300 },
+        { year: 2022, value: 12100 },
+        { year: 2023, value: 13100 },
+        { year: 2024, value: 14200 }
+      ],
+      microMarket: "Outer Ring Road",
+      microMarketAvgRent: 72,
+      absorptionRate: 85,
+      upcomingSupply: "2.1M sqft by 2026",
+      floors: [
+        // Google F1-F5
+        { floor: 1, tenant: "Google", occupancy: 100, rentPerSqft: 80, area: 32000, leaseStart: "2021-01", leaseEnd: "2030-01", status: "Fully Occupied", carpetArea: 24000, superBuiltUp: 32000, lockInPeriod: "5 years", lockInEnd: "2026-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((80 * 32000 * 12) / (32000 * 14200) * 100).toFixed(1)), monthlyRevenue: 80 * 32000, annualRevenue: 80 * 32000 * 12, history: [{ year: 2020, occupancy: 95, rent: 66 }, { year: 2021, occupancy: 98, rent: 70 }, { year: 2022, occupancy: 100, rent: 73 }, { year: 2023, occupancy: 100, rent: 77 }, { year: 2024, occupancy: 100, rent: 80 }] },
+        { floor: 2, tenant: "Google", occupancy: 100, rentPerSqft: 81, area: 32000, leaseStart: "2021-01", leaseEnd: "2030-01", status: "Fully Occupied", carpetArea: 24000, superBuiltUp: 32000, lockInPeriod: "5 years", lockInEnd: "2026-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((81 * 32000 * 12) / (32000 * 14200) * 100).toFixed(1)), monthlyRevenue: 81 * 32000, annualRevenue: 81 * 32000 * 12, history: [{ year: 2020, occupancy: 96, rent: 67 }, { year: 2021, occupancy: 98, rent: 71 }, { year: 2022, occupancy: 100, rent: 74 }, { year: 2023, occupancy: 100, rent: 78 }, { year: 2024, occupancy: 100, rent: 81 }] },
+        { floor: 3, tenant: "Google", occupancy: 100, rentPerSqft: 80, area: 32000, leaseStart: "2021-01", leaseEnd: "2030-01", status: "Fully Occupied", carpetArea: 24000, superBuiltUp: 32000, lockInPeriod: "5 years", lockInEnd: "2026-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((80 * 32000 * 12) / (32000 * 14200) * 100).toFixed(1)), monthlyRevenue: 80 * 32000, annualRevenue: 80 * 32000 * 12, history: [{ year: 2020, occupancy: 94, rent: 66 }, { year: 2021, occupancy: 97, rent: 70 }, { year: 2022, occupancy: 100, rent: 73 }, { year: 2023, occupancy: 100, rent: 77 }, { year: 2024, occupancy: 100, rent: 80 }] },
+        { floor: 4, tenant: "Google", occupancy: 100, rentPerSqft: 82, area: 32000, leaseStart: "2021-01", leaseEnd: "2030-01", status: "Fully Occupied", carpetArea: 24000, superBuiltUp: 32000, lockInPeriod: "5 years", lockInEnd: "2026-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((82 * 32000 * 12) / (32000 * 14200) * 100).toFixed(1)), monthlyRevenue: 82 * 32000, annualRevenue: 82 * 32000 * 12, history: [{ year: 2020, occupancy: 97, rent: 68 }, { year: 2021, occupancy: 99, rent: 72 }, { year: 2022, occupancy: 100, rent: 75 }, { year: 2023, occupancy: 100, rent: 79 }, { year: 2024, occupancy: 100, rent: 82 }] },
+        { floor: 5, tenant: "Google", occupancy: 100, rentPerSqft: 81, area: 32000, leaseStart: "2021-01", leaseEnd: "2030-01", status: "Fully Occupied", carpetArea: 24000, superBuiltUp: 32000, lockInPeriod: "5 years", lockInEnd: "2026-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((81 * 32000 * 12) / (32000 * 14200) * 100).toFixed(1)), monthlyRevenue: 81 * 32000, annualRevenue: 81 * 32000 * 12, history: [{ year: 2020, occupancy: 95, rent: 67 }, { year: 2021, occupancy: 98, rent: 71 }, { year: 2022, occupancy: 100, rent: 74 }, { year: 2023, occupancy: 100, rent: 78 }, { year: 2024, occupancy: 100, rent: 81 }] },
+        // Microsoft F6-F9
+        { floor: 6, tenant: "Microsoft", occupancy: 100, rentPerSqft: 83, area: 32000, leaseStart: "2022-01", leaseEnd: "2031-01", status: "Fully Occupied", carpetArea: 24000, superBuiltUp: 32000, lockInPeriod: "5 years", lockInEnd: "2027-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((83 * 32000 * 12) / (32000 * 14200) * 100).toFixed(1)), monthlyRevenue: 83 * 32000, annualRevenue: 83 * 32000 * 12, history: [{ year: 2020, occupancy: 90, rent: 69 }, { year: 2021, occupancy: 94, rent: 72 }, { year: 2022, occupancy: 97, rent: 76 }, { year: 2023, occupancy: 100, rent: 80 }, { year: 2024, occupancy: 100, rent: 83 }] },
+        { floor: 7, tenant: "Microsoft", occupancy: 100, rentPerSqft: 84, area: 32000, leaseStart: "2022-01", leaseEnd: "2031-01", status: "Fully Occupied", carpetArea: 24000, superBuiltUp: 32000, lockInPeriod: "5 years", lockInEnd: "2027-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((84 * 32000 * 12) / (32000 * 14200) * 100).toFixed(1)), monthlyRevenue: 84 * 32000, annualRevenue: 84 * 32000 * 12, history: [{ year: 2020, occupancy: 91, rent: 70 }, { year: 2021, occupancy: 95, rent: 73 }, { year: 2022, occupancy: 98, rent: 77 }, { year: 2023, occupancy: 100, rent: 81 }, { year: 2024, occupancy: 100, rent: 84 }] },
+        { floor: 8, tenant: "Microsoft", occupancy: 100, rentPerSqft: 83, area: 32000, leaseStart: "2022-01", leaseEnd: "2031-01", status: "Fully Occupied", carpetArea: 24000, superBuiltUp: 32000, lockInPeriod: "5 years", lockInEnd: "2027-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((83 * 32000 * 12) / (32000 * 14200) * 100).toFixed(1)), monthlyRevenue: 83 * 32000, annualRevenue: 83 * 32000 * 12, history: [{ year: 2020, occupancy: 89, rent: 69 }, { year: 2021, occupancy: 93, rent: 72 }, { year: 2022, occupancy: 96, rent: 76 }, { year: 2023, occupancy: 100, rent: 80 }, { year: 2024, occupancy: 100, rent: 83 }] },
+        { floor: 9, tenant: "Microsoft", occupancy: 95, rentPerSqft: 82, area: 32000, leaseStart: "2022-01", leaseEnd: "2031-01", status: "Partially Vacant", carpetArea: 24000, superBuiltUp: 32000, lockInPeriod: "5 years", lockInEnd: "2027-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((82 * 32000 * 12) / (32000 * 14200) * 100).toFixed(1)), monthlyRevenue: 82 * 32000, annualRevenue: 82 * 32000 * 12, history: [{ year: 2020, occupancy: 85, rent: 68 }, { year: 2021, occupancy: 88, rent: 71 }, { year: 2022, occupancy: 92, rent: 75 }, { year: 2023, occupancy: 95, rent: 79 }, { year: 2024, occupancy: 95, rent: 82 }] },
+        // Flipkart F10-F13
+        { floor: 10, tenant: "Flipkart", occupancy: 100, rentPerSqft: 78, area: 32000, leaseStart: "2023-06", leaseEnd: "2028-06", status: "Fully Occupied", carpetArea: 24000, superBuiltUp: 32000, lockInPeriod: "3 years", lockInEnd: "2026-06", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((78 * 32000 * 12) / (32000 * 14200) * 100).toFixed(1)), monthlyRevenue: 78 * 32000, annualRevenue: 78 * 32000 * 12, history: [{ year: 2020, occupancy: 0, rent: 0 }, { year: 2021, occupancy: 85, rent: 65 }, { year: 2022, occupancy: 92, rent: 68 }, { year: 2023, occupancy: 98, rent: 74 }, { year: 2024, occupancy: 100, rent: 78 }] },
+        { floor: 11, tenant: "Flipkart", occupancy: 55, rentPerSqft: 79, area: 32000, leaseStart: "2023-06", leaseEnd: "2028-06", status: "Partially Vacant", carpetArea: 24000, superBuiltUp: 32000, lockInPeriod: "3 years", lockInEnd: "2026-06", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: 3.7, monthlyRevenue: 1390400, annualRevenue: 16684800, history: [{ year: 2020, occupancy: 0, rent: 0 }, { year: 2021, occupancy: 82, rent: 66 }, { year: 2022, occupancy: 90, rent: 69 }, { year: 2023, occupancy: 97, rent: 75 }, { year: 2024, occupancy: 55, rent: 79 }] },
+        { floor: 12, tenant: "Flipkart", occupancy: 100, rentPerSqft: 78, area: 32000, leaseStart: "2023-06", leaseEnd: "2028-06", status: "Fully Occupied", carpetArea: 24000, superBuiltUp: 32000, lockInPeriod: "3 years", lockInEnd: "2026-06", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((78 * 32000 * 12) / (32000 * 14200) * 100).toFixed(1)), monthlyRevenue: 78 * 32000, annualRevenue: 78 * 32000 * 12, history: [{ year: 2020, occupancy: 0, rent: 0 }, { year: 2021, occupancy: 80, rent: 65 }, { year: 2022, occupancy: 88, rent: 68 }, { year: 2023, occupancy: 96, rent: 74 }, { year: 2024, occupancy: 100, rent: 78 }] },
+        { floor: 13, tenant: "Vacant", occupancy: 0, rentPerSqft: 79, area: 32000, leaseStart: "-", leaseEnd: "-", status: "Vacant", carpetArea: 24000, superBuiltUp: 32000, lockInPeriod: null, lockInEnd: null, securityDeposit: 0, fitOut: "Bare Shell", vacancyDuration: "2 months", rentalYield: 0, monthlyRevenue: 0, annualRevenue: 0, history: [{ year: 2020, occupancy: 0, rent: 0 }, { year: 2021, occupancy: 78, rent: 66 }, { year: 2022, occupancy: 87, rent: 69 }, { year: 2023, occupancy: 95, rent: 75 }, { year: 2024, occupancy: 0, rent: 79 }] }
+      ]
+    },
+    {
+      id: "cosmos",
+      name: "Cosmos (Block 2)",
+      phase: "Phase IV",
+      totalFloors: 13,
+      totalArea: 766000,
+      yearBuilt: 2019,
+      color: "#b91c1c",
+      position: { x: 16, z: -4 },
+      width: 5.5,
+      depth: 4.5,
+      height: 6,
+      rotation: -0.15,
+      shape: "rect",
+      grade: "A+",
+      certification: "LEED Platinum",
+      camCharges: 24,
+      escalation: "15% every 3 years",
+      powerBackup: "100% DG + Dual Feed",
+      parkingRatio: 1.5,
+      floorPlateSize: 58923,
+      efficiencyRatio: 75,
+      amenities: ["Cafeteria", "Gym", "ATM", "EV Charging", "Conference Center", "Creche"],
+      capitalValuePerSqft: 15000,
+      capitalValueTrend: [
+        { year: 2020, value: 11000 },
+        { year: 2021, value: 11900 },
+        { year: 2022, value: 12800 },
+        { year: 2023, value: 13800 },
+        { year: 2024, value: 15000 }
+      ],
+      microMarket: "Outer Ring Road",
+      microMarketAvgRent: 72,
+      absorptionRate: 85,
+      upcomingSupply: "2.1M sqft by 2026",
+      floors: [
+        // Google F1-F6
+        { floor: 1, tenant: "Google", occupancy: 100, rentPerSqft: 82, area: 58923, leaseStart: "2021-04", leaseEnd: "2030-04", status: "Fully Occupied", carpetArea: 44192, superBuiltUp: 58923, lockInPeriod: "5 years", lockInEnd: "2026-04", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((82 * 58923 * 12) / (58923 * 15000) * 100).toFixed(1)), monthlyRevenue: 82 * 58923, annualRevenue: 82 * 58923 * 12, history: [{ year: 2020, occupancy: 96, rent: 68 }, { year: 2021, occupancy: 98, rent: 72 }, { year: 2022, occupancy: 100, rent: 75 }, { year: 2023, occupancy: 100, rent: 79 }, { year: 2024, occupancy: 100, rent: 82 }] },
+        { floor: 2, tenant: "Google", occupancy: 100, rentPerSqft: 83, area: 58923, leaseStart: "2021-04", leaseEnd: "2030-04", status: "Fully Occupied", carpetArea: 44192, superBuiltUp: 58923, lockInPeriod: "5 years", lockInEnd: "2026-04", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((83 * 58923 * 12) / (58923 * 15000) * 100).toFixed(1)), monthlyRevenue: 83 * 58923, annualRevenue: 83 * 58923 * 12, history: [{ year: 2020, occupancy: 97, rent: 69 }, { year: 2021, occupancy: 99, rent: 73 }, { year: 2022, occupancy: 100, rent: 76 }, { year: 2023, occupancy: 100, rent: 80 }, { year: 2024, occupancy: 100, rent: 83 }] },
+        { floor: 3, tenant: "Google", occupancy: 100, rentPerSqft: 82, area: 58923, leaseStart: "2021-04", leaseEnd: "2030-04", status: "Fully Occupied", carpetArea: 44192, superBuiltUp: 58923, lockInPeriod: "5 years", lockInEnd: "2026-04", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((82 * 58923 * 12) / (58923 * 15000) * 100).toFixed(1)), monthlyRevenue: 82 * 58923, annualRevenue: 82 * 58923 * 12, history: [{ year: 2020, occupancy: 95, rent: 68 }, { year: 2021, occupancy: 97, rent: 72 }, { year: 2022, occupancy: 100, rent: 75 }, { year: 2023, occupancy: 100, rent: 79 }, { year: 2024, occupancy: 100, rent: 82 }] },
+        { floor: 4, tenant: "Google", occupancy: 100, rentPerSqft: 84, area: 58923, leaseStart: "2021-04", leaseEnd: "2030-04", status: "Fully Occupied", carpetArea: 44192, superBuiltUp: 58923, lockInPeriod: "5 years", lockInEnd: "2026-04", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((84 * 58923 * 12) / (58923 * 15000) * 100).toFixed(1)), monthlyRevenue: 84 * 58923, annualRevenue: 84 * 58923 * 12, history: [{ year: 2020, occupancy: 98, rent: 70 }, { year: 2021, occupancy: 100, rent: 74 }, { year: 2022, occupancy: 100, rent: 77 }, { year: 2023, occupancy: 100, rent: 81 }, { year: 2024, occupancy: 100, rent: 84 }] },
+        { floor: 5, tenant: "Google", occupancy: 100, rentPerSqft: 83, area: 58923, leaseStart: "2021-04", leaseEnd: "2030-04", status: "Fully Occupied", carpetArea: 44192, superBuiltUp: 58923, lockInPeriod: "5 years", lockInEnd: "2026-04", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((83 * 58923 * 12) / (58923 * 15000) * 100).toFixed(1)), monthlyRevenue: 83 * 58923, annualRevenue: 83 * 58923 * 12, history: [{ year: 2020, occupancy: 96, rent: 69 }, { year: 2021, occupancy: 98, rent: 73 }, { year: 2022, occupancy: 100, rent: 76 }, { year: 2023, occupancy: 100, rent: 80 }, { year: 2024, occupancy: 100, rent: 83 }] },
+        { floor: 6, tenant: "Google", occupancy: 100, rentPerSqft: 84, area: 58923, leaseStart: "2021-04", leaseEnd: "2030-04", status: "Fully Occupied", carpetArea: 44192, superBuiltUp: 58923, lockInPeriod: "5 years", lockInEnd: "2026-04", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((84 * 58923 * 12) / (58923 * 15000) * 100).toFixed(1)), monthlyRevenue: 84 * 58923, annualRevenue: 84 * 58923 * 12, history: [{ year: 2020, occupancy: 97, rent: 70 }, { year: 2021, occupancy: 99, rent: 74 }, { year: 2022, occupancy: 100, rent: 77 }, { year: 2023, occupancy: 100, rent: 81 }, { year: 2024, occupancy: 100, rent: 84 }] },
+        // Amazon F7-F10
+        { floor: 7, tenant: "Amazon", occupancy: 100, rentPerSqft: 80, area: 58923, leaseStart: "2022-01", leaseEnd: "2029-01", status: "Fully Occupied", carpetArea: 44192, superBuiltUp: 58923, lockInPeriod: "5 years", lockInEnd: "2027-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((80 * 58923 * 12) / (58923 * 15000) * 100).toFixed(1)), monthlyRevenue: 80 * 58923, annualRevenue: 80 * 58923 * 12, history: [{ year: 2020, occupancy: 88, rent: 66 }, { year: 2021, occupancy: 93, rent: 70 }, { year: 2022, occupancy: 97, rent: 73 }, { year: 2023, occupancy: 100, rent: 77 }, { year: 2024, occupancy: 100, rent: 80 }] },
+        { floor: 8, tenant: "Amazon", occupancy: 100, rentPerSqft: 81, area: 58923, leaseStart: "2022-01", leaseEnd: "2029-01", status: "Fully Occupied", carpetArea: 44192, superBuiltUp: 58923, lockInPeriod: "5 years", lockInEnd: "2027-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((81 * 58923 * 12) / (58923 * 15000) * 100).toFixed(1)), monthlyRevenue: 81 * 58923, annualRevenue: 81 * 58923 * 12, history: [{ year: 2020, occupancy: 89, rent: 67 }, { year: 2021, occupancy: 94, rent: 71 }, { year: 2022, occupancy: 98, rent: 74 }, { year: 2023, occupancy: 100, rent: 78 }, { year: 2024, occupancy: 100, rent: 81 }] },
+        { floor: 9, tenant: "Amazon", occupancy: 100, rentPerSqft: 80, area: 58923, leaseStart: "2022-01", leaseEnd: "2029-01", status: "Fully Occupied", carpetArea: 44192, superBuiltUp: 58923, lockInPeriod: "5 years", lockInEnd: "2027-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((80 * 58923 * 12) / (58923 * 15000) * 100).toFixed(1)), monthlyRevenue: 80 * 58923, annualRevenue: 80 * 58923 * 12, history: [{ year: 2020, occupancy: 87, rent: 66 }, { year: 2021, occupancy: 92, rent: 70 }, { year: 2022, occupancy: 96, rent: 73 }, { year: 2023, occupancy: 100, rent: 77 }, { year: 2024, occupancy: 100, rent: 80 }] },
+        { floor: 10, tenant: "Amazon", occupancy: 100, rentPerSqft: 81, area: 58923, leaseStart: "2022-01", leaseEnd: "2029-01", status: "Fully Occupied", carpetArea: 44192, superBuiltUp: 58923, lockInPeriod: "5 years", lockInEnd: "2027-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((81 * 58923 * 12) / (58923 * 15000) * 100).toFixed(1)), monthlyRevenue: 81 * 58923, annualRevenue: 81 * 58923 * 12, history: [{ year: 2020, occupancy: 88, rent: 67 }, { year: 2021, occupancy: 93, rent: 71 }, { year: 2022, occupancy: 97, rent: 74 }, { year: 2023, occupancy: 100, rent: 78 }, { year: 2024, occupancy: 100, rent: 81 }] },
+        // TCS F11-F13
+        { floor: 11, tenant: "TCS", occupancy: 100, rentPerSqft: 76, area: 58923, leaseStart: "2023-01", leaseEnd: "2028-01", status: "Fully Occupied", carpetArea: 44192, superBuiltUp: 58923, lockInPeriod: "3 years", lockInEnd: "2026-01", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((76 * 58923 * 12) / (58923 * 15000) * 100).toFixed(1)), monthlyRevenue: 76 * 58923, annualRevenue: 76 * 58923 * 12, history: [{ year: 2020, occupancy: 0, rent: 0 }, { year: 2021, occupancy: 75, rent: 63 }, { year: 2022, occupancy: 88, rent: 67 }, { year: 2023, occupancy: 96, rent: 72 }, { year: 2024, occupancy: 100, rent: 76 }] },
+        { floor: 12, tenant: "TCS", occupancy: 100, rentPerSqft: 77, area: 58923, leaseStart: "2023-01", leaseEnd: "2028-01", status: "Fully Occupied", carpetArea: 44192, superBuiltUp: 58923, lockInPeriod: "3 years", lockInEnd: "2026-01", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((77 * 58923 * 12) / (58923 * 15000) * 100).toFixed(1)), monthlyRevenue: 77 * 58923, annualRevenue: 77 * 58923 * 12, history: [{ year: 2020, occupancy: 0, rent: 0 }, { year: 2021, occupancy: 72, rent: 64 }, { year: 2022, occupancy: 86, rent: 68 }, { year: 2023, occupancy: 95, rent: 73 }, { year: 2024, occupancy: 100, rent: 77 }] },
+        { floor: 13, tenant: "Vacant", occupancy: 0, rentPerSqft: 75, area: 58923, leaseStart: "-", leaseEnd: "-", status: "Vacant", carpetArea: 44192, superBuiltUp: 58923, lockInPeriod: null, lockInEnd: null, securityDeposit: 0, fitOut: "Bare Shell", vacancyDuration: "3 months", rentalYield: 0, monthlyRevenue: 0, annualRevenue: 0, history: [{ year: 2020, occupancy: 0, rent: 0 }, { year: 2021, occupancy: 68, rent: 62 }, { year: 2022, occupancy: 82, rent: 66 }, { year: 2023, occupancy: 92, rent: 71 }, { year: 2024, occupancy: 0, rent: 75 }] }
+      ]
+    },
+    {
+      id: "gravity",
+      name: "Gravity (Block 3)",
+      phase: "Phase IV",
+      totalFloors: 5,
+      totalArea: 118000,
+      yearBuilt: 2019,
+      color: "#ef4444",
+      position: { x: 13, z: 1 },
+      width: 3,
+      depth: 3,
+      height: 2.2,
+      rotation: -0.1,
+      shape: "rect",
+      grade: "A+",
+      certification: "LEED Platinum",
+      camCharges: 20,
+      escalation: "15% every 3 years",
+      powerBackup: "100% DG + Dual Feed",
+      parkingRatio: 1.3,
+      floorPlateSize: 23600,
+      efficiencyRatio: 75,
+      amenities: ["Cafeteria", "Gym", "ATM", "EV Charging", "Conference Center", "Creche"],
+      capitalValuePerSqft: 13500,
+      capitalValueTrend: [
+        { year: 2020, value: 10000 },
+        { year: 2021, value: 10800 },
+        { year: 2022, value: 11600 },
+        { year: 2023, value: 12500 },
+        { year: 2024, value: 13500 }
+      ],
+      microMarket: "Outer Ring Road",
+      microMarketAvgRent: 72,
+      absorptionRate: 85,
+      upcomingSupply: "2.1M sqft by 2026",
+      floors: [
+        // VMware F1-F3
+        { floor: 1, tenant: "VMware", occupancy: 100, rentPerSqft: 76, area: 23600, leaseStart: "2022-06", leaseEnd: "2029-06", status: "Fully Occupied", carpetArea: 17700, superBuiltUp: 23600, lockInPeriod: "3 years", lockInEnd: "2025-06", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((76 * 23600 * 12) / (23600 * 13500) * 100).toFixed(1)), monthlyRevenue: 76 * 23600, annualRevenue: 76 * 23600 * 12, history: [{ year: 2020, occupancy: 90, rent: 63 }, { year: 2021, occupancy: 94, rent: 66 }, { year: 2022, occupancy: 97, rent: 69 }, { year: 2023, occupancy: 100, rent: 73 }, { year: 2024, occupancy: 100, rent: 76 }] },
+        { floor: 2, tenant: "VMware", occupancy: 100, rentPerSqft: 77, area: 23600, leaseStart: "2022-06", leaseEnd: "2029-06", status: "Fully Occupied", carpetArea: 17700, superBuiltUp: 23600, lockInPeriod: "3 years", lockInEnd: "2025-06", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((77 * 23600 * 12) / (23600 * 13500) * 100).toFixed(1)), monthlyRevenue: 77 * 23600, annualRevenue: 77 * 23600 * 12, history: [{ year: 2020, occupancy: 91, rent: 64 }, { year: 2021, occupancy: 95, rent: 67 }, { year: 2022, occupancy: 98, rent: 70 }, { year: 2023, occupancy: 100, rent: 74 }, { year: 2024, occupancy: 100, rent: 77 }] },
+        { floor: 3, tenant: "VMware", occupancy: 100, rentPerSqft: 76, area: 23600, leaseStart: "2022-06", leaseEnd: "2029-06", status: "Fully Occupied", carpetArea: 17700, superBuiltUp: 23600, lockInPeriod: "3 years", lockInEnd: "2025-06", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((76 * 23600 * 12) / (23600 * 13500) * 100).toFixed(1)), monthlyRevenue: 76 * 23600, annualRevenue: 76 * 23600 * 12, history: [{ year: 2020, occupancy: 89, rent: 63 }, { year: 2021, occupancy: 93, rent: 66 }, { year: 2022, occupancy: 96, rent: 69 }, { year: 2023, occupancy: 100, rent: 73 }, { year: 2024, occupancy: 100, rent: 76 }] },
+        // Siemens F4-F5
+        { floor: 4, tenant: "Siemens", occupancy: 100, rentPerSqft: 74, area: 23600, leaseStart: "2023-01", leaseEnd: "2028-01", status: "Fully Occupied", carpetArea: 17700, superBuiltUp: 23600, lockInPeriod: "3 years", lockInEnd: "2026-01", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((74 * 23600 * 12) / (23600 * 13500) * 100).toFixed(1)), monthlyRevenue: 74 * 23600, annualRevenue: 74 * 23600 * 12, history: [{ year: 2020, occupancy: 85, rent: 61 }, { year: 2021, occupancy: 90, rent: 64 }, { year: 2022, occupancy: 95, rent: 67 }, { year: 2023, occupancy: 98, rent: 71 }, { year: 2024, occupancy: 100, rent: 74 }] },
+        { floor: 5, tenant: "Vacant", occupancy: 0, rentPerSqft: 73, area: 23600, leaseStart: "-", leaseEnd: "-", status: "Vacant", carpetArea: 17700, superBuiltUp: 23600, lockInPeriod: null, lockInEnd: null, securityDeposit: 0, fitOut: "Bare Shell", vacancyDuration: "7 months", rentalYield: 0, monthlyRevenue: 0, annualRevenue: 0, history: [{ year: 2020, occupancy: 82, rent: 60 }, { year: 2021, occupancy: 87, rent: 63 }, { year: 2022, occupancy: 91, rent: 66 }, { year: 2023, occupancy: 95, rent: 70 }, { year: 2024, occupancy: 0, rent: 73 }] }
+      ]
+    },
+
+    // ═══════════════════════════════════════════════════════════════
+    // PLATINA (positioned south-east, premium)
+    // ═══════════════════════════════════════════════════════════════
+    {
+      id: "platina-1",
+      name: "Platina Block 1",
+      phase: "Platina",
+      totalFloors: 11,
+      totalArea: 279000,
+      yearBuilt: 2016,
+      color: "#d97706",
+      position: { x: 7, z: 6 },
+      width: 4,
+      depth: 3.5,
+      height: 5,
+      rotation: -0.3,
+      shape: "rect",
+      grade: "A+",
+      certification: "LEED Platinum",
+      camCharges: 23,
+      escalation: "15% every 3 years",
+      powerBackup: "100% DG + Dual Feed",
+      parkingRatio: 1.4,
+      floorPlateSize: 25364,
+      efficiencyRatio: 76,
+      amenities: ["Cafeteria", "Gym", "ATM", "EV Charging", "Conference Center", "Creche"],
+      capitalValuePerSqft: 14500,
+      capitalValueTrend: [
+        { year: 2020, value: 10700 },
+        { year: 2021, value: 11500 },
+        { year: 2022, value: 12400 },
+        { year: 2023, value: 13400 },
+        { year: 2024, value: 14500 }
+      ],
+      microMarket: "Outer Ring Road",
+      microMarketAvgRent: 72,
+      absorptionRate: 85,
+      upcomingSupply: "2.1M sqft by 2026",
+      floors: [
+        // Adobe Systems F1-F4
+        { floor: 1, tenant: "Adobe Systems", occupancy: 100, rentPerSqft: 78, area: 25364, leaseStart: "2021-06", leaseEnd: "2030-06", status: "Fully Occupied", carpetArea: 19277, superBuiltUp: 25364, lockInPeriod: "5 years", lockInEnd: "2026-06", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((78 * 25364 * 12) / (25364 * 14500) * 100).toFixed(1)), monthlyRevenue: 78 * 25364, annualRevenue: 78 * 25364 * 12, history: [{ year: 2020, occupancy: 95, rent: 65 }, { year: 2021, occupancy: 97, rent: 68 }, { year: 2022, occupancy: 100, rent: 71 }, { year: 2023, occupancy: 100, rent: 75 }, { year: 2024, occupancy: 100, rent: 78 }] },
+        { floor: 2, tenant: "Adobe Systems", occupancy: 100, rentPerSqft: 79, area: 25364, leaseStart: "2021-06", leaseEnd: "2030-06", status: "Fully Occupied", carpetArea: 19277, superBuiltUp: 25364, lockInPeriod: "5 years", lockInEnd: "2026-06", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((79 * 25364 * 12) / (25364 * 14500) * 100).toFixed(1)), monthlyRevenue: 79 * 25364, annualRevenue: 79 * 25364 * 12, history: [{ year: 2020, occupancy: 96, rent: 66 }, { year: 2021, occupancy: 98, rent: 69 }, { year: 2022, occupancy: 100, rent: 72 }, { year: 2023, occupancy: 100, rent: 76 }, { year: 2024, occupancy: 100, rent: 79 }] },
+        { floor: 3, tenant: "Adobe Systems", occupancy: 100, rentPerSqft: 78, area: 25364, leaseStart: "2021-06", leaseEnd: "2030-06", status: "Fully Occupied", carpetArea: 19277, superBuiltUp: 25364, lockInPeriod: "5 years", lockInEnd: "2026-06", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((78 * 25364 * 12) / (25364 * 14500) * 100).toFixed(1)), monthlyRevenue: 78 * 25364, annualRevenue: 78 * 25364 * 12, history: [{ year: 2020, occupancy: 94, rent: 65 }, { year: 2021, occupancy: 97, rent: 68 }, { year: 2022, occupancy: 99, rent: 71 }, { year: 2023, occupancy: 100, rent: 75 }, { year: 2024, occupancy: 100, rent: 78 }] },
+        { floor: 4, tenant: "Adobe Systems", occupancy: 100, rentPerSqft: 79, area: 25364, leaseStart: "2021-06", leaseEnd: "2030-06", status: "Fully Occupied", carpetArea: 19277, superBuiltUp: 25364, lockInPeriod: "5 years", lockInEnd: "2026-06", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((79 * 25364 * 12) / (25364 * 14500) * 100).toFixed(1)), monthlyRevenue: 79 * 25364, annualRevenue: 79 * 25364 * 12, history: [{ year: 2020, occupancy: 95, rent: 66 }, { year: 2021, occupancy: 98, rent: 69 }, { year: 2022, occupancy: 100, rent: 72 }, { year: 2023, occupancy: 100, rent: 76 }, { year: 2024, occupancy: 100, rent: 79 }] },
+        // SanDisk F5-F8
+        { floor: 5, tenant: "SanDisk", occupancy: 100, rentPerSqft: 77, area: 25364, leaseStart: "2022-01", leaseEnd: "2029-01", status: "Fully Occupied", carpetArea: 19277, superBuiltUp: 25364, lockInPeriod: "3 years", lockInEnd: "2025-01", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((77 * 25364 * 12) / (25364 * 14500) * 100).toFixed(1)), monthlyRevenue: 77 * 25364, annualRevenue: 77 * 25364 * 12, history: [{ year: 2020, occupancy: 92, rent: 64 }, { year: 2021, occupancy: 95, rent: 67 }, { year: 2022, occupancy: 98, rent: 70 }, { year: 2023, occupancy: 100, rent: 74 }, { year: 2024, occupancy: 100, rent: 77 }] },
+        { floor: 6, tenant: "SanDisk", occupancy: 100, rentPerSqft: 78, area: 25364, leaseStart: "2022-01", leaseEnd: "2029-01", status: "Fully Occupied", carpetArea: 19277, superBuiltUp: 25364, lockInPeriod: "3 years", lockInEnd: "2025-01", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((78 * 25364 * 12) / (25364 * 14500) * 100).toFixed(1)), monthlyRevenue: 78 * 25364, annualRevenue: 78 * 25364 * 12, history: [{ year: 2020, occupancy: 93, rent: 65 }, { year: 2021, occupancy: 96, rent: 68 }, { year: 2022, occupancy: 99, rent: 71 }, { year: 2023, occupancy: 100, rent: 75 }, { year: 2024, occupancy: 100, rent: 78 }] },
+        { floor: 7, tenant: "SanDisk", occupancy: 100, rentPerSqft: 77, area: 25364, leaseStart: "2022-01", leaseEnd: "2029-01", status: "Fully Occupied", carpetArea: 19277, superBuiltUp: 25364, lockInPeriod: "3 years", lockInEnd: "2025-01", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((77 * 25364 * 12) / (25364 * 14500) * 100).toFixed(1)), monthlyRevenue: 77 * 25364, annualRevenue: 77 * 25364 * 12, history: [{ year: 2020, occupancy: 91, rent: 64 }, { year: 2021, occupancy: 94, rent: 67 }, { year: 2022, occupancy: 97, rent: 70 }, { year: 2023, occupancy: 100, rent: 74 }, { year: 2024, occupancy: 100, rent: 77 }] },
+        { floor: 8, tenant: "SanDisk", occupancy: 95, rentPerSqft: 76, area: 25364, leaseStart: "2022-01", leaseEnd: "2029-01", status: "Partially Vacant", carpetArea: 19277, superBuiltUp: 25364, lockInPeriod: "3 years", lockInEnd: "2025-01", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((76 * 25364 * 12) / (25364 * 14500) * 100).toFixed(1)), monthlyRevenue: 76 * 25364, annualRevenue: 76 * 25364 * 12, history: [{ year: 2020, occupancy: 87, rent: 63 }, { year: 2021, occupancy: 90, rent: 66 }, { year: 2022, occupancy: 93, rent: 69 }, { year: 2023, occupancy: 95, rent: 73 }, { year: 2024, occupancy: 95, rent: 76 }] },
+        // HP F9-F11
+        { floor: 9, tenant: "HP", occupancy: 100, rentPerSqft: 80, area: 25364, leaseStart: "2023-04", leaseEnd: "2030-04", status: "Fully Occupied", carpetArea: 19277, superBuiltUp: 25364, lockInPeriod: "5 years", lockInEnd: "2028-04", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((80 * 25364 * 12) / (25364 * 14500) * 100).toFixed(1)), monthlyRevenue: 80 * 25364, annualRevenue: 80 * 25364 * 12, history: [{ year: 2020, occupancy: 88, rent: 66 }, { year: 2021, occupancy: 92, rent: 69 }, { year: 2022, occupancy: 96, rent: 73 }, { year: 2023, occupancy: 100, rent: 77 }, { year: 2024, occupancy: 100, rent: 80 }] },
+        { floor: 10, tenant: "HP", occupancy: 100, rentPerSqft: 81, area: 25364, leaseStart: "2023-04", leaseEnd: "2030-04", status: "Fully Occupied", carpetArea: 19277, superBuiltUp: 25364, lockInPeriod: "5 years", lockInEnd: "2028-04", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((81 * 25364 * 12) / (25364 * 14500) * 100).toFixed(1)), monthlyRevenue: 81 * 25364, annualRevenue: 81 * 25364 * 12, history: [{ year: 2020, occupancy: 89, rent: 67 }, { year: 2021, occupancy: 93, rent: 70 }, { year: 2022, occupancy: 97, rent: 74 }, { year: 2023, occupancy: 100, rent: 78 }, { year: 2024, occupancy: 100, rent: 81 }] },
+        { floor: 11, tenant: "Vacant", occupancy: 0, rentPerSqft: 80, area: 25364, leaseStart: "-", leaseEnd: "-", status: "Vacant", carpetArea: 19277, superBuiltUp: 25364, lockInPeriod: null, lockInEnd: null, securityDeposit: 0, fitOut: "Bare Shell", vacancyDuration: "1 month", rentalYield: 0, monthlyRevenue: 0, annualRevenue: 0, history: [{ year: 2020, occupancy: 87, rent: 66 }, { year: 2021, occupancy: 91, rent: 69 }, { year: 2022, occupancy: 95, rent: 73 }, { year: 2023, occupancy: 100, rent: 77 }, { year: 2024, occupancy: 0, rent: 80 }] }
+      ]
+    },
+    {
+      id: "platina-2",
+      name: "Platina Block 2",
+      phase: "Platina",
+      totalFloors: 13,
+      totalArea: 457000,
+      yearBuilt: 2016,
+      color: "#b45309",
+      position: { x: 14, z: 7 },
+      width: 5,
+      depth: 4,
+      height: 6,
+      rotation: -0.25,
+      shape: "rect",
+      grade: "A+",
+      certification: "LEED Platinum",
+      camCharges: 24,
+      escalation: "15% every 3 years",
+      powerBackup: "100% DG + Dual Feed",
+      parkingRatio: 1.5,
+      floorPlateSize: 35154,
+      efficiencyRatio: 76,
+      amenities: ["Cafeteria", "Gym", "ATM", "EV Charging", "Conference Center", "Creche"],
+      capitalValuePerSqft: 15500,
+      capitalValueTrend: [
+        { year: 2020, value: 11400 },
+        { year: 2021, value: 12300 },
+        { year: 2022, value: 13200 },
+        { year: 2023, value: 14300 },
+        { year: 2024, value: 15500 }
+      ],
+      microMarket: "Outer Ring Road",
+      microMarketAvgRent: 72,
+      absorptionRate: 85,
+      upcomingSupply: "2.1M sqft by 2026",
+      floors: [
+        // JPMorgan Chase F1-F5
+        { floor: 1, tenant: "JPMorgan Chase", occupancy: 100, rentPerSqft: 82, area: 35154, leaseStart: "2020-10", leaseEnd: "2029-10", status: "Fully Occupied", carpetArea: 26717, superBuiltUp: 35154, lockInPeriod: "5 years", lockInEnd: "2025-10", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((82 * 35154 * 12) / (35154 * 15500) * 100).toFixed(1)), monthlyRevenue: 82 * 35154, annualRevenue: 82 * 35154 * 12, history: [{ year: 2020, occupancy: 96, rent: 68 }, { year: 2021, occupancy: 98, rent: 72 }, { year: 2022, occupancy: 100, rent: 75 }, { year: 2023, occupancy: 100, rent: 79 }, { year: 2024, occupancy: 100, rent: 82 }] },
+        { floor: 2, tenant: "JPMorgan Chase", occupancy: 100, rentPerSqft: 83, area: 35154, leaseStart: "2020-10", leaseEnd: "2029-10", status: "Fully Occupied", carpetArea: 26717, superBuiltUp: 35154, lockInPeriod: "5 years", lockInEnd: "2025-10", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((83 * 35154 * 12) / (35154 * 15500) * 100).toFixed(1)), monthlyRevenue: 83 * 35154, annualRevenue: 83 * 35154 * 12, history: [{ year: 2020, occupancy: 97, rent: 69 }, { year: 2021, occupancy: 99, rent: 73 }, { year: 2022, occupancy: 100, rent: 76 }, { year: 2023, occupancy: 100, rent: 80 }, { year: 2024, occupancy: 100, rent: 83 }] },
+        { floor: 3, tenant: "JPMorgan Chase", occupancy: 100, rentPerSqft: 82, area: 35154, leaseStart: "2020-10", leaseEnd: "2029-10", status: "Fully Occupied", carpetArea: 26717, superBuiltUp: 35154, lockInPeriod: "5 years", lockInEnd: "2025-10", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((82 * 35154 * 12) / (35154 * 15500) * 100).toFixed(1)), monthlyRevenue: 82 * 35154, annualRevenue: 82 * 35154 * 12, history: [{ year: 2020, occupancy: 95, rent: 68 }, { year: 2021, occupancy: 97, rent: 72 }, { year: 2022, occupancy: 100, rent: 75 }, { year: 2023, occupancy: 100, rent: 79 }, { year: 2024, occupancy: 100, rent: 82 }] },
+        { floor: 4, tenant: "JPMorgan Chase", occupancy: 100, rentPerSqft: 83, area: 35154, leaseStart: "2020-10", leaseEnd: "2029-10", status: "Fully Occupied", carpetArea: 26717, superBuiltUp: 35154, lockInPeriod: "5 years", lockInEnd: "2025-10", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((83 * 35154 * 12) / (35154 * 15500) * 100).toFixed(1)), monthlyRevenue: 83 * 35154, annualRevenue: 83 * 35154 * 12, history: [{ year: 2020, occupancy: 96, rent: 69 }, { year: 2021, occupancy: 98, rent: 73 }, { year: 2022, occupancy: 100, rent: 76 }, { year: 2023, occupancy: 100, rent: 80 }, { year: 2024, occupancy: 100, rent: 83 }] },
+        { floor: 5, tenant: "JPMorgan Chase", occupancy: 100, rentPerSqft: 82, area: 35154, leaseStart: "2020-10", leaseEnd: "2029-10", status: "Fully Occupied", carpetArea: 26717, superBuiltUp: 35154, lockInPeriod: "5 years", lockInEnd: "2025-10", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((82 * 35154 * 12) / (35154 * 15500) * 100).toFixed(1)), monthlyRevenue: 82 * 35154, annualRevenue: 82 * 35154 * 12, history: [{ year: 2020, occupancy: 94, rent: 68 }, { year: 2021, occupancy: 97, rent: 72 }, { year: 2022, occupancy: 100, rent: 75 }, { year: 2023, occupancy: 100, rent: 79 }, { year: 2024, occupancy: 100, rent: 82 }] },
+        // Adobe Systems F6-F9
+        { floor: 6, tenant: "Adobe Systems", occupancy: 100, rentPerSqft: 84, area: 35154, leaseStart: "2022-04", leaseEnd: "2031-04", status: "Fully Occupied", carpetArea: 26717, superBuiltUp: 35154, lockInPeriod: "5 years", lockInEnd: "2027-04", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((84 * 35154 * 12) / (35154 * 15500) * 100).toFixed(1)), monthlyRevenue: 84 * 35154, annualRevenue: 84 * 35154 * 12, history: [{ year: 2020, occupancy: 90, rent: 70 }, { year: 2021, occupancy: 94, rent: 73 }, { year: 2022, occupancy: 97, rent: 77 }, { year: 2023, occupancy: 100, rent: 81 }, { year: 2024, occupancy: 100, rent: 84 }] },
+        { floor: 7, tenant: "Adobe Systems", occupancy: 100, rentPerSqft: 85, area: 35154, leaseStart: "2022-04", leaseEnd: "2031-04", status: "Fully Occupied", carpetArea: 26717, superBuiltUp: 35154, lockInPeriod: "5 years", lockInEnd: "2027-04", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((85 * 35154 * 12) / (35154 * 15500) * 100).toFixed(1)), monthlyRevenue: 85 * 35154, annualRevenue: 85 * 35154 * 12, history: [{ year: 2020, occupancy: 91, rent: 71 }, { year: 2021, occupancy: 95, rent: 74 }, { year: 2022, occupancy: 98, rent: 78 }, { year: 2023, occupancy: 100, rent: 82 }, { year: 2024, occupancy: 100, rent: 85 }] },
+        { floor: 8, tenant: "Adobe Systems", occupancy: 100, rentPerSqft: 84, area: 35154, leaseStart: "2022-04", leaseEnd: "2031-04", status: "Fully Occupied", carpetArea: 26717, superBuiltUp: 35154, lockInPeriod: "5 years", lockInEnd: "2027-04", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((84 * 35154 * 12) / (35154 * 15500) * 100).toFixed(1)), monthlyRevenue: 84 * 35154, annualRevenue: 84 * 35154 * 12, history: [{ year: 2020, occupancy: 89, rent: 70 }, { year: 2021, occupancy: 93, rent: 73 }, { year: 2022, occupancy: 96, rent: 77 }, { year: 2023, occupancy: 100, rent: 81 }, { year: 2024, occupancy: 100, rent: 84 }] },
+        { floor: 9, tenant: "Adobe Systems", occupancy: 100, rentPerSqft: 85, area: 35154, leaseStart: "2022-04", leaseEnd: "2031-04", status: "Fully Occupied", carpetArea: 26717, superBuiltUp: 35154, lockInPeriod: "5 years", lockInEnd: "2027-04", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((85 * 35154 * 12) / (35154 * 15500) * 100).toFixed(1)), monthlyRevenue: 85 * 35154, annualRevenue: 85 * 35154 * 12, history: [{ year: 2020, occupancy: 90, rent: 71 }, { year: 2021, occupancy: 94, rent: 74 }, { year: 2022, occupancy: 97, rent: 78 }, { year: 2023, occupancy: 100, rent: 82 }, { year: 2024, occupancy: 100, rent: 85 }] },
+        // Renault-Nissan F10-F13
+        { floor: 10, tenant: "Renault-Nissan", occupancy: 100, rentPerSqft: 78, area: 35154, leaseStart: "2023-01", leaseEnd: "2028-01", status: "Fully Occupied", carpetArea: 26717, superBuiltUp: 35154, lockInPeriod: "3 years", lockInEnd: "2026-01", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((78 * 35154 * 12) / (35154 * 15500) * 100).toFixed(1)), monthlyRevenue: 78 * 35154, annualRevenue: 78 * 35154 * 12, history: [{ year: 2020, occupancy: 0, rent: 0 }, { year: 2021, occupancy: 80, rent: 65 }, { year: 2022, occupancy: 90, rent: 68 }, { year: 2023, occupancy: 97, rent: 74 }, { year: 2024, occupancy: 100, rent: 78 }] },
+        { floor: 11, tenant: "Renault-Nissan", occupancy: 100, rentPerSqft: 79, area: 35154, leaseStart: "2023-01", leaseEnd: "2028-01", status: "Fully Occupied", carpetArea: 26717, superBuiltUp: 35154, lockInPeriod: "3 years", lockInEnd: "2026-01", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((79 * 35154 * 12) / (35154 * 15500) * 100).toFixed(1)), monthlyRevenue: 79 * 35154, annualRevenue: 79 * 35154 * 12, history: [{ year: 2020, occupancy: 0, rent: 0 }, { year: 2021, occupancy: 78, rent: 66 }, { year: 2022, occupancy: 88, rent: 69 }, { year: 2023, occupancy: 96, rent: 75 }, { year: 2024, occupancy: 100, rent: 79 }] },
+        { floor: 12, tenant: "Renault-Nissan", occupancy: 100, rentPerSqft: 78, area: 35154, leaseStart: "2023-01", leaseEnd: "2028-01", status: "Fully Occupied", carpetArea: 26717, superBuiltUp: 35154, lockInPeriod: "3 years", lockInEnd: "2026-01", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((78 * 35154 * 12) / (35154 * 15500) * 100).toFixed(1)), monthlyRevenue: 78 * 35154, annualRevenue: 78 * 35154 * 12, history: [{ year: 2020, occupancy: 0, rent: 0 }, { year: 2021, occupancy: 76, rent: 65 }, { year: 2022, occupancy: 86, rent: 68 }, { year: 2023, occupancy: 94, rent: 74 }, { year: 2024, occupancy: 100, rent: 78 }] },
+        { floor: 13, tenant: "Renault-Nissan", occupancy: 0, rentPerSqft: 0, area: 35154, leaseStart: null, leaseEnd: null, status: "Vacant", carpetArea: 26717, superBuiltUp: 35154, lockInPeriod: null, lockInEnd: null, securityDeposit: 0, fitOut: "Bare Shell", vacancyDuration: 8, rentalYield: 0, monthlyRevenue: 0, annualRevenue: 0, history: [{ year: 2020, occupancy: 0, rent: 0 }, { year: 2021, occupancy: 60, rent: 64 }, { year: 2022, occupancy: 40, rent: 0 }, { year: 2023, occupancy: 10, rent: 0 }, { year: 2024, occupancy: 0, rent: 0 }] }
+      ]
+    },
+    {
+      id: "platina-3",
+      name: "Platina Block 3",
+      phase: "Platina",
+      totalFloors: 13,
+      totalArea: 385000,
+      yearBuilt: 2016,
+      color: "#92400e",
+      position: { x: 11, z: 13 },
+      width: 4.5,
+      depth: 4,
+      height: 6,
+      rotation: -0.35,
+      shape: "rect",
+      grade: "A+",
+      certification: "LEED Platinum",
+      camCharges: 25,
+      escalation: "15% every 3 years",
+      powerBackup: "100% DG + Dual Feed",
+      parkingRatio: 1.5,
+      floorPlateSize: 29615,
+      efficiencyRatio: 76,
+      amenities: ["Cafeteria", "Gym", "ATM", "EV Charging", "Conference Center", "Creche"],
+      capitalValuePerSqft: 16000,
+      capitalValueTrend: [
+        { year: 2020, value: 11800 },
+        { year: 2021, value: 12700 },
+        { year: 2022, value: 13700 },
+        { year: 2023, value: 14800 },
+        { year: 2024, value: 16000 }
+      ],
+      microMarket: "Outer Ring Road",
+      microMarketAvgRent: 72,
+      absorptionRate: 85,
+      upcomingSupply: "2.1M sqft by 2026",
+      floors: [
+        // SanDisk F1-F4
+        { floor: 1, tenant: "SanDisk", occupancy: 100, rentPerSqft: 79, area: 29615, leaseStart: "2021-09", leaseEnd: "2028-09", status: "Fully Occupied", carpetArea: 22507, superBuiltUp: 29615, lockInPeriod: "3 years", lockInEnd: "2024-09", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((79 * 29615 * 12) / (29615 * 16000) * 100).toFixed(1)), monthlyRevenue: 79 * 29615, annualRevenue: 79 * 29615 * 12, history: [{ year: 2020, occupancy: 93, rent: 66 }, { year: 2021, occupancy: 96, rent: 69 }, { year: 2022, occupancy: 98, rent: 72 }, { year: 2023, occupancy: 100, rent: 76 }, { year: 2024, occupancy: 100, rent: 79 }] },
+        { floor: 2, tenant: "SanDisk", occupancy: 100, rentPerSqft: 80, area: 29615, leaseStart: "2021-09", leaseEnd: "2028-09", status: "Fully Occupied", carpetArea: 22507, superBuiltUp: 29615, lockInPeriod: "3 years", lockInEnd: "2024-09", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((80 * 29615 * 12) / (29615 * 16000) * 100).toFixed(1)), monthlyRevenue: 80 * 29615, annualRevenue: 80 * 29615 * 12, history: [{ year: 2020, occupancy: 94, rent: 67 }, { year: 2021, occupancy: 97, rent: 70 }, { year: 2022, occupancy: 99, rent: 73 }, { year: 2023, occupancy: 100, rent: 77 }, { year: 2024, occupancy: 100, rent: 80 }] },
+        { floor: 3, tenant: "SanDisk", occupancy: 100, rentPerSqft: 79, area: 29615, leaseStart: "2021-09", leaseEnd: "2028-09", status: "Fully Occupied", carpetArea: 22507, superBuiltUp: 29615, lockInPeriod: "3 years", lockInEnd: "2024-09", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((79 * 29615 * 12) / (29615 * 16000) * 100).toFixed(1)), monthlyRevenue: 79 * 29615, annualRevenue: 79 * 29615 * 12, history: [{ year: 2020, occupancy: 92, rent: 66 }, { year: 2021, occupancy: 95, rent: 69 }, { year: 2022, occupancy: 97, rent: 72 }, { year: 2023, occupancy: 100, rent: 76 }, { year: 2024, occupancy: 100, rent: 79 }] },
+        { floor: 4, tenant: "SanDisk", occupancy: 100, rentPerSqft: 80, area: 29615, leaseStart: "2021-09", leaseEnd: "2028-09", status: "Fully Occupied", carpetArea: 22507, superBuiltUp: 29615, lockInPeriod: "3 years", lockInEnd: "2024-09", securityDeposit: 10, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((80 * 29615 * 12) / (29615 * 16000) * 100).toFixed(1)), monthlyRevenue: 80 * 29615, annualRevenue: 80 * 29615 * 12, history: [{ year: 2020, occupancy: 93, rent: 67 }, { year: 2021, occupancy: 96, rent: 70 }, { year: 2022, occupancy: 98, rent: 73 }, { year: 2023, occupancy: 100, rent: 77 }, { year: 2024, occupancy: 100, rent: 80 }] },
+        // Goldman Sachs F5-F9
+        { floor: 5, tenant: "Goldman Sachs", occupancy: 100, rentPerSqft: 83, area: 29615, leaseStart: "2022-01", leaseEnd: "2031-01", status: "Fully Occupied", carpetArea: 22507, superBuiltUp: 29615, lockInPeriod: "5 years", lockInEnd: "2027-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((83 * 29615 * 12) / (29615 * 16000) * 100).toFixed(1)), monthlyRevenue: 83 * 29615, annualRevenue: 83 * 29615 * 12, history: [{ year: 2020, occupancy: 90, rent: 69 }, { year: 2021, occupancy: 94, rent: 72 }, { year: 2022, occupancy: 97, rent: 76 }, { year: 2023, occupancy: 100, rent: 80 }, { year: 2024, occupancy: 100, rent: 83 }] },
+        { floor: 6, tenant: "Goldman Sachs", occupancy: 100, rentPerSqft: 84, area: 29615, leaseStart: "2022-01", leaseEnd: "2031-01", status: "Fully Occupied", carpetArea: 22507, superBuiltUp: 29615, lockInPeriod: "5 years", lockInEnd: "2027-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((84 * 29615 * 12) / (29615 * 16000) * 100).toFixed(1)), monthlyRevenue: 84 * 29615, annualRevenue: 84 * 29615 * 12, history: [{ year: 2020, occupancy: 91, rent: 70 }, { year: 2021, occupancy: 95, rent: 73 }, { year: 2022, occupancy: 98, rent: 77 }, { year: 2023, occupancy: 100, rent: 81 }, { year: 2024, occupancy: 100, rent: 84 }] },
+        { floor: 7, tenant: "Goldman Sachs", occupancy: 100, rentPerSqft: 83, area: 29615, leaseStart: "2022-01", leaseEnd: "2031-01", status: "Fully Occupied", carpetArea: 22507, superBuiltUp: 29615, lockInPeriod: "5 years", lockInEnd: "2027-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((83 * 29615 * 12) / (29615 * 16000) * 100).toFixed(1)), monthlyRevenue: 83 * 29615, annualRevenue: 83 * 29615 * 12, history: [{ year: 2020, occupancy: 89, rent: 69 }, { year: 2021, occupancy: 93, rent: 72 }, { year: 2022, occupancy: 96, rent: 76 }, { year: 2023, occupancy: 100, rent: 80 }, { year: 2024, occupancy: 100, rent: 83 }] },
+        { floor: 8, tenant: "Goldman Sachs", occupancy: 100, rentPerSqft: 84, area: 29615, leaseStart: "2022-01", leaseEnd: "2031-01", status: "Fully Occupied", carpetArea: 22507, superBuiltUp: 29615, lockInPeriod: "5 years", lockInEnd: "2027-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((84 * 29615 * 12) / (29615 * 16000) * 100).toFixed(1)), monthlyRevenue: 84 * 29615, annualRevenue: 84 * 29615 * 12, history: [{ year: 2020, occupancy: 90, rent: 70 }, { year: 2021, occupancy: 94, rent: 73 }, { year: 2022, occupancy: 97, rent: 77 }, { year: 2023, occupancy: 100, rent: 81 }, { year: 2024, occupancy: 100, rent: 84 }] },
+        { floor: 9, tenant: "Goldman Sachs", occupancy: 95, rentPerSqft: 82, area: 29615, leaseStart: "2022-01", leaseEnd: "2031-01", status: "Partially Vacant", carpetArea: 22507, superBuiltUp: 29615, lockInPeriod: "5 years", lockInEnd: "2027-01", securityDeposit: 12, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((82 * 29615 * 12) / (29615 * 16000) * 100).toFixed(1)), monthlyRevenue: 82 * 29615, annualRevenue: 82 * 29615 * 12, history: [{ year: 2020, occupancy: 85, rent: 68 }, { year: 2021, occupancy: 89, rent: 71 }, { year: 2022, occupancy: 92, rent: 75 }, { year: 2023, occupancy: 95, rent: 79 }, { year: 2024, occupancy: 95, rent: 82 }] },
+        // Virtusa F10-F13
+        { floor: 10, tenant: "Virtusa", occupancy: 100, rentPerSqft: 78, area: 29615, leaseStart: "2023-04", leaseEnd: "2028-04", status: "Fully Occupied", carpetArea: 22507, superBuiltUp: 29615, lockInPeriod: "3 years", lockInEnd: "2026-04", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((78 * 29615 * 12) / (29615 * 16000) * 100).toFixed(1)), monthlyRevenue: 78 * 29615, annualRevenue: 78 * 29615 * 12, history: [{ year: 2020, occupancy: 0, rent: 0 }, { year: 2021, occupancy: 82, rent: 65 }, { year: 2022, occupancy: 91, rent: 68 }, { year: 2023, occupancy: 98, rent: 74 }, { year: 2024, occupancy: 100, rent: 78 }] },
+        { floor: 11, tenant: "Virtusa", occupancy: 100, rentPerSqft: 79, area: 29615, leaseStart: "2023-04", leaseEnd: "2028-04", status: "Fully Occupied", carpetArea: 22507, superBuiltUp: 29615, lockInPeriod: "3 years", lockInEnd: "2026-04", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((79 * 29615 * 12) / (29615 * 16000) * 100).toFixed(1)), monthlyRevenue: 79 * 29615, annualRevenue: 79 * 29615 * 12, history: [{ year: 2020, occupancy: 0, rent: 0 }, { year: 2021, occupancy: 80, rent: 66 }, { year: 2022, occupancy: 89, rent: 69 }, { year: 2023, occupancy: 97, rent: 75 }, { year: 2024, occupancy: 100, rent: 79 }] },
+        { floor: 12, tenant: "Virtusa", occupancy: 100, rentPerSqft: 78, area: 29615, leaseStart: "2023-04", leaseEnd: "2028-04", status: "Fully Occupied", carpetArea: 22507, superBuiltUp: 29615, lockInPeriod: "3 years", lockInEnd: "2026-04", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((78 * 29615 * 12) / (29615 * 16000) * 100).toFixed(1)), monthlyRevenue: 78 * 29615, annualRevenue: 78 * 29615 * 12, history: [{ year: 2020, occupancy: 0, rent: 0 }, { year: 2021, occupancy: 78, rent: 65 }, { year: 2022, occupancy: 87, rent: 68 }, { year: 2023, occupancy: 95, rent: 74 }, { year: 2024, occupancy: 100, rent: 78 }] },
+        { floor: 13, tenant: "Virtusa", occupancy: 95, rentPerSqft: 77, area: 29615, leaseStart: "2023-04", leaseEnd: "2028-04", status: "Partially Vacant", carpetArea: 22507, superBuiltUp: 29615, lockInPeriod: "3 years", lockInEnd: "2026-04", securityDeposit: 8, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((77 * 29615 * 12) / (29615 * 16000) * 100).toFixed(1)), monthlyRevenue: 77 * 29615, annualRevenue: 77 * 29615 * 12, history: [{ year: 2020, occupancy: 0, rent: 0 }, { year: 2021, occupancy: 74, rent: 64 }, { year: 2022, occupancy: 84, rent: 67 }, { year: 2023, occupancy: 92, rent: 73 }, { year: 2024, occupancy: 95, rent: 77 }] }
+      ]
+    },
+
+    // ═══════════════════════════════════════════════════════════════
+    // FOOD COURT BUILDING
+    // ═══════════════════════════════════════════════════════════════
+    {
+      id: "food-court",
+      name: "Food Court Building",
+      phase: "Common",
+      totalFloors: 2,
+      totalArea: 25000,
+      yearBuilt: 2010,
+      color: "#78716c",
+      position: { x: 2, z: 8 },
+      width: 3,
+      depth: 2,
+      height: 1.0,
+      rotation: -0.1,
+      shape: "rect",
+      grade: "B+",
+      certification: "IGBC Gold",
+      camCharges: 12,
+      escalation: "15% every 3 years",
+      powerBackup: "100% DG + Dual Feed",
+      parkingRatio: 0,
+      floorPlateSize: 12500,
+      efficiencyRatio: 80,
+      amenities: ["Cafeteria", "ATM"],
+      capitalValuePerSqft: 8000,
+      capitalValueTrend: [
+        { year: 2020, value: 6000 },
+        { year: 2021, value: 6400 },
+        { year: 2022, value: 6900 },
+        { year: 2023, value: 7400 },
+        { year: 2024, value: 8000 }
+      ],
+      microMarket: "Outer Ring Road",
+      microMarketAvgRent: 72,
+      absorptionRate: 85,
+      upcomingSupply: "2.1M sqft by 2026",
+      floors: [
+        { floor: 1, tenant: "Food Court", occupancy: 100, rentPerSqft: 45, area: 12500, leaseStart: "2020-01", leaseEnd: "2030-01", status: "Fully Occupied", carpetArea: 10000, superBuiltUp: 12500, lockInPeriod: "5 years", lockInEnd: "2025-01", securityDeposit: 6, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((45 * 12500 * 12) / (12500 * 8000) * 100).toFixed(1)), monthlyRevenue: 45 * 12500, annualRevenue: 45 * 12500 * 12, history: [{ year: 2020, occupancy: 95, rent: 38 }, { year: 2021, occupancy: 97, rent: 39 }, { year: 2022, occupancy: 100, rent: 41 }, { year: 2023, occupancy: 100, rent: 43 }, { year: 2024, occupancy: 100, rent: 45 }] },
+        { floor: 2, tenant: "Food Court", occupancy: 100, rentPerSqft: 45, area: 12500, leaseStart: "2020-01", leaseEnd: "2030-01", status: "Fully Occupied", carpetArea: 10000, superBuiltUp: 12500, lockInPeriod: "5 years", lockInEnd: "2025-01", securityDeposit: 6, fitOut: "Fully Fitted", vacancyDuration: null, rentalYield: parseFloat(((45 * 12500 * 12) / (12500 * 8000) * 100).toFixed(1)), monthlyRevenue: 45 * 12500, annualRevenue: 45 * 12500 * 12, history: [{ year: 2020, occupancy: 94, rent: 38 }, { year: 2021, occupancy: 96, rent: 39 }, { year: 2022, occupancy: 100, rent: 41 }, { year: 2023, occupancy: 100, rent: 43 }, { year: 2024, occupancy: 100, rent: 45 }] }
+      ]
+    }
+  ]
+};
