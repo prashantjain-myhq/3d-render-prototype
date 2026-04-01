@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building Detail</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    /* Error state */
+    .error-page {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      text-align: center;
+    }
+    .error-page h1 { font-size: 1.5rem; margin-bottom: 8px; color: #dc2626; }
+    .error-page p { color: #64748b; margin-bottom: 24px; }
+    .error-page a {
+      color: var(--accent, #4F46E5);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .error-page a:hover { text-decoration: underline; }
+
+    /* Back link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 0.875rem;
+      margin-bottom: 16px;
+      transition: color 0.15s;
+    }
+    .back-link:hover { color: var(--accent); }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .building-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+    }
+
+    /* Stats row */
+    .stats-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    .stat-card {
+      flex: 1;
+      min-width: 140px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .stat-card .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    .stat-card .value {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    /* Floor grid */
+    .section-heading {
+      font-size: 1.125rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .floor-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+    }
+    .floor-card {
+      background: #fff;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+    }
+    .floor-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .floor-card.active {
+      border-color: var(--accent);
+    }
+    .floor-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .floor-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .floor-tenant {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .floor-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-bottom: 8px;
+    }
+    .occupancy-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .occupancy-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s;
+    }
+    .occ-green { background: #16a34a; }
+    .occ-amber { background: #d97706; }
+    .occ-red { background: #dc2626; }
+
+    /* Overlay + Side Panel */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+      z-index: 100;
+    }
+    .overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .side-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 440px;
+      max-width: 100vw;
+      height: 100vh;
+      background: #fff;
+      box-shadow: -4px 0 24px rgba(0,0,0,0.12);
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      z-index: 101;
+      overflow-y: auto;
+    }
+    .side-panel.open {
+      transform: translateX(0);
+    }
+    .panel-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: #f1f5f9;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748b;
+      transition: background 0.15s;
+    }
+    .panel-close:hover { background: #e2e8f0; }
+    .panel-content {
+      padding: 32px 28px;
+    }
+    .panel-content h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .panel-subtitle {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-bottom: 12px;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .status-green { background: #dcfce7; color: #166534; }
+    .status-amber { background: #fef3c7; color: #92400e; }
+    .status-red   { background: #fee2e2; color: #991b1b; }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .detail-item .detail-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #94a3b8;
+      margin-bottom: 2px;
+    }
+    .detail-item .detail-value {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .occupancy-section { margin-bottom: 24px; }
+    .occ-big-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .occ-bar-full {
+      width: 100%;
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .occ-bar-full-fill {
+      height: 100%;
+      border-radius: 5px;
+    }
+
+    .history-heading {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748b;
+      margin-bottom: 8px;
+    }
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .history-table th {
+      text-align: left;
+      padding: 8px 0;
+      border-bottom: 2px solid #e2e8f0;
+      font-weight: 600;
+      color: #64748b;
+    }
+    .history-table td {
+      padding: 8px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="app"></div>
+
+  <!-- Overlay -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Side Panel -->
+  <div class="side-panel" id="sidePanel">
+    <button class="panel-close" id="panelClose">&times;</button>
+    <div class="panel-content" id="panelContent"></div>
+  </div>
+
+  <script src="data.js"></script>
+  <script>
+    const app = document.getElementById('app');
+    const overlay = document.getElementById('overlay');
+    const sidePanel = document.getElementById('sidePanel');
+    const panelClose = document.getElementById('panelClose');
+    const panelContent = document.getElementById('panelContent');
+
+    const buildingId = new URLSearchParams(window.location.search).get('id');
+    const building = TECH_PARK_DATA.buildings.find(b => b.id === buildingId);
+
+    if (!building) {
+      app.innerHTML = `
+        <div class="error-page">
+          <h1>Building Not Found</h1>
+          <p>No building with ID "${buildingId || '(none)'}" exists in the tech park.</p>
+          <a href="index.html">&larr; Back to Tech Park</a>
+        </div>`;
+    } else {
+      document.documentElement.style.setProperty('--accent', building.color);
+      document.title = `${building.name} — ${TECH_PARK_DATA.name}`;
+
+      // Compute stats
+      const avgOccupancy = Math.round(building.floors.reduce((s, f) => s + f.occupancy, 0) / building.floors.length);
+      const avgRent = Math.round(building.floors.reduce((s, f) => s + f.rentPerSqft, 0) / building.floors.length);
+      const firstLetter = building.name.charAt(0);
+
+      app.innerHTML = `
+        <a href="index.html" class="back-link">&larr; Back to Tech Park</a>
+        <div class="header">
+          <div class="building-icon" style="background:${building.color}">${firstLetter}</div>
+          <h1>${building.name}</h1>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card"><div class="label">Floors</div><div class="value">${building.totalFloors}</div></div>
+          <div class="stat-card"><div class="label">Total Area</div><div class="value">${(building.totalArea / 1000).toLocaleString()}K sqft</div></div>
+          <div class="stat-card"><div class="label">Year Built</div><div class="value">${building.yearBuilt}</div></div>
+          <div class="stat-card"><div class="label">Avg Occupancy</div><div class="value">${avgOccupancy}%</div></div>
+          <div class="stat-card"><div class="label">Avg Rent/sqft</div><div class="value">\u20B9${avgRent}</div></div>
+        </div>
+        <h2 class="section-heading">Floors</h2>
+        <div class="floor-grid" id="floorGrid"></div>
+      `;
+
+      const floorGrid = document.getElementById('floorGrid');
+
+      building.floors.forEach((floor, idx) => {
+        const card = document.createElement('div');
+        card.className = 'floor-card';
+        card.dataset.index = idx;
+
+        const occClass = floor.occupancy >= 90 ? 'occ-green' : floor.occupancy >= 70 ? 'occ-amber' : 'occ-red';
+
+        card.innerHTML = `
+          <div class="floor-card-top">
+            <div class="floor-badge" style="background:${building.color}">F${floor.floor}</div>
+            <span class="floor-tenant">${floor.tenant}</span>
+          </div>
+          <div class="floor-meta">
+            <span>\u20B9${floor.rentPerSqft}/sqft</span>
+            <span>${floor.occupancy}% occupied</span>
+          </div>
+          <div class="occupancy-bar-bg">
+            <div class="occupancy-bar-fill ${occClass}" style="width:${floor.occupancy}%"></div>
+          </div>
+        `;
+
+        card.addEventListener('click', () => openPanel(idx));
+        floorGrid.appendChild(card);
+      });
+
+      // Panel logic
+      let activeIndex = null;
+
+      function openPanel(idx) {
+        const floor = building.floors[idx];
+
+        // Highlight active card
+        document.querySelectorAll('.floor-card').forEach(c => c.classList.remove('active'));
+        document.querySelector(`.floor-card[data-index="${idx}"]`).classList.add('active');
+        activeIndex = idx;
+
+        // Status badge
+        let statusClass, statusLabel;
+        if (floor.status === 'Fully Occupied') { statusClass = 'status-green'; statusLabel = 'Fully Occupied'; }
+        else if (floor.status === 'Vacant') { statusClass = 'status-red'; statusLabel = 'Vacant'; }
+        else { statusClass = 'status-amber'; statusLabel = 'Partially Vacant'; }
+
+        const occColor = floor.occupancy >= 90 ? '#16a34a' : floor.occupancy >= 70 ? '#d97706' : '#dc2626';
+
+        const historyRows = (floor.history || []).map(h =>
+          `<tr><td>${h.year}</td><td>${h.occupancy}%</td><td>\u20B9${h.rent}</td></tr>`
+        ).join('');
+
+        panelContent.innerHTML = `
+          <h2>${floor.tenant}</h2>
+          <div class="panel-subtitle">Floor ${floor.floor} &middot; ${building.name}</div>
+          <span class="status-badge ${statusClass}">${statusLabel}</span>
+
+          <div class="details-grid">
+            <div class="detail-item"><div class="detail-label">Rent</div><div class="detail-value">\u20B9${floor.rentPerSqft}/sqft/mo</div></div>
+            <div class="detail-item"><div class="detail-label">Area</div><div class="detail-value">${floor.area.toLocaleString()} sqft</div></div>
+            <div class="detail-item"><div class="detail-label">Lease Start</div><div class="detail-value">${floor.leaseStart}</div></div>
+            <div class="detail-item"><div class="detail-label">Lease End</div><div class="detail-value">${floor.leaseEnd}</div></div>
+          </div>
+
+          <div class="occupancy-section">
+            <div class="occ-big-number" style="color:${occColor}">${floor.occupancy}%</div>
+            <div class="occ-bar-full">
+              <div class="occ-bar-full-fill" style="width:${floor.occupancy}%;background:${occColor}"></div>
+            </div>
+          </div>
+
+          <div class="history-heading">Historical Trends</div>
+          <table class="history-table">
+            <thead><tr><th>Year</th><th>Occupancy</th><th>Rent</th></tr></thead>
+            <tbody>${historyRows}</tbody>
+          </table>
+        `;
+
+        overlay.classList.add('open');
+        sidePanel.classList.add('open');
+      }
+
+      function closePanel() {
+        overlay.classList.remove('open');
+        sidePanel.classList.remove('open');
+        document.querySelectorAll('.floor-card').forEach(c => c.classList.remove('active'));
+        activeIndex = null;
+      }
+
+      overlay.addEventListener('click', closePanel);
+      panelClose.addEventListener('click', closePanel);
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+    }
+  </script>
+</body>
+</html>
