@@ -1729,6 +1729,14 @@
     .cost-table td { padding:8px 12px; border-bottom:1px solid #f1f5f9; }
     .cost-table tr.total-row td { font-weight:700; border-top:2px solid #e2e8f0; background:#f0f9ff; }
     .cost-table .best-cost { color:#16a34a; font-weight:700; }
+  /* City View */
+  #view-fade { position:fixed; inset:0; background:#0a0e1a; z-index:200; opacity:0; pointer-events:none; transition:opacity 0.3s; }
+  #view-fade.active { opacity:1; pointer-events:auto; }
+  .city-view-active #park-switcher-wrap, .city-view-active #time-slider-wrap, .city-view-active #heatmap-legend { display:none !important; }
+  #city-breadcrumb { position:fixed; top:8px; left:50%; transform:translateX(-50%); z-index:11; display:none; pointer-events:auto; }
+  #city-breadcrumb.visible { display:flex; }
+  #city-breadcrumb a { font-size:12px; color:#4f46e5; font-weight:600; text-decoration:none; cursor:pointer; }
+  #city-breadcrumb span { font-size:12px; color:#94a3b8; margin:0 6px; }
   </style>
 </head>
 <body>
@@ -1772,6 +1780,7 @@
 
 <!-- Right-side Controls Toolbar -->
 <div id="controls-bar">
+  <button class="cb-btn" id="cb-cityview" data-tip="City View" style="font-size:15px">&#127758;</button>
   <button class="cb-btn" id="cb-search" data-tip="Search">&#128269;</button>
   <button class="cb-btn" id="cb-compare" data-tip="Compare">&#9878;&#65039;</button>
   <button class="cb-btn" id="cb-heatmap" data-tip="Heat Map">&#127777;&#65039;</button>
@@ -2204,6 +2213,9 @@
 
 <!-- Feature 6: Walkthrough Message -->
 <!-- walkthrough UI removed -->
+
+<div id="view-fade"></div>
+<div id="city-breadcrumb"><a id="breadcrumb-city">Bangalore</a><span>›</span><span id="breadcrumb-park">Prestige Tech Park</span></div>
 
 <script src="data.js"></script>
 
@@ -4912,6 +4924,8 @@ modeToggleBtn.addEventListener('click', () => {
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
+  cityCamera.aspect = window.innerWidth / window.innerHeight;
+  cityCamera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
   labelRenderer.setSize(window.innerWidth, window.innerHeight);
 });
@@ -4943,9 +4957,15 @@ function animate() {
   // Label occlusion disabled for performance
   frameCount++;
 
-  controls.update();
-  renderer.render(scene, camera);
-  if (frameCount % 3 === 0) labelRenderer.render(scene, camera);
+  if (currentView === 'city') {
+    cityControls.update();
+    renderer.render(cityScene, cityCamera);
+    if (frameCount % 3 === 0) labelRenderer.render(cityScene, cityCamera);
+  } else {
+    controls.update();
+    renderer.render(scene, camera);
+    if (frameCount % 3 === 0) labelRenderer.render(scene, camera);
+  }
 }
 
 let frameCount = 0;
@@ -6173,6 +6193,309 @@ document.getElementById('tb-enquiry-btn').addEventListener('click', () => {
   overlay.classList.add('open');
   const floorInfo = overlay.querySelector('.eq-floor-info');
   if (floorInfo) floorInfo.textContent = 'General Enquiry — Prestige Tech Park, Outer Ring Road';
+});
+
+// ============================================================
+// CITY-LEVEL VIEW
+// ============================================================
+let currentView = 'park'; // 'park' | 'city' | 'transitioning'
+let savedParkCameraPos = null;
+let savedParkCameraTarget = null;
+
+// City Scene
+const cityScene = new THREE.Scene();
+cityScene.background = new THREE.Color(0x0c1222);
+cityScene.fog = new THREE.FogExp2(0x0c1222, 0.00015);
+
+// City Camera
+const cityCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 5000);
+cityCamera.position.set(0, 800, 600);
+cityCamera.lookAt(0, 0, 0);
+
+// City Controls
+const cityControls = new OrbitControls(cityCamera, renderer.domElement);
+cityControls.enableDamping = true;
+cityControls.dampingFactor = 0.08;
+cityControls.maxPolarAngle = Math.PI / 2.3;
+cityControls.minDistance = 80;
+cityControls.maxDistance = 2500;
+cityControls.target.set(0, 0, 0);
+cityControls.enabled = false;
+
+// City Ground
+const cityGroundGeo = new THREE.PlaneGeometry(4000, 4000);
+const cityGroundCanvas = document.createElement('canvas');
+cityGroundCanvas.width = 1024;
+cityGroundCanvas.height = 1024;
+const cgCtx = cityGroundCanvas.getContext('2d');
+cgCtx.fillStyle = '#0e1628';
+cgCtx.fillRect(0, 0, 1024, 1024);
+// Subtle grid
+cgCtx.strokeStyle = 'rgba(50,70,100,0.15)';
+cgCtx.lineWidth = 0.5;
+for (let i = 0; i < 1024; i += 32) {
+  cgCtx.beginPath(); cgCtx.moveTo(i, 0); cgCtx.lineTo(i, 1024); cgCtx.stroke();
+  cgCtx.beginPath(); cgCtx.moveTo(0, i); cgCtx.lineTo(1024, i); cgCtx.stroke();
+}
+const cityGroundTex = new THREE.CanvasTexture(cityGroundCanvas);
+cityGroundTex.wrapS = cityGroundTex.wrapT = THREE.RepeatWrapping;
+cityGroundTex.repeat.set(8, 8);
+const cityGroundMat = new THREE.MeshStandardMaterial({ map: cityGroundTex, roughness: 0.95 });
+const cityGround = new THREE.Mesh(cityGroundGeo, cityGroundMat);
+cityGround.rotation.x = -Math.PI / 2;
+cityGround.position.y = -0.5;
+cityScene.add(cityGround);
+
+// City Lighting
+const cityAmbient = new THREE.AmbientLight(0x304060, 0.6);
+cityScene.add(cityAmbient);
+const cityDirLight = new THREE.DirectionalLight(0x8899bb, 0.8);
+cityDirLight.position.set(500, 800, 300);
+cityScene.add(cityDirLight);
+
+// Build park markers
+const cityParkMeshes = [];
+const cityParkDataMap = new Map();
+
+CITY_PARKS_DATA.parks.forEach(park => {
+  const group = new THREE.Group();
+  const px = park.position.x, pz = park.position.z;
+
+  // Base platform (glowing)
+  const baseGeo = new THREE.BoxGeometry(12, 0.5, 12);
+  const baseMat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color(park.color),
+    emissive: new THREE.Color(park.color),
+    emissiveIntensity: 0.4,
+    roughness: 0.3,
+    metalness: 0.2,
+  });
+  const base = new THREE.Mesh(baseGeo, baseMat);
+  base.position.y = 0.25;
+  group.add(base);
+
+  // Placeholder buildings
+  park.placeholderBuildings.forEach(b => {
+    const bGeo = new THREE.BoxGeometry(b.w, b.h * 3, b.d);
+    const bMat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(park.color).lerp(new THREE.Color(0xffffff), 0.3),
+      emissive: new THREE.Color(park.color),
+      emissiveIntensity: 0.15,
+      roughness: 0.4,
+      metalness: 0.15,
+    });
+    const bMesh = new THREE.Mesh(bGeo, bMat);
+    bMesh.position.set(b.ox, b.h * 1.5 + 0.5, b.oz);
+    group.add(bMesh);
+  });
+
+  // "You are here" ring for Prestige
+  if (park.id === 'prestige') {
+    const ringGeo = new THREE.TorusGeometry(10, 0.3, 8, 32);
+    const ringMat = new THREE.MeshStandardMaterial({
+      color: 0x6366f1, emissive: 0x6366f1, emissiveIntensity: 0.8,
+      transparent: true, opacity: 0.6,
+    });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.y = 0.1;
+    group.add(ring);
+    group.userData.ring = ring;
+  }
+
+  // Label
+  const labelDiv = document.createElement('div');
+  labelDiv.style.cssText = `font-family:system-ui;text-align:center;pointer-events:none`;
+  labelDiv.innerHTML = `
+    <div style="font-size:14px;font-weight:800;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.9)">${park.name}</div>
+    <div style="font-size:10px;color:#94a3b8;margin-top:2px">${park.subLocation}</div>
+    <div style="font-size:10px;color:${park.color};font-weight:700;margin-top:3px">${park.buildings} buildings · ${park.totalArea}</div>
+    ${park.hasDetailedView ? '<div style="margin-top:4px;padding:2px 8px;background:#4f46e5;color:#fff;border-radius:4px;font-size:9px;font-weight:700;display:inline-block">EXPLORE →</div>' : '<div style="margin-top:4px;padding:2px 8px;background:rgba(148,163,184,0.2);color:#94a3b8;border-radius:4px;font-size:9px;font-weight:600;display:inline-block">Coming Soon</div>'}
+  `;
+  const label = new CSS2DObject(labelDiv);
+  const maxH = Math.max(...park.placeholderBuildings.map(b => b.h * 3));
+  label.position.set(0, maxH + 5, 0);
+  group.add(label);
+
+  // Distance line + label from Prestige (skip for Prestige itself)
+  if (park.id !== 'prestige') {
+    const dist = Math.sqrt(px * px + pz * pz) * 12 / 1000;
+    const distLabel = document.createElement('div');
+    distLabel.style.cssText = 'font-size:10px;color:#64748b;font-weight:600;pointer-events:none;background:rgba(12,18,34,0.8);padding:2px 6px;border-radius:4px';
+    distLabel.textContent = dist.toFixed(1) + ' km';
+    const distObj = new CSS2DObject(distLabel);
+    distObj.position.set(px/2, 2, pz/2);
+    cityScene.add(distObj);
+
+    // Dashed line from Prestige to this park
+    const linePoints = [new THREE.Vector3(0, 0.5, 0), new THREE.Vector3(px, 0.5, pz)];
+    const lineGeo = new THREE.BufferGeometry().setFromPoints(linePoints);
+    const lineMat = new THREE.LineDashedMaterial({ color: new THREE.Color(park.color), dashSize: 5, gapSize: 5, transparent: true, opacity: 0.3 });
+    const line = new THREE.Line(lineGeo, lineMat);
+    line.computeLineDistances();
+    cityScene.add(line);
+  }
+
+  group.position.set(px, 0, pz);
+  cityScene.add(group);
+
+  // For raycasting, use the base mesh
+  base.userData.parkData = park;
+  cityParkMeshes.push(base);
+  cityParkDataMap.set(base, park);
+});
+
+// Major roads as lines
+const roadColor = 0x2a3a5a;
+function addCityRoad(points) {
+  const vecs = points.map(p => new THREE.Vector3(p[0], 0.3, p[1]));
+  const geo = new THREE.BufferGeometry().setFromPoints(vecs);
+  const mat = new THREE.LineBasicMaterial({ color: roadColor, transparent: true, opacity: 0.4 });
+  const line = new THREE.Line(geo, mat);
+  cityScene.add(line);
+  const glowMat = new THREE.LineBasicMaterial({ color: roadColor, transparent: true, opacity: 0.15, linewidth: 2 });
+  const glow = new THREE.Line(geo.clone(), glowMat);
+  glow.position.y = 0.1;
+  cityScene.add(glow);
+}
+
+// ORR (curved, connecting Prestige -> Bagmane -> Embassy area)
+addCityRoad([[0,0], [40,10], [80,5], [125,0], [180,30], [250,200]]);
+// Hosur Road south toward Electronic City
+addCityRoad([[0,0], [-10,-100], [-20,-400], [-30,-800], [-50,-1500]]);
+// Bellary Road north toward Manyata
+addCityRoad([[0,0], [10,100], [0,400], [-30,800], [-100,1250]]);
+// ORR south toward RMZ
+addCityRoad([[0,0], [30,-50], [80,-120], [150,-200]]);
+
+// Compass indicator
+const compassDiv = document.createElement('div');
+compassDiv.style.cssText = 'font-size:11px;font-weight:700;color:#475569;pointer-events:none';
+compassDiv.textContent = '\u2191 N';
+const compassObj = new CSS2DObject(compassDiv);
+compassObj.position.set(0, 5, 300);
+cityScene.add(compassObj);
+
+// City View tooltip
+const cityTooltip = document.createElement('div');
+cityTooltip.style.cssText = 'position:fixed;display:none;padding:12px 16px;background:rgba(10,14,26,0.95);backdrop-filter:blur(12px);border:1px solid rgba(99,102,241,0.3);border-radius:10px;color:#fff;font-size:13px;pointer-events:none;z-index:25;min-width:200px;box-shadow:0 8px 24px rgba(0,0,0,0.5);font-family:system-ui';
+document.body.appendChild(cityTooltip);
+
+// City raycaster
+const cityRaycaster = new THREE.Raycaster();
+const cityPointer = new THREE.Vector2();
+let hoveredCityPark = null;
+
+function onCityPointerMove(e) {
+  if (currentView !== 'city') return;
+  cityPointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+  cityPointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+  cityRaycaster.setFromCamera(cityPointer, cityCamera);
+  const hits = cityRaycaster.intersectObjects(cityParkMeshes);
+
+  if (hits.length > 0) {
+    const park = cityParkDataMap.get(hits[0].object);
+    if (hoveredCityPark !== hits[0].object) {
+      if (hoveredCityPark) hoveredCityPark.material.emissiveIntensity = 0.4;
+      hoveredCityPark = hits[0].object;
+      hoveredCityPark.material.emissiveIntensity = 0.9;
+      renderer.domElement.style.cursor = 'pointer';
+    }
+    const dist = Math.sqrt(park.position.x**2 + park.position.z**2) * 12 / 1000;
+    cityTooltip.innerHTML = `
+      <div style="font-weight:700;font-size:14px;margin-bottom:4px;color:${park.color}">${park.name}</div>
+      <div style="font-size:11px;color:#94a3b8;margin-bottom:6px">${park.subLocation}</div>
+      <div style="font-size:12px;color:#cbd5e1">${park.buildings} buildings · ${park.totalArea}</div>
+      <div style="font-size:12px;color:#cbd5e1">Avg Rent: ${park.avgRent}</div>
+      ${park.id !== 'prestige' ? '<div style="font-size:11px;color:#94a3b8;margin-top:4px">' + dist.toFixed(1) + ' km from Prestige Tech Park</div>' : ''}
+      <div style="font-size:11px;color:#818cf8;margin-top:6px;font-weight:600">${park.hasDetailedView ? 'Click to explore \u2192' : 'Coming soon'}</div>
+    `;
+    cityTooltip.style.display = 'block';
+    cityTooltip.style.left = Math.min(e.clientX + 16, window.innerWidth - 230) + 'px';
+    cityTooltip.style.top = (e.clientY - 10) + 'px';
+  } else {
+    if (hoveredCityPark) {
+      hoveredCityPark.material.emissiveIntensity = 0.4;
+      hoveredCityPark = null;
+    }
+    renderer.domElement.style.cursor = 'default';
+    cityTooltip.style.display = 'none';
+  }
+}
+
+function onCityClick(e) {
+  if (currentView !== 'city') return;
+  cityRaycaster.setFromCamera(cityPointer, cityCamera);
+  const hits = cityRaycaster.intersectObjects(cityParkMeshes);
+  if (hits.length > 0) {
+    const park = cityParkDataMap.get(hits[0].object);
+    if (park.hasDetailedView) {
+      transitionToView('park');
+    } else {
+      showParkToast('Coming Soon \u2014 ' + park.name + ' model is under development');
+    }
+  }
+}
+
+window.addEventListener('pointermove', onCityPointerMove);
+window.addEventListener('click', onCityClick);
+
+// View transition
+const viewFade = document.getElementById('view-fade');
+
+function transitionToView(targetView) {
+  if (currentView === targetView || currentView === 'transitioning') return;
+  currentView = 'transitioning';
+
+  // Save current camera
+  if (targetView === 'city') {
+    savedParkCameraPos = camera.position.clone();
+    savedParkCameraTarget = controls.target.clone();
+  }
+
+  // Fade in
+  viewFade.classList.add('active');
+
+  setTimeout(() => {
+    if (targetView === 'city') {
+      controls.enabled = false;
+      cityControls.enabled = true;
+      document.body.classList.add('city-view-active');
+      document.getElementById('city-breadcrumb').classList.add('visible');
+      document.querySelector('#title-bar h1').textContent = 'Bangalore Tech Parks';
+      document.querySelector('#title-bar p').textContent = '6 Major IT Corridors \u00b7 Zoom & click to explore';
+    } else {
+      cityControls.enabled = false;
+      controls.enabled = true;
+      if (savedParkCameraPos) {
+        camera.position.copy(savedParkCameraPos);
+        controls.target.copy(savedParkCameraTarget);
+      }
+      document.body.classList.remove('city-view-active');
+      document.getElementById('city-breadcrumb').classList.remove('visible');
+      document.querySelector('#title-bar h1').textContent = 'Prestige Tech Park';
+      document.querySelector('#title-bar p').textContent = 'Outer Ring Road, Kadubeesanahalli \u00b7 6M+ sqft \u00b7 19 Buildings';
+    }
+
+    currentView = targetView;
+    cityTooltip.style.display = 'none';
+
+    // Fade out
+    setTimeout(() => { viewFade.classList.remove('active'); }, 50);
+  }, 300);
+}
+
+// City View button
+document.getElementById('cb-cityview').addEventListener('click', (e) => {
+  e.stopPropagation();
+  closeAllDropdowns();
+  transitionToView(currentView === 'city' ? 'park' : 'city');
+});
+
+// Breadcrumb click
+document.getElementById('breadcrumb-city').addEventListener('click', () => {
+  if (currentView === 'park') transitionToView('city');
 });
 
 // SHORTLIST + COMPARE

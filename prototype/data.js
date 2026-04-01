@@ -946,3 +946,79 @@ const TECH_PARK_DATA = {
     }
   ]
 };
+const CITY_PARKS_DATA = {
+  scale: 12, // meters per unit
+  centerPark: 'prestige',
+  parks: [
+    {
+      id: 'prestige', name: 'Prestige Tech Park', subLocation: 'Outer Ring Road, Kadubeesanahalli',
+      position: { x: 0, z: 0 }, color: '#6366f1', hasDetailedView: true,
+      totalArea: '6M+ sqft', buildings: 19, avgRent: '₹80-120/sqft',
+      placeholderBuildings: [
+        { w: 3, h: 4, d: 2, ox: -2, oz: -2 },
+        { w: 4, h: 5, d: 2, ox: 2, oz: -1 },
+        { w: 3, h: 3, d: 2, ox: 0, oz: 2 },
+        { w: 2, h: 6, d: 2, ox: -3, oz: 1 },
+        { w: 3, h: 4.5, d: 2, ox: 3, oz: 2 },
+      ]
+    },
+    {
+      id: 'bagmane', name: 'Bagmane Tech Park', subLocation: 'CV Raman Nagar',
+      position: { x: 125, z: 0 }, color: '#22c55e', hasDetailedView: false,
+      totalArea: '3.5M sqft', buildings: 8, avgRent: '₹65-85/sqft',
+      placeholderBuildings: [
+        { w: 3, h: 3.5, d: 2, ox: -1, oz: -1 },
+        { w: 3, h: 4, d: 2, ox: 2, oz: 0 },
+        { w: 2, h: 3, d: 2, ox: 0, oz: 2 },
+      ]
+    },
+    {
+      id: 'rmz-ecoworld', name: 'RMZ Ecoworld', subLocation: 'Bellandur',
+      position: { x: 150, z: -200 }, color: '#f59e0b', hasDetailedView: false,
+      totalArea: '7.5M sqft', buildings: 12, avgRent: '₹75-100/sqft',
+      placeholderBuildings: [
+        { w: 4, h: 5, d: 2, ox: -2, oz: -1 },
+        { w: 3, h: 4, d: 2, ox: 2, oz: -2 },
+        { w: 3, h: 3.5, d: 2, ox: 0, oz: 2 },
+        { w: 2, h: 4.5, d: 2, ox: -3, oz: 1 },
+      ]
+    },
+    {
+      id: 'embassy-tv', name: 'Embassy Tech Village', subLocation: 'Marathahalli',
+      position: { x: 250, z: 200 }, color: '#ef4444', hasDetailedView: false,
+      totalArea: '10M sqft', buildings: 15, avgRent: '₹85-110/sqft',
+      placeholderBuildings: [
+        { w: 4, h: 6, d: 2, ox: -2, oz: -2 },
+        { w: 3, h: 5, d: 2, ox: 2, oz: -1 },
+        { w: 3, h: 4, d: 2, ox: -1, oz: 2 },
+        { w: 4, h: 5.5, d: 2, ox: 3, oz: 2 },
+        { w: 2, h: 3, d: 2, ox: 0, oz: 0 },
+      ]
+    },
+    {
+      id: 'manyata', name: 'Manyata Tech Park', subLocation: 'Hebbal',
+      position: { x: -100, z: 1250 }, color: '#8b5cf6', hasDetailedView: false,
+      totalArea: '15M sqft', buildings: 20, avgRent: '₹70-95/sqft',
+      placeholderBuildings: [
+        { w: 4, h: 5, d: 3, ox: -3, oz: -2 },
+        { w: 5, h: 6, d: 3, ox: 2, oz: -1 },
+        { w: 3, h: 4, d: 2, ox: -1, oz: 3 },
+        { w: 4, h: 5, d: 2, ox: 3, oz: 2 },
+        { w: 3, h: 3.5, d: 2, ox: 0, oz: 0 },
+      ]
+    },
+    {
+      id: 'electronic-city', name: 'Electronic City', subLocation: 'Phase 1 & 2',
+      position: { x: -50, z: -1500 }, color: '#ec4899', hasDetailedView: false,
+      totalArea: '20M+ sqft', buildings: 25, avgRent: '₹45-70/sqft',
+      placeholderBuildings: [
+        { w: 5, h: 4, d: 3, ox: -4, oz: -3 },
+        { w: 4, h: 5, d: 3, ox: 3, oz: -2 },
+        { w: 3, h: 3, d: 2, ox: -2, oz: 3 },
+        { w: 4, h: 4.5, d: 2, ox: 2, oz: 2 },
+        { w: 5, h: 6, d: 3, ox: 0, oz: 0 },
+        { w: 3, h: 3.5, d: 2, ox: -5, oz: 1 },
+      ]
+    }
+  ]
+};
