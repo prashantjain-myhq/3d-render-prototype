@@ -1737,6 +1737,29 @@
   #city-breadcrumb.visible { display:flex; }
   #city-breadcrumb a { font-size:12px; color:#4f46e5; font-weight:600; text-decoration:none; cursor:pointer; }
   #city-breadcrumb span { font-size:12px; color:#94a3b8; margin:0 6px; }
+    /* Park Landing Overlay */
+    #park-landing { position:fixed; inset:0; z-index:115; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); }
+    #park-landing.open { display:flex; }
+    #park-landing-card { background:#fff; border-radius:20px; width:480px; max-width:92vw; padding:40px; text-align:center; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+    #park-landing-card .pl-close { position:absolute; top:14px; right:14px; width:32px; height:32px; border:none; background:#f1f5f9; border-radius:50%; font-size:16px; color:#64748b; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+    #park-landing-card .pl-icon { width:64px; height:64px; border-radius:16px; margin:0 auto 16px; display:flex; align-items:center; justify-content:center; font-size:28px; }
+    #park-landing-card h2 { font-size:24px; font-weight:800; color:#0f172a; margin-bottom:4px; }
+    #park-landing-card .pl-sub { font-size:13px; color:#64748b; margin-bottom:20px; }
+    #park-landing-card .pl-stats { display:flex; gap:12px; justify-content:center; margin-bottom:24px; }
+    #park-landing-card .pl-stat { padding:10px 16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; }
+    #park-landing-card .pl-stat-val { font-size:16px; font-weight:700; color:#0f172a; }
+    #park-landing-card .pl-stat-label { font-size:10px; color:#94a3b8; text-transform:uppercase; }
+    #park-landing-card .pl-badge { display:inline-block; padding:6px 16px; background:linear-gradient(135deg,#fef3c7,#fde68a); color:#92400e; border-radius:999px; font-size:13px; font-weight:700; margin-bottom:20px; }
+    #park-landing-card .pl-actions { display:flex; gap:10px; justify-content:center; }
+    #park-landing-card .pl-btn { padding:10px 20px; border-radius:10px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; border:none; }
+    #park-landing-card .pl-btn-primary { background:linear-gradient(135deg,#6366f1,#4f46e5); color:#fff; box-shadow:0 2px 8px rgba(99,102,241,0.3); }
+    #park-landing-card .pl-btn-secondary { background:#fff; border:1px solid #e2e8f0; color:#475569; }
+
+    /* Fix 3: Hide irrelevant controls in city view */
+    .city-view-active #controls-bar .cb-btn:not(#cb-cityview) { display: none; }
+    .city-view-active #controls-bar #cb-cityview { background: rgba(99,102,241,0.3); color: #fff; }
+    .city-view-active #tb-gallery-btn { display: none; }
+
   </style>
 </head>
 <body>
@@ -2216,6 +2239,22 @@
 
 <div id="view-fade"></div>
 <div id="city-breadcrumb"><a id="breadcrumb-city">Bangalore</a><span>›</span><span id="breadcrumb-park">Prestige Tech Park</span></div>
+
+<div id="park-landing">
+  <div id="park-landing-card">
+    <button class="pl-close" onclick="document.getElementById('park-landing').classList.remove('open')">&times;</button>
+    <div class="pl-icon" id="pl-icon"></div>
+    <h2 id="pl-name"></h2>
+    <div class="pl-sub" id="pl-sub"></div>
+    <div class="pl-badge">Coming Soon</div>
+    <div class="pl-stats" id="pl-stats"></div>
+    <p style="font-size:13px;color:#64748b;line-height:1.6;margin-bottom:20px">We're building the 3D explorer for this tech park. Get notified when it's ready, or enquire about available office space.</p>
+    <div class="pl-actions">
+      <button class="pl-btn pl-btn-primary" onclick="document.getElementById('park-landing').classList.remove('open');document.getElementById('enquiry-overlay').classList.add('open');document.getElementById('eq-floor-info').textContent=document.getElementById('pl-name').textContent+' — Office Space Enquiry'">Enquire Now</button>
+      <button class="pl-btn pl-btn-secondary" onclick="this.textContent='Notified ✓';this.style.background='#dcfce7';this.style.color='#166534';this.style.borderColor='#86efac'">Notify Me</button>
+    </div>
+  </div>
+</div>
 
 <script src="data.js"></script>
 
@@ -6209,12 +6248,12 @@ document.getElementById('tb-enquiry-btn').addEventListener('click', () => {
 
 // City Scene (assigned to vars declared before animate)
 cityScene = new THREE.Scene();
-cityScene.background = new THREE.Color(0x0c1222);
-cityScene.fog = new THREE.FogExp2(0x0c1222, 0.00015);
+cityScene.background = new THREE.Color(0x1a2744);
+// No fog — we want to see everything at city scale
 
-// City Camera
-cityCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 5000);
-cityCamera.position.set(0, 800, 600);
+// City Camera — closer start, can zoom out
+cityCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 8000);
+cityCamera.position.set(200, 400, 400);
 cityCamera.lookAt(0, 0, 0);
 
 // City Controls
@@ -6233,10 +6272,10 @@ const cityGroundCanvas = document.createElement('canvas');
 cityGroundCanvas.width = 1024;
 cityGroundCanvas.height = 1024;
 const cgCtx = cityGroundCanvas.getContext('2d');
-cgCtx.fillStyle = '#0e1628';
+cgCtx.fillStyle = '#162038';
 cgCtx.fillRect(0, 0, 1024, 1024);
 // Subtle grid
-cgCtx.strokeStyle = 'rgba(50,70,100,0.15)';
+cgCtx.strokeStyle = 'rgba(80,120,180,0.12)';
 cgCtx.lineWidth = 0.5;
 for (let i = 0; i < 1024; i += 32) {
   cgCtx.beginPath(); cgCtx.moveTo(i, 0); cgCtx.lineTo(i, 1024); cgCtx.stroke();
@@ -6252,10 +6291,10 @@ cityGround.position.y = -0.5;
 cityScene.add(cityGround);
 
 // City Lighting
-const cityAmbient = new THREE.AmbientLight(0x304060, 0.6);
+const cityAmbient = new THREE.AmbientLight(0x607890, 1.2);
 cityScene.add(cityAmbient);
-const cityDirLight = new THREE.DirectionalLight(0x8899bb, 0.8);
-cityDirLight.position.set(500, 800, 300);
+const cityDirLight = new THREE.DirectionalLight(0xddeeff, 1.5);
+cityDirLight.position.set(500, 1000, 300);
 cityScene.add(cityDirLight);
 
 // Build park markers
@@ -6266,8 +6305,8 @@ CITY_PARKS_DATA.parks.forEach(park => {
   const group = new THREE.Group();
   const px = park.position.x, pz = park.position.z;
 
-  // Base platform (glowing)
-  const baseGeo = new THREE.BoxGeometry(12, 0.5, 12);
+  // Base platform (glowing) — large enough to see at city scale
+  const baseGeo = new THREE.BoxGeometry(30, 1, 30);
   const baseMat = new THREE.MeshStandardMaterial({
     color: new THREE.Color(park.color),
     emissive: new THREE.Color(park.color),
@@ -6281,22 +6320,23 @@ CITY_PARKS_DATA.parks.forEach(park => {
 
   // Placeholder buildings
   park.placeholderBuildings.forEach(b => {
-    const bGeo = new THREE.BoxGeometry(b.w, b.h * 3, b.d);
+    const scale = 4; // scale up for city view visibility
+    const bGeo = new THREE.BoxGeometry(b.w * scale, b.h * scale * 2, b.d * scale);
     const bMat = new THREE.MeshStandardMaterial({
       color: new THREE.Color(park.color).lerp(new THREE.Color(0xffffff), 0.3),
       emissive: new THREE.Color(park.color),
-      emissiveIntensity: 0.15,
+      emissiveIntensity: 0.3,
       roughness: 0.4,
       metalness: 0.15,
     });
     const bMesh = new THREE.Mesh(bGeo, bMat);
-    bMesh.position.set(b.ox, b.h * 1.5 + 0.5, b.oz);
+    bMesh.position.set(b.ox * scale, b.h * scale + 1, b.oz * scale);
     group.add(bMesh);
   });
 
   // "You are here" ring for Prestige
   if (park.id === 'prestige') {
-    const ringGeo = new THREE.TorusGeometry(10, 0.3, 8, 32);
+    const ringGeo = new THREE.TorusGeometry(25, 1, 8, 32);
     const ringMat = new THREE.MeshStandardMaterial({
       color: 0x6366f1, emissive: 0x6366f1, emissiveIntensity: 0.8,
       transparent: true, opacity: 0.6,
@@ -6381,6 +6421,46 @@ const compassObj = new CSS2DObject(compassDiv);
 compassObj.position.set(0, 5, 300);
 cityScene.add(compassObj);
 
+// Bangalore landmarks
+const landmarkMeshes = [];
+const landmarks = [
+  { name: 'Cubbon Park', pos: [-300, 800], type: 'Park', info: 'Historic park, 300 acres' },
+  { name: 'MG Road', pos: [-350, 600], type: 'Shopping', info: 'Premium retail corridor' },
+  { name: 'Koramangala', pos: [-200, -300], type: 'Neighbourhood', info: 'Startup hub & nightlife' },
+  { name: 'Indiranagar', pos: [-100, 400], type: 'Neighbourhood', info: 'Bars, restaurants, boutiques' },
+  { name: 'Whitefield', pos: [600, 300], type: 'IT Hub', info: 'Major IT corridor, ITPL' },
+  { name: 'KR Puram', pos: [350, 500], type: 'Junction', info: 'Railway station, ORR junction' },
+  { name: 'Silk Board', pos: [-150, -600], type: 'Junction', info: 'Major traffic junction' },
+  { name: 'HSR Layout', pos: [50, -400], type: 'Neighbourhood', info: 'Startup & residential hub' },
+  { name: 'Marathahalli', pos: [150, 150], type: 'Commercial', info: 'ORR commercial belt' },
+  { name: 'Bellandur', pos: [100, -150], type: 'Residential', info: 'IT professional residential hub' },
+  { name: 'Hebbal', pos: [-100, 1100], type: 'Junction', info: 'Airport road junction' },
+  { name: 'Kempegowda Airport', pos: [200, 2500], type: 'Airport', info: '35 km from city center' },
+];
+
+landmarks.forEach(lm => {
+  // Small diamond marker
+  const markerGeo = new THREE.BoxGeometry(4, 4, 4);
+  const markerMat = new THREE.MeshStandardMaterial({
+    color: 0x475569, emissive: 0x475569, emissiveIntensity: 0.2,
+    transparent: true, opacity: 0.5
+  });
+  const marker = new THREE.Mesh(markerGeo, markerMat);
+  marker.rotation.y = Math.PI / 4; // diamond shape
+  marker.position.set(lm.pos[0], 2, lm.pos[1]);
+  marker.userData.landmark = lm;
+  landmarkMeshes.push(marker);
+  cityScene.add(marker);
+
+  // Label
+  const div = document.createElement('div');
+  div.style.cssText = 'font-family:system-ui;pointer-events:none;text-align:center';
+  div.innerHTML = `<div style="font-size:10px;font-weight:600;color:#64748b">${lm.name}</div><div style="font-size:8px;color:#475569">${lm.type}</div>`;
+  const label = new CSS2DObject(div);
+  label.position.set(lm.pos[0], 8, lm.pos[1]);
+  cityScene.add(label);
+});
+
 // City View tooltip
 const cityTooltip = document.createElement('div');
 cityTooltip.style.cssText = 'position:fixed;display:none;padding:12px 16px;background:rgba(10,14,26,0.95);backdrop-filter:blur(12px);border:1px solid rgba(99,102,241,0.3);border-radius:10px;color:#fff;font-size:13px;pointer-events:none;z-index:25;min-width:200px;box-shadow:0 8px 24px rgba(0,0,0,0.5);font-family:system-ui';
@@ -6401,6 +6481,8 @@ function onCityPointerMove(e) {
 
   if (hits.length > 0) {
     const park = cityParkDataMap.get(hits[0].object);
+    // Reset landmark highlights when hovering parks
+    landmarkMeshes.forEach(m => { m.material.emissiveIntensity = 0.2; });
     if (hoveredCityPark !== hits[0].object) {
       if (hoveredCityPark) hoveredCityPark.material.emissiveIntensity = 0.4;
       hoveredCityPark = hits[0].object;
@@ -6424,8 +6506,22 @@ function onCityPointerMove(e) {
       hoveredCityPark.material.emissiveIntensity = 0.4;
       hoveredCityPark = null;
     }
-    renderer.domElement.style.cursor = 'default';
-    cityTooltip.style.display = 'none';
+    // Check landmarks
+    const lmHits = cityRaycaster.intersectObjects(landmarkMeshes);
+    // Reset all landmark emissive first
+    landmarkMeshes.forEach(m => { m.material.emissiveIntensity = 0.2; });
+    if (lmHits.length > 0) {
+      const lm = lmHits[0].object.userData.landmark;
+      lmHits[0].object.material.emissiveIntensity = 0.6;
+      cityTooltip.innerHTML = `<div style="font-weight:700;font-size:13px;color:#e2e8f0">${lm.name}</div><div style="font-size:11px;color:#94a3b8">${lm.type} · ${lm.info}</div>`;
+      cityTooltip.style.display = 'block';
+      cityTooltip.style.left = (e.clientX + 16) + 'px';
+      cityTooltip.style.top = (e.clientY - 10) + 'px';
+      renderer.domElement.style.cursor = 'default';
+    } else {
+      renderer.domElement.style.cursor = 'default';
+      cityTooltip.style.display = 'none';
+    }
   }
 }
 
@@ -6438,7 +6534,17 @@ function onCityClick(e) {
     if (park.hasDetailedView) {
       transitionToView('park');
     } else {
-      showParkToast('Coming Soon \u2014 ' + park.name + ' model is under development');
+      // Open park landing page
+      document.getElementById('pl-icon').style.background = park.color + '20';
+      document.getElementById('pl-icon').innerHTML = '<span style="font-size:28px">🏢</span>';
+      document.getElementById('pl-name').textContent = park.name;
+      document.getElementById('pl-sub').textContent = park.subLocation;
+      document.getElementById('pl-stats').innerHTML = `
+        <div class="pl-stat"><div class="pl-stat-val">${park.buildings}</div><div class="pl-stat-label">Buildings</div></div>
+        <div class="pl-stat"><div class="pl-stat-val">${park.totalArea}</div><div class="pl-stat-label">Total Area</div></div>
+        <div class="pl-stat"><div class="pl-stat-val">${park.avgRent}</div><div class="pl-stat-label">Avg Rent</div></div>
+      `;
+      document.getElementById('park-landing').classList.add('open');
     }
   }
 }
@@ -6463,6 +6569,11 @@ function transitionToView(targetView) {
   viewFade.classList.add('active');
 
   setTimeout(() => {
+    // Clear stale CSS2D labels from previous view
+    while (labelRenderer.domElement.firstChild) {
+      labelRenderer.domElement.removeChild(labelRenderer.domElement.firstChild);
+    }
+
     if (targetView === 'city') {
       controls.enabled = false;
       cityControls.enabled = true;
@@ -6470,6 +6581,8 @@ function transitionToView(targetView) {
       document.getElementById('city-breadcrumb').classList.add('visible');
       document.querySelector('#title-bar h1').textContent = 'Bangalore Tech Parks';
       document.querySelector('#title-bar p').textContent = '6 Major IT Corridors \u00b7 Zoom & click to explore';
+      document.querySelector('.tb-logo-prestige').textContent = '';
+      document.querySelector('.tb-logo-x').style.display = 'none';
     } else {
       cityControls.enabled = false;
       controls.enabled = true;
@@ -6481,6 +6594,8 @@ function transitionToView(targetView) {
       document.getElementById('city-breadcrumb').classList.remove('visible');
       document.querySelector('#title-bar h1').textContent = 'Prestige Tech Park';
       document.querySelector('#title-bar p').textContent = 'Outer Ring Road, Kadubeesanahalli \u00b7 6M+ sqft \u00b7 19 Buildings';
+      document.querySelector('.tb-logo-prestige').textContent = 'PRESTIGE';
+      document.querySelector('.tb-logo-x').style.display = '';
     }
 
     currentView = targetView;
