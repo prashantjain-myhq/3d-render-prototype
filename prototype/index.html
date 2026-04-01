@@ -4924,8 +4924,7 @@ modeToggleBtn.addEventListener('click', () => {
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
-  cityCamera.aspect = window.innerWidth / window.innerHeight;
-  cityCamera.updateProjectionMatrix();
+  if (cityCamera) { cityCamera.aspect = window.innerWidth / window.innerHeight; cityCamera.updateProjectionMatrix(); }
   renderer.setSize(window.innerWidth, window.innerHeight);
   labelRenderer.setSize(window.innerWidth, window.innerHeight);
 });
@@ -4936,6 +4935,14 @@ window.addEventListener('resize', () => {
 const clock = new THREE.Clock();
 
 let lastTime = 0;
+// View state + city objects hoisted before animate (used in render loop + resize)
+var currentView = 'park';
+var savedParkCameraPos = null;
+var savedParkCameraTarget = null;
+var cityCamera = null;
+var cityControls = null;
+var cityScene = null;
+
 function animate() {
   requestAnimationFrame(animate);
   const t = clock.getElapsedTime();
@@ -4957,7 +4964,7 @@ function animate() {
   // Label occlusion disabled for performance
   frameCount++;
 
-  if (currentView === 'city') {
+  if (currentView === 'city' && cityScene && cityCamera && cityControls) {
     cityControls.update();
     renderer.render(cityScene, cityCamera);
     if (frameCount % 3 === 0) labelRenderer.render(cityScene, cityCamera);
@@ -6198,22 +6205,20 @@ document.getElementById('tb-enquiry-btn').addEventListener('click', () => {
 // ============================================================
 // CITY-LEVEL VIEW
 // ============================================================
-let currentView = 'park'; // 'park' | 'city' | 'transitioning'
-let savedParkCameraPos = null;
-let savedParkCameraTarget = null;
+// currentView, savedParkCameraPos, savedParkCameraTarget declared earlier (before animate)
 
-// City Scene
-const cityScene = new THREE.Scene();
+// City Scene (assigned to vars declared before animate)
+cityScene = new THREE.Scene();
 cityScene.background = new THREE.Color(0x0c1222);
 cityScene.fog = new THREE.FogExp2(0x0c1222, 0.00015);
 
 // City Camera
-const cityCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 5000);
+cityCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 5000);
 cityCamera.position.set(0, 800, 600);
 cityCamera.lookAt(0, 0, 0);
 
 // City Controls
-const cityControls = new OrbitControls(cityCamera, renderer.domElement);
+cityControls = new OrbitControls(cityCamera, renderer.domElement);
 cityControls.enableDamping = true;
 cityControls.dampingFactor = 0.08;
 cityControls.maxPolarAngle = Math.PI / 2.3;
