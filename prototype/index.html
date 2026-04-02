@@ -1733,10 +1733,7 @@
   #view-fade { position:fixed; inset:0; background:#0a0e1a; z-index:200; opacity:0; pointer-events:none; transition:opacity 0.3s; }
   #view-fade.active { opacity:1; pointer-events:auto; }
   .city-view-active #park-switcher-wrap, .city-view-active #time-slider-wrap, .city-view-active #heatmap-legend { display:none !important; }
-  #city-breadcrumb { position:fixed; top:8px; left:50%; transform:translateX(-50%); z-index:11; display:none; pointer-events:auto; }
-  #city-breadcrumb.visible { display:flex; }
-  #city-breadcrumb a { font-size:12px; color:#4f46e5; font-weight:600; text-decoration:none; cursor:pointer; }
-  #city-breadcrumb span { font-size:12px; color:#94a3b8; margin:0 6px; }
+  #city-breadcrumb { display:none !important; }
     /* Park Landing Overlay */
     #park-landing { position:fixed; inset:0; z-index:115; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); }
     #park-landing.open { display:flex; }
@@ -4752,7 +4749,7 @@ function setFloorHighlight(mesh, on) {
 
 let raycastFrame = 0;
 function onPointerMove(e) {
-  if (walkthroughActive) { tooltip.style.display = 'none'; return; }
+  if (currentView !== 'park') { tooltip.style.display = 'none'; return; }
   pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
   pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
   raycastFrame++;
@@ -4803,6 +4800,9 @@ function onPointerMove(e) {
 }
 
 function onClick(e) {
+  if (currentView !== 'park') return;
+  if (e.target.closest('#park-landing')) return;
+  if (e.target.closest('#gallery-overlay')) return;
   if (walkthroughActive) return;
   if (e.target.closest('#panel-container') || e.target.closest('#panel-overlay')) return;
   if (e.target.closest('#compare-overlay') || e.target.closest('#compare-btn')) return;
@@ -6248,7 +6248,7 @@ document.getElementById('tb-enquiry-btn').addEventListener('click', () => {
 
 // City Scene (assigned to vars declared before animate)
 cityScene = new THREE.Scene();
-cityScene.background = new THREE.Color(0x1a2744);
+cityScene.background = new THREE.Color(0x1e3050);
 // No fog — we want to see everything at city scale
 
 // City Camera — closer start, can zoom out
@@ -6272,7 +6272,7 @@ const cityGroundCanvas = document.createElement('canvas');
 cityGroundCanvas.width = 1024;
 cityGroundCanvas.height = 1024;
 const cgCtx = cityGroundCanvas.getContext('2d');
-cgCtx.fillStyle = '#162038';
+cgCtx.fillStyle = '#1e2d4a';
 cgCtx.fillRect(0, 0, 1024, 1024);
 // Subtle grid
 cgCtx.strokeStyle = 'rgba(80,120,180,0.12)';
@@ -6352,10 +6352,7 @@ CITY_PARKS_DATA.parks.forEach(park => {
   const labelDiv = document.createElement('div');
   labelDiv.style.cssText = `font-family:system-ui;text-align:center;pointer-events:none`;
   labelDiv.innerHTML = `
-    <div style="font-size:14px;font-weight:800;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.9)">${park.name}</div>
-    <div style="font-size:10px;color:#94a3b8;margin-top:2px">${park.subLocation}</div>
-    <div style="font-size:10px;color:${park.color};font-weight:700;margin-top:3px">${park.buildings} buildings · ${park.totalArea}</div>
-    ${park.hasDetailedView ? '<div style="margin-top:4px;padding:2px 8px;background:#4f46e5;color:#fff;border-radius:4px;font-size:9px;font-weight:700;display:inline-block">EXPLORE →</div>' : '<div style="margin-top:4px;padding:2px 8px;background:rgba(148,163,184,0.2);color:#94a3b8;border-radius:4px;font-size:9px;font-weight:600;display:inline-block">Coming Soon</div>'}
+    <div style="font-size:13px;font-weight:800;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.9)">${park.name}</div>
   `;
   const label = new CSS2DObject(labelDiv);
   const maxH = Math.max(...park.placeholderBuildings.map(b => b.h * 3));
@@ -6424,18 +6421,18 @@ cityScene.add(compassObj);
 // Bangalore landmarks
 const landmarkMeshes = [];
 const landmarks = [
-  { name: 'Cubbon Park', pos: [-300, 800], type: 'Park', info: 'Historic park, 300 acres' },
-  { name: 'MG Road', pos: [-350, 600], type: 'Shopping', info: 'Premium retail corridor' },
-  { name: 'Koramangala', pos: [-200, -300], type: 'Neighbourhood', info: 'Startup hub & nightlife' },
-  { name: 'Indiranagar', pos: [-100, 400], type: 'Neighbourhood', info: 'Bars, restaurants, boutiques' },
-  { name: 'Whitefield', pos: [600, 300], type: 'IT Hub', info: 'Major IT corridor, ITPL' },
-  { name: 'KR Puram', pos: [350, 500], type: 'Junction', info: 'Railway station, ORR junction' },
-  { name: 'Silk Board', pos: [-150, -600], type: 'Junction', info: 'Major traffic junction' },
-  { name: 'HSR Layout', pos: [50, -400], type: 'Neighbourhood', info: 'Startup & residential hub' },
-  { name: 'Marathahalli', pos: [150, 150], type: 'Commercial', info: 'ORR commercial belt' },
-  { name: 'Bellandur', pos: [100, -150], type: 'Residential', info: 'IT professional residential hub' },
-  { name: 'Hebbal', pos: [-100, 1100], type: 'Junction', info: 'Airport road junction' },
-  { name: 'Kempegowda Airport', pos: [200, 2500], type: 'Airport', info: '35 km from city center' },
+  { name: 'Cubbon Park', pos: [-300, 800], type: '🌳 Park', icon: '🌳', info: 'Historic 300-acre park in the heart of Bangalore. Home to the State Library, Attara Kacheri, and walking trails. A green oasis amid the city.' },
+  { name: 'MG Road', pos: [-350, 600], type: '🛍️ Shopping', icon: '🛍️', info: 'Bangalore\'s premium retail and commercial corridor. Home to UB City mall, Brigade Road shopping, and iconic cafes. Metro connected.' },
+  { name: 'Koramangala', pos: [-200, -300], type: '🏙️ Startup Hub', icon: '🚀', info: 'Bangalore\'s startup epicenter. Home to Flipkart HQ, 500+ startups, vibrant nightlife, and some of the city\'s best restaurants. 7 km from PTP.' },
+  { name: 'Indiranagar', pos: [-100, 400], type: '🍷 Lifestyle', icon: '🍷', info: '100 Feet Road — Bangalore\'s bar and restaurant capital. Premium residential area with boutique shops, cafes, and metro connectivity.' },
+  { name: 'Whitefield', pos: [600, 300], type: '💻 IT Hub', icon: '💻', info: 'Major IT corridor with ITPL, Brigade Tech Gardens, and 50+ tech companies. 12 km east of PTP. Purple metro line extension underway.' },
+  { name: 'KR Puram', pos: [350, 500], type: '🚂 Railway', icon: '🚂', info: 'Key railway junction connecting Bangalore to Chennai and Hyderabad. ORR intersection point. 6 km from PTP.' },
+  { name: 'Silk Board Junction', pos: [-150, -600], type: '🚦 Junction', icon: '🚦', info: 'One of Bangalore\'s busiest junctions connecting ORR, Hosur Road, and BTM. Elevated corridor under construction to ease congestion.' },
+  { name: 'HSR Layout', pos: [50, -400], type: '🏘️ Residential', icon: '🏘️', info: 'Popular residential area for IT professionals. Excellent social infrastructure, parks, and proximity to ORR tech parks. Growing startup scene.' },
+  { name: 'Marathahalli', pos: [150, 150], type: '🏢 Commercial', icon: '🏢', info: 'ORR commercial belt with multiple tech parks, shopping malls, and residential complexes. Closest urban center to PTP (2 km).' },
+  { name: 'Bellandur', pos: [100, -150], type: '🏠 Residential', icon: '🏠', info: 'Fast-growing residential hub for IT professionals. Close to multiple tech parks on ORR. Phoenix Marketcity mall nearby.' },
+  { name: 'Hebbal', pos: [-100, 1100], type: '✈️ Airport Road', icon: '🛣️', info: 'Gateway to Kempegowda Airport. Home to Manyata Tech Park. Flyover connects to city center. 15 km north of PTP.' },
+  { name: 'Kempegowda Intl Airport', pos: [200, 2500], type: '✈️ Airport', icon: '✈️', info: 'Bangalore\'s international airport (BLR). 35 km from PTP, ~60-90 min drive. Airport Express metro planned. Handles 35M+ passengers/year.' },
 ];
 
 landmarks.forEach(lm => {
@@ -6455,7 +6452,7 @@ landmarks.forEach(lm => {
   // Label
   const div = document.createElement('div');
   div.style.cssText = 'font-family:system-ui;pointer-events:none;text-align:center';
-  div.innerHTML = `<div style="font-size:10px;font-weight:600;color:#64748b">${lm.name}</div><div style="font-size:8px;color:#475569">${lm.type}</div>`;
+  div.innerHTML = `<div style="font-size:9px;font-weight:600;color:#8899aa;text-shadow:0 1px 4px rgba(0,0,0,0.8)">${lm.name}</div>`;
   const label = new CSS2DObject(div);
   label.position.set(lm.pos[0], 8, lm.pos[1]);
   cityScene.add(label);
@@ -6513,7 +6510,12 @@ function onCityPointerMove(e) {
     if (lmHits.length > 0) {
       const lm = lmHits[0].object.userData.landmark;
       lmHits[0].object.material.emissiveIntensity = 0.6;
-      cityTooltip.innerHTML = `<div style="font-weight:700;font-size:13px;color:#e2e8f0">${lm.name}</div><div style="font-size:11px;color:#94a3b8">${lm.type} · ${lm.info}</div>`;
+      const distFromPTP = Math.sqrt(lm.pos[0]**2 + lm.pos[1]**2) * 12 / 1000;
+      cityTooltip.innerHTML = `
+        <div style="font-weight:800;font-size:15px;color:#fff;margin-bottom:2px">${lm.icon || ''} ${lm.name}</div>
+        <div style="font-size:11px;color:#818cf8;font-weight:600;margin-bottom:8px">${lm.type} · ${distFromPTP.toFixed(1)} km from PTP</div>
+        <div style="font-size:12px;color:#cbd5e1;line-height:1.5;max-width:260px">${lm.info}</div>
+      `;
       cityTooltip.style.display = 'block';
       cityTooltip.style.left = (e.clientX + 16) + 'px';
       cityTooltip.style.top = (e.clientY - 10) + 'px';
@@ -6600,6 +6602,7 @@ function transitionToView(targetView) {
 
     currentView = targetView;
     cityTooltip.style.display = 'none';
+    tooltip.style.display = 'none';
 
     // Fade out
     setTimeout(() => { viewFade.classList.remove('active'); }, 50);
