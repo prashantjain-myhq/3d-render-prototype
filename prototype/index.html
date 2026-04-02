@@ -1808,6 +1808,7 @@
   <button class="cb-btn" id="cb-theme" data-tip="Building Theme">&#127912;</button>
   <button class="cb-btn" id="cb-labels" data-tip="Labels">&#127991;&#65039;</button>
   <button class="cb-btn" id="cb-tenants" data-tip="Tenant Analysis">&#128101;</button>
+  <button class="cb-btn" id="cb-transactions" data-tip="Transactions">&#128176;</button>
   <!-- walkthrough removed -->
   <button class="cb-btn" id="cb-map" data-tip="Map">&#128205;</button>
 </div>
@@ -2228,6 +2229,14 @@
   <div id="tenant-panel">
     <button id="tenant-close">&times;</button>
     <div id="tenant-content"></div>
+  </div>
+</div>
+
+<!-- Transactions Overlay -->
+<div id="txn-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)">
+  <div style="background:#fff;border-radius:16px;width:92vw;max-width:900px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.4);position:relative">
+    <button id="txn-close" style="position:absolute;top:12px;right:12px;width:36px;height:36px;border:none;background:#f1f5f9;border-radius:50%;font-size:18px;color:#475569;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5">&times;</button>
+    <div id="txn-content" style="overflow-y:auto;padding:28px"></div>
   </div>
 </div>
 
@@ -6101,6 +6110,121 @@ document.getElementById('cb-tenants').addEventListener('click', (e) => {
 });
 
 // ============================================================
+// TRANSACTIONS PANEL
+// ============================================================
+const txnOverlay = document.getElementById('txn-overlay');
+const txnContent = document.getElementById('txn-content');
+document.getElementById('txn-close').addEventListener('click', () => { txnOverlay.style.display = 'none'; });
+txnOverlay.addEventListener('click', (e) => { if (e.target === txnOverlay) txnOverlay.style.display = 'none'; });
+
+// Mock transaction data — realistic Prestige Tech Park transactions
+const transactions = [
+  { date: '2026-03-15', type: 'New Lease', building: 'Cosmos (Block 2)', floor: 'F11', tenant: 'Stripe India', area: '32,000 sqft', rent: '₹118/sqft', deal: '₹3.78 Cr/yr', term: '5 years', broker: 'myHQ' },
+  { date: '2026-03-08', type: 'Renewal', building: 'Platina Block 2', floor: 'F7-F8', tenant: 'JPMorgan Chase', area: '80,000 sqft', rent: '₹115/sqft', deal: '₹9.20 Cr/yr', term: '7 years', broker: 'JLL' },
+  { date: '2026-02-28', type: 'New Lease', building: 'Phase 5', floor: 'F3-F4', tenant: 'Atlassian', area: '100,000 sqft', rent: '₹115/sqft', deal: '₹11.50 Cr/yr', term: '5 years', broker: 'Cushman' },
+  { date: '2026-02-20', type: 'Expansion', building: 'Elnath', floor: 'F10', tenant: 'Oracle', area: '80,000 sqft', rent: '₹102/sqft', deal: '₹8.16 Cr/yr', term: '3 years', broker: 'CBRE' },
+  { date: '2026-02-14', type: 'New Lease', building: 'Mercury', floor: 'F9', tenant: 'PhonePe', area: '40,000 sqft', rent: '₹95/sqft', deal: '₹3.80 Cr/yr', term: '5 years', broker: 'myHQ' },
+  { date: '2026-02-01', type: 'Surrender', building: 'Vector', floor: 'F8', tenant: 'Cognizant', area: '34,520 sqft', rent: '-', deal: '-', term: '-', broker: '-' },
+  { date: '2026-01-25', type: 'Renewal', building: 'Etamin', floor: 'F3-F4', tenant: 'Juniper Networks', area: '79,000 sqft', rent: '₹108/sqft', deal: '₹8.53 Cr/yr', term: '5 years', broker: 'JLL' },
+  { date: '2026-01-18', type: 'New Lease', building: 'Gravity (Block 3)', floor: 'F4', tenant: 'Razorpay', area: '18,000 sqft', rent: '₹98/sqft', deal: '₹1.76 Cr/yr', term: '3 years', broker: 'myHQ' },
+  { date: '2026-01-10', type: 'New Lease', building: 'Platina Block 3', floor: 'F12', tenant: 'Notion Labs', area: '31,500 sqft', rent: '₹120/sqft', deal: '₹3.78 Cr/yr', term: '5 years', broker: 'CBRE' },
+  { date: '2026-01-03', type: 'Expansion', building: 'Velocity', floor: 'F9', tenant: 'Capgemini', area: '39,000 sqft', rent: '₹92/sqft', deal: '₹3.59 Cr/yr', term: '3 years', broker: 'Vestian' },
+  { date: '2025-12-22', type: 'New Lease', building: 'Valence', floor: 'F6', tenant: 'Freshworks', area: '39,000 sqft', rent: '₹90/sqft', deal: '₹3.51 Cr/yr', term: '5 years', broker: 'JLL' },
+  { date: '2025-12-15', type: 'Renewal', building: 'Electra', floor: 'F1-F3', tenant: 'Guidewire Software', area: '120,000 sqft', rent: '₹95/sqft', deal: '₹11.40 Cr/yr', term: '7 years', broker: 'CBRE' },
+  { date: '2025-12-05', type: 'New Lease', building: 'Neptune Tower 1', floor: 'F5', tenant: 'Zeta Suite', area: '33,000 sqft', rent: '₹88/sqft', deal: '₹2.90 Cr/yr', term: '3 years', broker: 'myHQ' },
+  { date: '2025-11-28', type: 'Surrender', building: 'Jupiter', floor: 'F7', tenant: 'WeWork', area: '40,000 sqft', rent: '-', deal: '-', term: '-', broker: '-' },
+  { date: '2025-11-15', type: 'New Lease', building: 'Block 1', floor: 'F13', tenant: 'Meesho', area: '35,000 sqft', rent: '₹110/sqft', deal: '₹3.85 Cr/yr', term: '5 years', broker: 'JLL' },
+];
+
+function openTransactions() {
+  // Summary stats
+  const newLeases = transactions.filter(t => t.type === 'New Lease').length;
+  const renewals = transactions.filter(t => t.type === 'Renewal').length;
+  const expansions = transactions.filter(t => t.type === 'Expansion').length;
+  const surrenders = transactions.filter(t => t.type === 'Surrender').length;
+  const totalArea = transactions.filter(t => t.type !== 'Surrender').reduce((s, t) => s + parseInt(t.area.replace(/,/g, '')), 0);
+
+  const typeBadge = (type) => {
+    const colors = { 'New Lease': '#dcfce7;color:#166534', 'Renewal': '#dbeafe;color:#1e40af', 'Expansion': '#fef3c7;color:#92400e', 'Surrender': '#fee2e2;color:#991b1b' };
+    return '<span style="padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;background:' + (colors[type] || '#f1f5f9;color:#475569') + '">' + type + '</span>';
+  };
+
+  let html = `
+    <h2 style="font-size:20px;font-weight:800;color:#0f172a;margin-bottom:4px">Recent Transactions</h2>
+    <p style="font-size:13px;color:#64748b;margin-bottom:20px">Last 15 transactions across Prestige Tech Park</p>
+
+    <div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap">
+      <div style="flex:1;min-width:120px;padding:12px 16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px">
+        <div style="font-size:22px;font-weight:800;color:#166534">${newLeases}</div>
+        <div style="font-size:11px;color:#16a34a;font-weight:600">New Leases</div>
+      </div>
+      <div style="flex:1;min-width:120px;padding:12px 16px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px">
+        <div style="font-size:22px;font-weight:800;color:#1e40af">${renewals}</div>
+        <div style="font-size:11px;color:#2563eb;font-weight:600">Renewals</div>
+      </div>
+      <div style="flex:1;min-width:120px;padding:12px 16px;background:#fefce8;border:1px solid #fde68a;border-radius:10px">
+        <div style="font-size:22px;font-weight:800;color:#92400e">${expansions}</div>
+        <div style="font-size:11px;color:#d97706;font-weight:600">Expansions</div>
+      </div>
+      <div style="flex:1;min-width:120px;padding:12px 16px;background:#fef2f2;border:1px solid #fecaca;border-radius:10px">
+        <div style="font-size:22px;font-weight:800;color:#991b1b">${surrenders}</div>
+        <div style="font-size:11px;color:#dc2626;font-weight:600">Surrenders</div>
+      </div>
+      <div style="flex:1;min-width:120px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px">
+        <div style="font-size:22px;font-weight:800;color:#0f172a">${(totalArea/1000).toFixed(0)}K</div>
+        <div style="font-size:11px;color:#64748b;font-weight:600">Sqft Transacted</div>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:800px">
+        <thead>
+          <tr style="border-bottom:2px solid #e2e8f0">
+            <th style="text-align:left;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:700">Date</th>
+            <th style="text-align:left;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:700">Type</th>
+            <th style="text-align:left;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:700">Building</th>
+            <th style="text-align:left;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:700">Floor</th>
+            <th style="text-align:left;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:700">Tenant</th>
+            <th style="text-align:right;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:700">Area</th>
+            <th style="text-align:right;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:700">Rent</th>
+            <th style="text-align:right;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:700">Deal Value</th>
+            <th style="text-align:center;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:700">Term</th>
+            <th style="text-align:left;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:700">Broker</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${transactions.map((t, i) => `<tr style="border-bottom:1px solid #f1f5f9;${i%2===0?'background:#fafafa':''}">
+            <td style="padding:8px 10px;color:#475569;font-weight:500">${t.date}</td>
+            <td style="padding:8px 10px">${typeBadge(t.type)}</td>
+            <td style="padding:8px 10px;font-weight:600;color:#1e293b">${t.building}</td>
+            <td style="padding:8px 10px;color:#6366f1;font-weight:600">${t.floor}</td>
+            <td style="padding:8px 10px;font-weight:600;color:#1e293b">${t.tenant}</td>
+            <td style="padding:8px 10px;text-align:right;color:#475569">${t.area}</td>
+            <td style="padding:8px 10px;text-align:right;font-weight:600;color:#1e293b">${t.rent}</td>
+            <td style="padding:8px 10px;text-align:right;font-weight:700;color:#166534">${t.deal}</td>
+            <td style="padding:8px 10px;text-align:center;color:#475569">${t.term}</td>
+            <td style="padding:8px 10px;color:#64748b">${t.broker}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:16px;padding:10px 14px;background:#f0f4ff;border:1px solid #c7d2fe;border-radius:8px;font-size:11px;color:#4338ca">
+      <strong>Data Sources:</strong> ${TECH_PARK_DATA.dataSources ? TECH_PARK_DATA.dataSources.map(s => s.name).join(' · ') : ''} · Last updated: ${TECH_PARK_DATA.lastUpdated || 'N/A'}
+    </div>
+  `;
+
+  txnContent.innerHTML = html;
+  txnOverlay.style.display = 'flex';
+}
+
+document.getElementById('cb-transactions').addEventListener('click', (e) => {
+  e.stopPropagation();
+  closeAllDropdowns();
+  openTransactions();
+});
+
+// ============================================================
 // FEATURE 6: First-Person Walkthrough Mode
 // ============================================================
 // walkthroughActive declared earlier near raycaster
@@ -6267,7 +6391,7 @@ cityControls.target.set(0, 0, 0);
 cityControls.enabled = false;
 
 // City Ground
-// City ground — procedural dark map with roads baked in
+// City ground — procedural Google Maps-style canvas
 const cityGroundGeo = new THREE.PlaneGeometry(4000, 4000);
 const cityGroundCanvas = document.createElement('canvas');
 cityGroundCanvas.width = 2048;
@@ -6341,41 +6465,61 @@ for (let i = 0; i < 2048; i += 48) {
   cgCtx.beginPath(); cgCtx.moveTo(0, i); cgCtx.lineTo(2048, i); cgCtx.stroke();
 }
 
-// Major roads — Google Maps orange/yellow for highways, white for major roads
-// ORR (orange — national highway style)
-drawRoad([[-150,-600], [-80,-350], [0,0], [40,10], [80,5], [125,0], [180,30], [250,200], [350,500]], '#f0b040', 10);
-drawRoad([[-150,-600], [-250,-400], [-350,-100], [-400,200], [-350,500], [-200,800], [-100,1100]], '#f0b040', 10);
-drawRoad([[0,0], [30,-50], [80,-120], [150,-200]], '#f0b040', 8);
+// === ROADS — based on real Bangalore geography ===
+// PTP at origin. +x=East, -x=West, +z=South, -z=North. 1 unit≈12m
+// Key: Marathahalli(-100,-100), Sarjapur jn(-250,250), KR Puram(-400,-400)
+//       Silk Board(-200,800), Hebbal(-700,-1500), Whitefield(400,-50)
 
-// ORR outline (darker edge)
-drawRoad([[-150,-600], [-80,-350], [0,0], [40,10], [80,5], [125,0], [180,30], [250,200], [350,500]], '#c08820', 12);
-drawRoad([[-150,-600], [-80,-350], [0,0], [40,10], [80,5], [125,0], [180,30], [250,200], [350,500]], '#f0b040', 8);
+// ORR — NW-SE through PTP, then arcs around the city
+// NW arm: PTP → Marathahalli → KR Puram → further NW
+drawRoad([[0,0], [-50,-50], [-100,-100], [-200,-200], [-300,-300], [-400,-400], [-500,-550], [-600,-700]], '#f0b040', 10);
+// SW arm: PTP → Bellandur → Sarjapur jn → Silk Board
+drawRoad([[0,0], [-30,40], [-80,100], [-150,180], [-250,250], [-240,400], [-220,600], [-200,800]], '#f0b040', 10);
+// ORR west arc: Silk Board → west → curves north toward Hebbal
+drawRoad([[-200,800], [-350,750], [-500,600], [-600,400], [-650,200], [-680,0], [-700,-300], [-720,-600], [-730,-900], [-720,-1200], [-700,-1500]], '#f0b040', 7);
 
-// Hosur Road (yellow — state highway)
-drawRoad([[0,0], [-30,-150], [-60,-350], [-80,-600], [-60,-900], [-50,-1200], [-50,-1500]], '#e8c040', 7);
+// Sarjapur Road — branches from ORR at Iblur/Sarjapur jn (5km SW of PTP)
+drawRoad([[-250,250], [-200,350], [-150,500], [-100,700], [-50,950], [0,1200]], '#ffffff', 5);
 
-// Bellary Road / NH-44 (orange)
-drawRoad([[0,0], [-20,150], [-40,400], [-60,700], [-80,900], [-100,1100], [-80,1400], [0,1800], [100,2200], [200,2500]], '#f0b040', 8);
+// Hosur Road — meets ORR at Silk Board, goes south to Electronic City
+drawRoad([[-400,500], [-320,650], [-200,800], [-180,950], [-150,1100], [-100,1300], [-50,1500]], '#e8c040', 8);
+// Hosur Road north from Silk Board toward city
+drawRoad([[-200,800], [-250,700], [-350,550], [-500,350], [-600,200]], '#e8c040', 6);
 
-// Secondary roads (white)
-drawRoad([[-350,600], [-250,400], [-100,200], [0,0]], '#ffffff', 4);
-drawRoad([[0,0], [50,-80], [100,-200], [200,-350], [350,-500]], '#ffffff', 4);
-drawRoad([[125,0], [250,50], [400,100], [600,300]], '#ffffff', 4);
-drawRoad([[-200,-300], [-250,-500], [-300,-700], [-350,-1000]], '#ffffff', 4);
+// Bellary Road (NH-44 North) — from Hebbal to Airport
+drawRoad([[-700,-1500], [-680,-1700], [-620,-1900], [-500,-2100], [-300,-2300], [200,2500]], '#f0b040', 8);
+
+// Old Airport Road — from Marathahalli west toward Indiranagar/HAL
+drawRoad([[-100,-100], [-200,-130], [-350,-170], [-500,-200], [-700,-240], [-900,-280]], '#ffffff', 5);
+
+// Whitefield Road — east from Marathahalli
+drawRoad([[-100,-100], [0,-80], [150,-60], [300,-40], [450,-20], [600,0]], '#ffffff', 5);
+
+// Old Madras Road — from KR Puram going NE
+drawRoad([[-400,-400], [-350,-500], [-250,-600], [-100,-750], [50,-900]], '#ffffff', 4);
+
+// Bannerghatta Road — south from Jayadeva (~15km SW of PTP)
+drawRoad([[-550,300], [-580,450], [-620,600], [-660,800], [-700,1000]], '#ffffff', 4);
+
+// MG Road — city center (~12km west)
+drawRoad([[-750,-100], [-780,0], [-800,100], [-820,200], [-800,350]], '#ffffff', 3);
 
 // Road labels
-cgCtx.font = 'bold 13px system-ui';
+cgCtx.font = 'bold 12px system-ui';
 cgCtx.fillStyle = '#6a5020';
-let [orrX, orrY] = mapXZ(60, 15); cgCtx.fillText('OUTER RING ROAD', orrX, orrY);
+let [orrX, orrY] = mapXZ(-150, -150); cgCtx.fillText('OUTER RING ROAD', orrX, orrY);
+let [orrX2, orrY2] = mapXZ(-230, 500); cgCtx.fillText('ORR', orrX2, orrY2);
 cgCtx.fillStyle = '#5a6a30';
-let [hrX, hrY] = mapXZ(-50, -900); cgCtx.fillText('HOSUR RD', hrX, hrY);
+let [hrX, hrY] = mapXZ(-130, 1200); cgCtx.fillText('HOSUR RD / NH-44', hrX, hrY);
 cgCtx.fillStyle = '#6a5020';
-let [brX, brY] = mapXZ(-60, 700); cgCtx.fillText('BELLARY RD / NH-44', brX, brY);
-cgCtx.fillStyle = '#666';
-let [srX, srY] = mapXZ(150, -250); cgCtx.fillText('SARJAPUR RD', srX, srY);
-let [wrX, wrY] = mapXZ(400, 150); cgCtx.fillText('WHITEFIELD RD', wrX, wrY);
-let [oaX, oaY] = mapXZ(-200, 350); cgCtx.fillText('OLD AIRPORT RD', oaX, oaY);
-let [bgX, bgY] = mapXZ(-280, -600); cgCtx.fillText('BANNERGHATTA RD', bgX, bgY);
+let [brX, brY] = mapXZ(-660, -1700); cgCtx.fillText('BELLARY RD', brX, brY);
+cgCtx.fillStyle = '#555';
+let [srX, srY] = mapXZ(-150, 600); cgCtx.fillText('SARJAPUR RD', srX, srY);
+let [wrX, wrY] = mapXZ(300, -50); cgCtx.fillText('WHITEFIELD RD', wrX, wrY);
+let [oaX, oaY] = mapXZ(-500, -190); cgCtx.fillText('OLD AIRPORT RD', oaX, oaY);
+let [bgX, bgY] = mapXZ(-640, 700); cgCtx.fillText('BANNERGHATTA RD', bgX, bgY);
+let [omrX, omrY] = mapXZ(-200, -600); cgCtx.fillText('OLD MADRAS RD', omrX, omrY);
+let [mgX, mgY] = mapXZ(-800, 100); cgCtx.fillText('MG ROAD', mgX, mgY);
 
 const cityGroundTex = new THREE.CanvasTexture(cityGroundCanvas);
 const cityGroundMat = new THREE.MeshStandardMaterial({ map: cityGroundTex, roughness: 0.85, metalness: 0.05 });
@@ -6446,7 +6590,7 @@ CITY_PARKS_DATA.parks.forEach(park => {
   const labelDiv = document.createElement('div');
   labelDiv.style.cssText = `font-family:system-ui;text-align:center;pointer-events:none`;
   labelDiv.innerHTML = `
-    <div style="font-size:13px;font-weight:800;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.9)">${park.name}</div>
+    <div style="font-size:13px;font-weight:800;color:#1e293b;background:rgba(255,255,255,0.85);padding:2px 8px;border-radius:4px;-webkit-font-smoothing:antialiased">${park.name}</div>
   `;
   const label = new CSS2DObject(labelDiv);
   const maxH = Math.max(...park.placeholderBuildings.map(b => b.h * 3));
@@ -6457,7 +6601,7 @@ CITY_PARKS_DATA.parks.forEach(park => {
   if (park.id !== 'prestige') {
     const dist = Math.sqrt(px * px + pz * pz) * 12 / 1000;
     const distLabel = document.createElement('div');
-    distLabel.style.cssText = 'font-size:10px;color:#64748b;font-weight:600;pointer-events:none;background:rgba(12,18,34,0.8);padding:2px 6px;border-radius:4px';
+    distLabel.style.cssText = 'font-size:10px;color:#4f46e5;font-weight:700;pointer-events:none;background:rgba(255,255,255,0.9);padding:2px 8px;border-radius:4px;border:1px solid #c7d2fe;-webkit-font-smoothing:antialiased';
     distLabel.textContent = dist.toFixed(1) + ' km';
     const distObj = new CSS2DObject(distLabel);
     distObj.position.set(px/2, 2, pz/2);
@@ -6527,7 +6671,7 @@ landmarks.forEach(lm => {
   // Label
   const div = document.createElement('div');
   div.style.cssText = 'font-family:system-ui;pointer-events:none;text-align:center';
-  div.innerHTML = `<div style="font-size:9px;font-weight:600;color:#8899aa;text-shadow:0 1px 4px rgba(0,0,0,0.8)">${lm.name}</div>`;
+  div.innerHTML = `<div style="font-size:10px;font-weight:700;color:#334155;-webkit-font-smoothing:antialiased">${lm.name}</div>`;
   const label = new CSS2DObject(div);
   label.position.set(lm.pos[0], 8, lm.pos[1]);
   cityScene.add(label);
