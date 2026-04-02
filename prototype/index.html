@@ -2282,7 +2282,7 @@ camera.lookAt(-3, 0, 0);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+renderer.setPixelRatio(window.devicePixelRatio);
 renderer.shadowMap.enabled = false;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.4;
@@ -6248,7 +6248,7 @@ document.getElementById('tb-enquiry-btn').addEventListener('click', () => {
 
 // City Scene (assigned to vars declared before animate)
 cityScene = new THREE.Scene();
-cityScene.background = new THREE.Color(0x1e3050);
+cityScene.background = new THREE.Color(0xd0ccc5);
 // No fog — we want to see everything at city scale
 
 // City Camera — closer start, can zoom out
@@ -6267,33 +6267,127 @@ cityControls.target.set(0, 0, 0);
 cityControls.enabled = false;
 
 // City Ground
+// City ground — procedural dark map with roads baked in
 const cityGroundGeo = new THREE.PlaneGeometry(4000, 4000);
 const cityGroundCanvas = document.createElement('canvas');
-cityGroundCanvas.width = 1024;
-cityGroundCanvas.height = 1024;
+cityGroundCanvas.width = 2048;
+cityGroundCanvas.height = 2048;
 const cgCtx = cityGroundCanvas.getContext('2d');
-cgCtx.fillStyle = '#1e2d4a';
-cgCtx.fillRect(0, 0, 1024, 1024);
-// Subtle grid
-cgCtx.strokeStyle = 'rgba(80,120,180,0.12)';
-cgCtx.lineWidth = 0.5;
-for (let i = 0; i < 1024; i += 32) {
-  cgCtx.beginPath(); cgCtx.moveTo(i, 0); cgCtx.lineTo(i, 1024); cgCtx.stroke();
-  cgCtx.beginPath(); cgCtx.moveTo(0, i); cgCtx.lineTo(1024, i); cgCtx.stroke();
+
+// Google Maps-style light palette
+cgCtx.fillStyle = '#e8e4df';
+cgCtx.fillRect(0, 0, 2048, 2048);
+
+// Map coordinate helper
+function mapXZ(x, z) { return [(x + 2000) / 4000 * 2048, (z + 2000) / 4000 * 2048]; }
+
+// Green park patches (like Google Maps green areas)
+cgCtx.fillStyle = '#c5e1a5';
+const greenPatches = [
+  [-300, 800, 80, 60],   // Cubbon Park
+  [50, -400, 40, 30],    // HSR parks
+  [-200, -300, 35, 25],  // Koramangala parks
+  [-100, 400, 30, 20],   // Indiranagar parks
+  [100, -150, 25, 20],   // Bellandur area
+  [-350, 100, 50, 40],   // West Bangalore green
+  [300, 400, 40, 30],    // East green
+  [-150, 1000, 45, 35],  // North green
+  [0, 0, 20, 15],        // PTP campus green
+];
+greenPatches.forEach(([px, pz, pw, ph]) => {
+  const [cx, cy] = mapXZ(px, pz);
+  const sw = pw / 4000 * 2048, sh = ph / 4000 * 2048;
+  cgCtx.beginPath();
+  cgCtx.ellipse(cx, cy, sw, sh, 0, 0, Math.PI * 2);
+  cgCtx.fill();
+});
+
+// Water bodies (blue)
+cgCtx.fillStyle = '#a8d4f0';
+const waters = [
+  [100, -120, 30, 15],   // Bellandur Lake
+  [-250, 700, 20, 12],   // Ulsoor Lake
+  [-320, 300, 15, 10],   // Sankey Tank
+];
+waters.forEach(([wx, wz, ww, wh]) => {
+  const [cx, cy] = mapXZ(wx, wz);
+  const sw = ww / 4000 * 2048, sh = wh / 4000 * 2048;
+  cgCtx.beginPath();
+  cgCtx.ellipse(cx, cy, sw, sh, 0, 0, Math.PI * 2);
+  cgCtx.fill();
+});
+
+// Draw roads helper
+function drawRoad(points, color, width) {
+  cgCtx.strokeStyle = color;
+  cgCtx.lineWidth = width;
+  cgCtx.lineCap = 'round';
+  cgCtx.lineJoin = 'round';
+  cgCtx.beginPath();
+  const [sx, sy] = mapXZ(points[0][0], points[0][1]);
+  cgCtx.moveTo(sx, sy);
+  for (let i = 1; i < points.length; i++) {
+    const [px, py] = mapXZ(points[i][0], points[i][1]);
+    cgCtx.lineTo(px, py);
+  }
+  cgCtx.stroke();
 }
+
+// Secondary street grid (very subtle)
+cgCtx.strokeStyle = 'rgba(200,195,185,0.4)';
+cgCtx.lineWidth = 0.5;
+for (let i = 0; i < 2048; i += 48) {
+  cgCtx.beginPath(); cgCtx.moveTo(i, 0); cgCtx.lineTo(i, 2048); cgCtx.stroke();
+  cgCtx.beginPath(); cgCtx.moveTo(0, i); cgCtx.lineTo(2048, i); cgCtx.stroke();
+}
+
+// Major roads — Google Maps orange/yellow for highways, white for major roads
+// ORR (orange — national highway style)
+drawRoad([[-150,-600], [-80,-350], [0,0], [40,10], [80,5], [125,0], [180,30], [250,200], [350,500]], '#f0b040', 10);
+drawRoad([[-150,-600], [-250,-400], [-350,-100], [-400,200], [-350,500], [-200,800], [-100,1100]], '#f0b040', 10);
+drawRoad([[0,0], [30,-50], [80,-120], [150,-200]], '#f0b040', 8);
+
+// ORR outline (darker edge)
+drawRoad([[-150,-600], [-80,-350], [0,0], [40,10], [80,5], [125,0], [180,30], [250,200], [350,500]], '#c08820', 12);
+drawRoad([[-150,-600], [-80,-350], [0,0], [40,10], [80,5], [125,0], [180,30], [250,200], [350,500]], '#f0b040', 8);
+
+// Hosur Road (yellow — state highway)
+drawRoad([[0,0], [-30,-150], [-60,-350], [-80,-600], [-60,-900], [-50,-1200], [-50,-1500]], '#e8c040', 7);
+
+// Bellary Road / NH-44 (orange)
+drawRoad([[0,0], [-20,150], [-40,400], [-60,700], [-80,900], [-100,1100], [-80,1400], [0,1800], [100,2200], [200,2500]], '#f0b040', 8);
+
+// Secondary roads (white)
+drawRoad([[-350,600], [-250,400], [-100,200], [0,0]], '#ffffff', 4);
+drawRoad([[0,0], [50,-80], [100,-200], [200,-350], [350,-500]], '#ffffff', 4);
+drawRoad([[125,0], [250,50], [400,100], [600,300]], '#ffffff', 4);
+drawRoad([[-200,-300], [-250,-500], [-300,-700], [-350,-1000]], '#ffffff', 4);
+
+// Road labels
+cgCtx.font = 'bold 13px system-ui';
+cgCtx.fillStyle = '#6a5020';
+let [orrX, orrY] = mapXZ(60, 15); cgCtx.fillText('OUTER RING ROAD', orrX, orrY);
+cgCtx.fillStyle = '#5a6a30';
+let [hrX, hrY] = mapXZ(-50, -900); cgCtx.fillText('HOSUR RD', hrX, hrY);
+cgCtx.fillStyle = '#6a5020';
+let [brX, brY] = mapXZ(-60, 700); cgCtx.fillText('BELLARY RD / NH-44', brX, brY);
+cgCtx.fillStyle = '#666';
+let [srX, srY] = mapXZ(150, -250); cgCtx.fillText('SARJAPUR RD', srX, srY);
+let [wrX, wrY] = mapXZ(400, 150); cgCtx.fillText('WHITEFIELD RD', wrX, wrY);
+let [oaX, oaY] = mapXZ(-200, 350); cgCtx.fillText('OLD AIRPORT RD', oaX, oaY);
+let [bgX, bgY] = mapXZ(-280, -600); cgCtx.fillText('BANNERGHATTA RD', bgX, bgY);
+
 const cityGroundTex = new THREE.CanvasTexture(cityGroundCanvas);
-cityGroundTex.wrapS = cityGroundTex.wrapT = THREE.RepeatWrapping;
-cityGroundTex.repeat.set(8, 8);
-const cityGroundMat = new THREE.MeshStandardMaterial({ map: cityGroundTex, roughness: 0.95 });
+const cityGroundMat = new THREE.MeshStandardMaterial({ map: cityGroundTex, roughness: 0.85, metalness: 0.05 });
 const cityGround = new THREE.Mesh(cityGroundGeo, cityGroundMat);
 cityGround.rotation.x = -Math.PI / 2;
 cityGround.position.y = -0.5;
 cityScene.add(cityGround);
 
 // City Lighting
-const cityAmbient = new THREE.AmbientLight(0x607890, 1.2);
+const cityAmbient = new THREE.AmbientLight(0xaabbcc, 1.5);
 cityScene.add(cityAmbient);
-const cityDirLight = new THREE.DirectionalLight(0xddeeff, 1.5);
+const cityDirLight = new THREE.DirectionalLight(0xffffff, 1.0);
 cityDirLight.position.set(500, 1000, 300);
 cityScene.add(cityDirLight);
 
@@ -6389,26 +6483,7 @@ CITY_PARKS_DATA.parks.forEach(park => {
 
 // Major roads as lines
 const roadColor = 0x2a3a5a;
-function addCityRoad(points) {
-  const vecs = points.map(p => new THREE.Vector3(p[0], 0.3, p[1]));
-  const geo = new THREE.BufferGeometry().setFromPoints(vecs);
-  const mat = new THREE.LineBasicMaterial({ color: roadColor, transparent: true, opacity: 0.4 });
-  const line = new THREE.Line(geo, mat);
-  cityScene.add(line);
-  const glowMat = new THREE.LineBasicMaterial({ color: roadColor, transparent: true, opacity: 0.15, linewidth: 2 });
-  const glow = new THREE.Line(geo.clone(), glowMat);
-  glow.position.y = 0.1;
-  cityScene.add(glow);
-}
-
-// ORR (curved, connecting Prestige -> Bagmane -> Embassy area)
-addCityRoad([[0,0], [40,10], [80,5], [125,0], [180,30], [250,200]]);
-// Hosur Road south toward Electronic City
-addCityRoad([[0,0], [-10,-100], [-20,-400], [-30,-800], [-50,-1500]]);
-// Bellary Road north toward Manyata
-addCityRoad([[0,0], [10,100], [0,400], [-30,800], [-100,1250]]);
-// ORR south toward RMZ
-addCityRoad([[0,0], [30,-50], [80,-120], [150,-200]]);
+// Roads are baked into the ground canvas texture — no 3D road meshes needed
 
 // Compass indicator
 const compassDiv = document.createElement('div');
@@ -6436,15 +6511,15 @@ const landmarks = [
 ];
 
 landmarks.forEach(lm => {
-  // Small diamond marker
-  const markerGeo = new THREE.BoxGeometry(4, 4, 4);
+  // Diamond marker — large enough to hover
+  const markerGeo = new THREE.BoxGeometry(12, 8, 12);
   const markerMat = new THREE.MeshStandardMaterial({
-    color: 0x475569, emissive: 0x475569, emissiveIntensity: 0.2,
-    transparent: true, opacity: 0.5
+    color: 0x607090, emissive: 0x607090, emissiveIntensity: 0.3,
+    transparent: true, opacity: 0.6
   });
   const marker = new THREE.Mesh(markerGeo, markerMat);
-  marker.rotation.y = Math.PI / 4; // diamond shape
-  marker.position.set(lm.pos[0], 2, lm.pos[1]);
+  marker.rotation.y = Math.PI / 4;
+  marker.position.set(lm.pos[0], 4, lm.pos[1]);
   marker.userData.landmark = lm;
   landmarkMeshes.push(marker);
   cityScene.add(marker);
@@ -6479,7 +6554,7 @@ function onCityPointerMove(e) {
   if (hits.length > 0) {
     const park = cityParkDataMap.get(hits[0].object);
     // Reset landmark highlights when hovering parks
-    landmarkMeshes.forEach(m => { m.material.emissiveIntensity = 0.2; });
+    landmarkMeshes.forEach(m => { m.material.emissiveIntensity = 0.3; });
     if (hoveredCityPark !== hits[0].object) {
       if (hoveredCityPark) hoveredCityPark.material.emissiveIntensity = 0.4;
       hoveredCityPark = hits[0].object;
@@ -6506,7 +6581,7 @@ function onCityPointerMove(e) {
     // Check landmarks
     const lmHits = cityRaycaster.intersectObjects(landmarkMeshes);
     // Reset all landmark emissive first
-    landmarkMeshes.forEach(m => { m.material.emissiveIntensity = 0.2; });
+    landmarkMeshes.forEach(m => { m.material.emissiveIntensity = 0.3; });
     if (lmHits.length > 0) {
       const lm = lmHits[0].object.userData.landmark;
       lmHits[0].object.material.emissiveIntensity = 0.6;
