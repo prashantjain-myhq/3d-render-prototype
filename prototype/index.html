@@ -2275,6 +2275,9 @@
 
 <script type="module">
 import * as THREE from 'three';
+
+// Mapbox token (used for both city and park map textures)
+const MAPBOX_TOKEN = 'pk.eyJ1IjoicHJhc2hhbnRqYWluLW15aHEiLCJhIjoiY21uaHMzYjZuMDF2ZzJyc2JlYWw5cjJyMyJ9.YJsmVNRjX8Yft0iSihimOQ';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
@@ -6372,7 +6375,7 @@ document.getElementById('tb-enquiry-btn').addEventListener('click', () => {
 
 // City Scene (assigned to vars declared before animate)
 cityScene = new THREE.Scene();
-cityScene.background = new THREE.Color(0xd0ccc5);
+cityScene.background = new THREE.Color(0x191a1a); // match Mapbox dark style
 // No fog — we want to see everything at city scale
 
 // City Camera — closer start, can zoom out
@@ -6391,147 +6394,44 @@ cityControls.target.set(0, 0, 0);
 cityControls.enabled = false;
 
 // City Ground
-// City ground — procedural Google Maps-style canvas
+// City ground — Mapbox Static API rendered map
 const cityGroundGeo = new THREE.PlaneGeometry(4000, 4000);
-const cityGroundCanvas = document.createElement('canvas');
-cityGroundCanvas.width = 2048;
-cityGroundCanvas.height = 2048;
-const cgCtx = cityGroundCanvas.getContext('2d');
 
-// Google Maps-style light palette
-cgCtx.fillStyle = '#e8e4df';
-cgCtx.fillRect(0, 0, 2048, 2048);
+// Mapbox Static Images API — renders a map tile as a PNG
+// Center: PTP (77.6935, 12.9430), zoom 11 covers ~25km radius
+// MAPBOX_TOKEN defined at top of module
+const mapStyle = 'dark-v11';
+const mapCenter = '77.6500,12.9500'; // slightly west of PTP to center the view
+const mapZoom = 12; // zoom 12 = smaller labels, more detail
+const mapSize = '1280x1280@2x';
 
-// Map coordinate helper
-function mapXZ(x, z) { return [(x + 2000) / 4000 * 2048, (z + 2000) / 4000 * 2048]; }
+const mapUrl = `https://api.mapbox.com/styles/v1/mapbox/${mapStyle}/static/${mapCenter},${mapZoom},0/${mapSize}?access_token=${MAPBOX_TOKEN}&attribution=false&logo=false`;
 
-// Green park patches (like Google Maps green areas)
-cgCtx.fillStyle = '#c5e1a5';
-const greenPatches = [
-  [-300, 800, 80, 60],   // Cubbon Park
-  [50, -400, 40, 30],    // HSR parks
-  [-200, -300, 35, 25],  // Koramangala parks
-  [-100, 400, 30, 20],   // Indiranagar parks
-  [100, -150, 25, 20],   // Bellandur area
-  [-350, 100, 50, 40],   // West Bangalore green
-  [300, 400, 40, 30],    // East green
-  [-150, 1000, 45, 35],  // North green
-  [0, 0, 20, 15],        // PTP campus green
-];
-greenPatches.forEach(([px, pz, pw, ph]) => {
-  const [cx, cy] = mapXZ(px, pz);
-  const sw = pw / 4000 * 2048, sh = ph / 4000 * 2048;
-  cgCtx.beginPath();
-  cgCtx.ellipse(cx, cy, sw, sh, 0, 0, Math.PI * 2);
-  cgCtx.fill();
-});
-
-// Water bodies (blue)
-cgCtx.fillStyle = '#a8d4f0';
-const waters = [
-  [100, -120, 30, 15],   // Bellandur Lake
-  [-250, 700, 20, 12],   // Ulsoor Lake
-  [-320, 300, 15, 10],   // Sankey Tank
-];
-waters.forEach(([wx, wz, ww, wh]) => {
-  const [cx, cy] = mapXZ(wx, wz);
-  const sw = ww / 4000 * 2048, sh = wh / 4000 * 2048;
-  cgCtx.beginPath();
-  cgCtx.ellipse(cx, cy, sw, sh, 0, 0, Math.PI * 2);
-  cgCtx.fill();
-});
-
-// Draw roads helper
-function drawRoad(points, color, width) {
-  cgCtx.strokeStyle = color;
-  cgCtx.lineWidth = width;
-  cgCtx.lineCap = 'round';
-  cgCtx.lineJoin = 'round';
-  cgCtx.beginPath();
-  const [sx, sy] = mapXZ(points[0][0], points[0][1]);
-  cgCtx.moveTo(sx, sy);
-  for (let i = 1; i < points.length; i++) {
-    const [px, py] = mapXZ(points[i][0], points[i][1]);
-    cgCtx.lineTo(px, py);
-  }
-  cgCtx.stroke();
-}
-
-// Secondary street grid (very subtle)
-cgCtx.strokeStyle = 'rgba(200,195,185,0.4)';
-cgCtx.lineWidth = 0.5;
-for (let i = 0; i < 2048; i += 48) {
-  cgCtx.beginPath(); cgCtx.moveTo(i, 0); cgCtx.lineTo(i, 2048); cgCtx.stroke();
-  cgCtx.beginPath(); cgCtx.moveTo(0, i); cgCtx.lineTo(2048, i); cgCtx.stroke();
-}
-
-// === ROADS — based on real Bangalore geography ===
-// PTP at origin. +x=East, -x=West, +z=South, -z=North. 1 unit≈12m
-// Key: Marathahalli(-100,-100), Sarjapur jn(-250,250), KR Puram(-400,-400)
-//       Silk Board(-200,800), Hebbal(-700,-1500), Whitefield(400,-50)
-
-// ORR — NW-SE through PTP, then arcs around the city
-// NW arm: PTP → Marathahalli → KR Puram → further NW
-drawRoad([[0,0], [-50,-50], [-100,-100], [-200,-200], [-300,-300], [-400,-400], [-500,-550], [-600,-700]], '#f0b040', 10);
-// SW arm: PTP → Bellandur → Sarjapur jn → Silk Board
-drawRoad([[0,0], [-30,40], [-80,100], [-150,180], [-250,250], [-240,400], [-220,600], [-200,800]], '#f0b040', 10);
-// ORR west arc: Silk Board → west → curves north toward Hebbal
-drawRoad([[-200,800], [-350,750], [-500,600], [-600,400], [-650,200], [-680,0], [-700,-300], [-720,-600], [-730,-900], [-720,-1200], [-700,-1500]], '#f0b040', 7);
-
-// Sarjapur Road — branches from ORR at Iblur/Sarjapur jn (5km SW of PTP)
-drawRoad([[-250,250], [-200,350], [-150,500], [-100,700], [-50,950], [0,1200]], '#ffffff', 5);
-
-// Hosur Road — meets ORR at Silk Board, goes south to Electronic City
-drawRoad([[-400,500], [-320,650], [-200,800], [-180,950], [-150,1100], [-100,1300], [-50,1500]], '#e8c040', 8);
-// Hosur Road north from Silk Board toward city
-drawRoad([[-200,800], [-250,700], [-350,550], [-500,350], [-600,200]], '#e8c040', 6);
-
-// Bellary Road (NH-44 North) — from Hebbal to Airport
-drawRoad([[-700,-1500], [-680,-1700], [-620,-1900], [-500,-2100], [-300,-2300], [200,2500]], '#f0b040', 8);
-
-// Old Airport Road — from Marathahalli west toward Indiranagar/HAL
-drawRoad([[-100,-100], [-200,-130], [-350,-170], [-500,-200], [-700,-240], [-900,-280]], '#ffffff', 5);
-
-// Whitefield Road — east from Marathahalli
-drawRoad([[-100,-100], [0,-80], [150,-60], [300,-40], [450,-20], [600,0]], '#ffffff', 5);
-
-// Old Madras Road — from KR Puram going NE
-drawRoad([[-400,-400], [-350,-500], [-250,-600], [-100,-750], [50,-900]], '#ffffff', 4);
-
-// Bannerghatta Road — south from Jayadeva (~15km SW of PTP)
-drawRoad([[-550,300], [-580,450], [-620,600], [-660,800], [-700,1000]], '#ffffff', 4);
-
-// MG Road — city center (~12km west)
-drawRoad([[-750,-100], [-780,0], [-800,100], [-820,200], [-800,350]], '#ffffff', 3);
-
-// Road labels
-cgCtx.font = 'bold 12px system-ui';
-cgCtx.fillStyle = '#6a5020';
-let [orrX, orrY] = mapXZ(-150, -150); cgCtx.fillText('OUTER RING ROAD', orrX, orrY);
-let [orrX2, orrY2] = mapXZ(-230, 500); cgCtx.fillText('ORR', orrX2, orrY2);
-cgCtx.fillStyle = '#5a6a30';
-let [hrX, hrY] = mapXZ(-130, 1200); cgCtx.fillText('HOSUR RD / NH-44', hrX, hrY);
-cgCtx.fillStyle = '#6a5020';
-let [brX, brY] = mapXZ(-660, -1700); cgCtx.fillText('BELLARY RD', brX, brY);
-cgCtx.fillStyle = '#555';
-let [srX, srY] = mapXZ(-150, 600); cgCtx.fillText('SARJAPUR RD', srX, srY);
-let [wrX, wrY] = mapXZ(300, -50); cgCtx.fillText('WHITEFIELD RD', wrX, wrY);
-let [oaX, oaY] = mapXZ(-500, -190); cgCtx.fillText('OLD AIRPORT RD', oaX, oaY);
-let [bgX, bgY] = mapXZ(-640, 700); cgCtx.fillText('BANNERGHATTA RD', bgX, bgY);
-let [omrX, omrY] = mapXZ(-200, -600); cgCtx.fillText('OLD MADRAS RD', omrX, omrY);
-let [mgX, mgY] = mapXZ(-800, 100); cgCtx.fillText('MG ROAD', mgX, mgY);
-
-const cityGroundTex = new THREE.CanvasTexture(cityGroundCanvas);
-const cityGroundMat = new THREE.MeshStandardMaterial({ map: cityGroundTex, roughness: 0.85, metalness: 0.05 });
+// Start with dark fallback
+const cityGroundMat = new THREE.MeshStandardMaterial({ color: 0x1a2540, roughness: 0.9, metalness: 0.05 });
 const cityGround = new THREE.Mesh(cityGroundGeo, cityGroundMat);
 cityGround.rotation.x = -Math.PI / 2;
 cityGround.position.y = -0.5;
 cityScene.add(cityGround);
 
+// Load Mapbox map as texture
+const mapLoader = new THREE.TextureLoader();
+mapLoader.crossOrigin = 'anonymous';
+mapLoader.load(mapUrl, (tex) => {
+  tex.minFilter = THREE.LinearFilter;
+  tex.magFilter = THREE.LinearFilter;
+  cityGroundMat.map = tex;
+  cityGroundMat.color.set(0xffffff);
+  cityGroundMat.needsUpdate = true;
+  console.log('Mapbox map loaded successfully');
+}, undefined, (err) => {
+  console.log('Mapbox failed, using dark fallback', err);
+});
+
 // City Lighting
-const cityAmbient = new THREE.AmbientLight(0xaabbcc, 1.5);
+const cityAmbient = new THREE.AmbientLight(0xffffff, 2.0); // bright to show map texture
 cityScene.add(cityAmbient);
-const cityDirLight = new THREE.DirectionalLight(0xffffff, 1.0);
+const cityDirLight = new THREE.DirectionalLight(0xffffff, 0.5);
 cityDirLight.position.set(500, 1000, 300);
 cityScene.add(cityDirLight);
 
