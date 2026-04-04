@@ -1761,6 +1761,16 @@
 </head>
 <body>
 
+<!-- Loading Screen -->
+<div id="loading-screen" style="position:fixed;inset:0;z-index:999;background:#0f172a;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.6s">
+  <div style="font-size:12px;font-weight:700;color:#818cf8;text-transform:uppercase;letter-spacing:3px;margin-bottom:8px">myHQ × Prestige</div>
+  <div style="font-size:28px;font-weight:800;color:#fff;margin-bottom:24px">Prestige Tech Park</div>
+  <div style="width:200px;height:3px;background:#1e293b;border-radius:2px;overflow:hidden">
+    <div id="loading-bar" style="width:0%;height:100%;background:linear-gradient(90deg,#6366f1,#818cf8);border-radius:2px;transition:width 0.3s"></div>
+  </div>
+  <div style="font-size:12px;color:#64748b;margin-top:12px" id="loading-text">Loading 3D model...</div>
+</div>
+
 <div id="title-bar">
   <div class="tb-logo">
     <span class="tb-logo-myhq">myHQ</span>
@@ -5060,6 +5070,77 @@ function updateLabelOcclusion() {
 animate();
 
 // ============================================================
+// LOADING SCREEN + INTRO CAMERA ANIMATION
+// ============================================================
+const loadingScreen = document.getElementById('loading-screen');
+const loadingBar = document.getElementById('loading-bar');
+const loadingText = document.getElementById('loading-text');
+
+// Animate loading bar
+let loadProgress = 0;
+const loadInterval = setInterval(() => {
+  loadProgress += Math.random() * 15 + 5;
+  if (loadProgress > 90) loadProgress = 90;
+  loadingBar.style.width = loadProgress + '%';
+  if (loadProgress > 30) loadingText.textContent = 'Building campus...';
+  if (loadProgress > 60) loadingText.textContent = 'Placing buildings...';
+  if (loadProgress > 80) loadingText.textContent = 'Almost ready...';
+}, 200);
+
+// After scene is ready, dismiss loading and start camera animation
+setTimeout(() => {
+  clearInterval(loadInterval);
+  loadingBar.style.width = '100%';
+  loadingText.textContent = 'Ready!';
+
+  setTimeout(() => {
+    loadingScreen.style.opacity = '0';
+    setTimeout(() => { loadingScreen.style.display = 'none'; }, 600);
+
+    // Start intro camera orbit animation
+    const introStart = performance.now();
+    const introDuration = 4000; // 4 seconds
+    const startPos = { x: 35, y: 30, z: 35 };
+    const endPos = { x: 25, y: 22, z: 30 };
+
+    // Save current camera for restore
+    const origPos = camera.position.clone();
+    const origTarget = controls.target.clone();
+
+    // Set camera to a wider start position
+    camera.position.set(startPos.x, startPos.y, startPos.z);
+    controls.enabled = false;
+
+    function introAnimate() {
+      const elapsed = performance.now() - introStart;
+      const t = Math.min(elapsed / introDuration, 1);
+      const eased = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2;
+
+      // Orbit: rotate around the scene center while zooming in
+      const angle = (1 - eased) * 0.8; // rotate ~45 degrees
+      const radius = startPos.x - (startPos.x - endPos.x) * eased;
+      const height = startPos.y - (startPos.y - endPos.y) * eased;
+
+      camera.position.x = Math.cos(angle) * radius;
+      camera.position.z = Math.sin(angle) * radius;
+      camera.position.y = height;
+      camera.lookAt(0, 1, 0);
+
+      if (t < 1) {
+        requestAnimationFrame(introAnimate);
+      } else {
+        // Restore controls
+        controls.enabled = true;
+        controls.target.set(0, 1, 0);
+        controls.update();
+      }
+    }
+
+    introAnimate();
+  }, 400);
+}, 1500); // loading screen shows for 1.5s
+
+// ============================================================
 // Feature: Bangalore Map Panel
 // ============================================================
 const mapToggleBtn = document.getElementById('map-toggle-btn');
@@ -6375,12 +6456,12 @@ document.getElementById('tb-enquiry-btn').addEventListener('click', () => {
 
 // City Scene (assigned to vars declared before animate)
 cityScene = new THREE.Scene();
-cityScene.background = new THREE.Color(0x191a1a); // match Mapbox dark style
+cityScene.background = new THREE.Color(0xe8e4de); // match Mapbox streets style
 // No fog — we want to see everything at city scale
 
 // City Camera — closer start, can zoom out
 cityCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 8000);
-cityCamera.position.set(200, 400, 400);
+cityCamera.position.set(0, 500, 400);
 cityCamera.lookAt(0, 0, 0);
 
 // City Controls
@@ -6400,9 +6481,9 @@ const cityGroundGeo = new THREE.PlaneGeometry(4000, 4000);
 // Mapbox Static Images API — renders a map tile as a PNG
 // Center: PTP (77.6935, 12.9430), zoom 11 covers ~25km radius
 // MAPBOX_TOKEN defined at top of module
-const mapStyle = 'dark-v11';
-const mapCenter = '77.6500,12.9500'; // slightly west of PTP to center the view
-const mapZoom = 12; // zoom 12 = smaller labels, more detail
+const mapStyle = 'streets-v12';
+const mapCenter = '77.6935,12.9430'; // centered EXACTLY on PTP
+const mapZoom = 12;
 const mapSize = '1280x1280@2x';
 
 const mapUrl = `https://api.mapbox.com/styles/v1/mapbox/${mapStyle}/static/${mapCenter},${mapZoom},0/${mapSize}?access_token=${MAPBOX_TOKEN}&attribution=false&logo=false`;
@@ -6444,7 +6525,7 @@ CITY_PARKS_DATA.parks.forEach(park => {
   const px = park.position.x, pz = park.position.z;
 
   // Base platform (glowing) — large enough to see at city scale
-  const baseGeo = new THREE.BoxGeometry(30, 1, 30);
+  const baseGeo = new THREE.BoxGeometry(40, 1.5, 40);
   const baseMat = new THREE.MeshStandardMaterial({
     color: new THREE.Color(park.color),
     emissive: new THREE.Color(park.color),
@@ -6458,23 +6539,23 @@ CITY_PARKS_DATA.parks.forEach(park => {
 
   // Placeholder buildings
   park.placeholderBuildings.forEach(b => {
-    const scale = 4; // scale up for city view visibility
-    const bGeo = new THREE.BoxGeometry(b.w * scale, b.h * scale * 2, b.d * scale);
+    const scale = 6; // larger for visibility at city zoom
+    const bGeo = new THREE.BoxGeometry(b.w * scale, b.h * scale * 3, b.d * scale);
     const bMat = new THREE.MeshStandardMaterial({
       color: new THREE.Color(park.color).lerp(new THREE.Color(0xffffff), 0.3),
       emissive: new THREE.Color(park.color),
-      emissiveIntensity: 0.3,
-      roughness: 0.4,
-      metalness: 0.15,
+      emissiveIntensity: 0.5,
+      roughness: 0.3,
+      metalness: 0.2,
     });
     const bMesh = new THREE.Mesh(bGeo, bMat);
-    bMesh.position.set(b.ox * scale, b.h * scale + 1, b.oz * scale);
+    bMesh.position.set(b.ox * scale, b.h * scale * 1.5 + 1, b.oz * scale);
     group.add(bMesh);
   });
 
   // "You are here" ring for Prestige
   if (park.id === 'prestige') {
-    const ringGeo = new THREE.TorusGeometry(25, 1, 8, 32);
+    const ringGeo = new THREE.TorusGeometry(35, 1.5, 8, 32);
     const ringMat = new THREE.MeshStandardMaterial({
       color: 0x6366f1, emissive: 0x6366f1, emissiveIntensity: 0.8,
       transparent: true, opacity: 0.6,
@@ -6499,16 +6580,19 @@ CITY_PARKS_DATA.parks.forEach(park => {
 
   // Distance line + label from Prestige (skip for Prestige itself)
   if (park.id !== 'prestige') {
-    const dist = Math.sqrt(px * px + pz * pz) * 12 / 1000;
+    // PTP position for distance calculation
+    const ptpX = 0, ptpZ = 0;
+    const dx = px - ptpX, dz = pz - ptpZ;
+    const dist = Math.sqrt(dx*dx + dz*dz) * 12 / 1000;
     const distLabel = document.createElement('div');
     distLabel.style.cssText = 'font-size:10px;color:#4f46e5;font-weight:700;pointer-events:none;background:rgba(255,255,255,0.9);padding:2px 8px;border-radius:4px;border:1px solid #c7d2fe;-webkit-font-smoothing:antialiased';
     distLabel.textContent = dist.toFixed(1) + ' km';
     const distObj = new CSS2DObject(distLabel);
-    distObj.position.set(px/2, 2, pz/2);
+    distObj.position.set((px+ptpX)/2, 2, (pz+ptpZ)/2);
     cityScene.add(distObj);
 
     // Dashed line from Prestige to this park
-    const linePoints = [new THREE.Vector3(0, 0.5, 0), new THREE.Vector3(px, 0.5, pz)];
+    const linePoints = [new THREE.Vector3(ptpX, 0.5, ptpZ), new THREE.Vector3(px, 0.5, pz)];
     const lineGeo = new THREE.BufferGeometry().setFromPoints(linePoints);
     const lineMat = new THREE.LineDashedMaterial({ color: new THREE.Color(park.color), dashSize: 5, gapSize: 5, transparent: true, opacity: 0.3 });
     const line = new THREE.Line(lineGeo, lineMat);
@@ -6540,26 +6624,26 @@ cityScene.add(compassObj);
 // Bangalore landmarks
 const landmarkMeshes = [];
 const landmarks = [
-  { name: 'Cubbon Park', pos: [-300, 800], type: '🌳 Park', icon: '🌳', info: 'Historic 300-acre park in the heart of Bangalore. Home to the State Library, Attara Kacheri, and walking trails. A green oasis amid the city.' },
-  { name: 'MG Road', pos: [-350, 600], type: '🛍️ Shopping', icon: '🛍️', info: 'Bangalore\'s premium retail and commercial corridor. Home to UB City mall, Brigade Road shopping, and iconic cafes. Metro connected.' },
-  { name: 'Koramangala', pos: [-200, -300], type: '🏙️ Startup Hub', icon: '🚀', info: 'Bangalore\'s startup epicenter. Home to Flipkart HQ, 500+ startups, vibrant nightlife, and some of the city\'s best restaurants. 7 km from PTP.' },
-  { name: 'Indiranagar', pos: [-100, 400], type: '🍷 Lifestyle', icon: '🍷', info: '100 Feet Road — Bangalore\'s bar and restaurant capital. Premium residential area with boutique shops, cafes, and metro connectivity.' },
-  { name: 'Whitefield', pos: [600, 300], type: '💻 IT Hub', icon: '💻', info: 'Major IT corridor with ITPL, Brigade Tech Gardens, and 50+ tech companies. 12 km east of PTP. Purple metro line extension underway.' },
-  { name: 'KR Puram', pos: [350, 500], type: '🚂 Railway', icon: '🚂', info: 'Key railway junction connecting Bangalore to Chennai and Hyderabad. ORR intersection point. 6 km from PTP.' },
-  { name: 'Silk Board Junction', pos: [-150, -600], type: '🚦 Junction', icon: '🚦', info: 'One of Bangalore\'s busiest junctions connecting ORR, Hosur Road, and BTM. Elevated corridor under construction to ease congestion.' },
-  { name: 'HSR Layout', pos: [50, -400], type: '🏘️ Residential', icon: '🏘️', info: 'Popular residential area for IT professionals. Excellent social infrastructure, parks, and proximity to ORR tech parks. Growing startup scene.' },
-  { name: 'Marathahalli', pos: [150, 150], type: '🏢 Commercial', icon: '🏢', info: 'ORR commercial belt with multiple tech parks, shopping malls, and residential complexes. Closest urban center to PTP (2 km).' },
-  { name: 'Bellandur', pos: [100, -150], type: '🏠 Residential', icon: '🏠', info: 'Fast-growing residential hub for IT professionals. Close to multiple tech parks on ORR. Phoenix Marketcity mall nearby.' },
-  { name: 'Hebbal', pos: [-100, 1100], type: '✈️ Airport Road', icon: '🛣️', info: 'Gateway to Kempegowda Airport. Home to Manyata Tech Park. Flyover connects to city center. 15 km north of PTP.' },
-  { name: 'Kempegowda Intl Airport', pos: [200, 2500], type: '✈️ Airport', icon: '✈️', info: 'Bangalore\'s international airport (BLR). 35 km from PTP, ~60-90 min drive. Airport Express metro planned. Handles 35M+ passengers/year.' },
+  { name: 'Cubbon Park', pos: [-916, -309], type: '🌳 Park', icon: '🌳', info: 'Historic 300-acre park in the heart of Bangalore.' },
+  { name: 'MG Road', pos: [-791, -297], type: '🛍️ Shopping', icon: '🛍️', info: 'Premium retail and commercial corridor. UB City mall, Brigade Road.' },
+  { name: 'Koramangala', pos: [-628, 72], type: '🏙️ Startup Hub', icon: '🚀', info: 'Startup epicenter. Flipkart HQ, 500+ startups, vibrant nightlife.' },
+  { name: 'Indiranagar', pos: [-480, -328], type: '🍷 Lifestyle', icon: '🍷', info: '100 Feet Road — bars, restaurants, boutiques. Metro connected.' },
+  { name: 'Whitefield', pos: [514, -249], type: '💻 IT Hub', icon: '💻', info: 'Major IT corridor with ITPL, Brigade Tech Gardens, 50+ companies.' },
+  { name: 'KR Puram', pos: [77, -518], type: '🚂 Railway', icon: '🚂', info: 'Railway junction. ORR intersection. 6 km from PTP.' },
+  { name: 'Silk Board Junction', pos: [-646, 237], type: '🚦 Junction', icon: '🚦', info: 'Busiest junction — ORR meets Hosur Road and BTM.' },
+  { name: 'HSR Layout', pos: [-420, 291], type: '🏘️ Residential', icon: '🏘️', info: 'Popular residential area for IT professionals.' },
+  { name: 'Marathahalli', pos: [70, -149], type: '🏢 Commercial', icon: '🏢', info: 'ORR commercial belt. Closest urban center to PTP (2 km).' },
+  { name: 'Bellandur', pos: [-152, 158], type: '🏠 Residential', icon: '🏠', info: 'IT professional residential hub. Phoenix Marketcity nearby.' },
+  { name: 'Hebbal', pos: [-878, -861], type: '✈️ Airport Road', icon: '🛣️', info: 'Gateway to Airport. Home to Manyata Tech Park.' },
+  { name: 'Kempegowda Intl Airport', pos: [121, -2374], type: '✈️ Airport', icon: '✈️', info: 'International airport (BLR). 35 km from PTP.' },
 ];
 
 landmarks.forEach(lm => {
   // Diamond marker — large enough to hover
   const markerGeo = new THREE.BoxGeometry(12, 8, 12);
   const markerMat = new THREE.MeshStandardMaterial({
-    color: 0x607090, emissive: 0x607090, emissiveIntensity: 0.3,
-    transparent: true, opacity: 0.6
+    color: 0x4f46e5, emissive: 0x4f46e5, emissiveIntensity: 0.4,
+    transparent: true, opacity: 0.7
   });
   const marker = new THREE.Mesh(markerGeo, markerMat);
   marker.rotation.y = Math.PI / 4;
