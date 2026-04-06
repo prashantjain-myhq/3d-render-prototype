@@ -695,7 +695,6 @@
       border: 1px solid #e2e8f0;
       border-radius: 8px;
       padding: 6px 8px;
-      overflow: hidden;
     }
 
     .ph-stat.full-width {
@@ -1760,8 +1759,8 @@
     .city-view-active #controls-bar #cb-cityview { background: rgba(99,102,241,0.3); color: #fff; }
     .city-view-active #tb-gallery-btn { display: none; }
 
-  [data-tooltip] { position:relative; cursor:help; }
-  [data-tooltip]:hover::after { content:attr(data-tooltip); position:absolute; bottom:100%; left:50%; transform:translateX(-50%); background:#1e293b; color:#fff; font-size:11px; font-weight:500; padding:4px 10px; border-radius:6px; white-space:nowrap; z-index:999; pointer-events:none; margin-bottom:4px; box-shadow:0 2px 8px rgba(0,0,0,0.2); }
+  [data-tip] { cursor:help; border-bottom:1px dotted #94a3b8; }
+  #info-tooltip { position:fixed; display:none; padding:6px 12px; background:#1e293b; color:#fff; font-size:11px; font-weight:500; border-radius:6px; z-index:999; pointer-events:none; max-width:280px; white-space:normal; line-height:1.4; box-shadow:0 4px 12px rgba(0,0,0,0.3); }
   #shortcut-hint { position:fixed; top:52px; left:50%; transform:translateX(-50%); font-size:10px; color:#94a3b8; z-index:10; pointer-events:none; transition:opacity 1s; }
   </style>
 </head>
@@ -1777,6 +1776,7 @@
   <div style="font-size:12px;color:#64748b;margin-top:12px" id="loading-text">Loading 3D model...</div>
 </div>
 
+<div id="info-tooltip"></div>
 <div id="title-bar">
   <div class="tb-logo">
     <span class="tb-logo-myhq">myHQ</span>
@@ -3851,74 +3851,102 @@ function generateFloorPlanSVG(floor, building) {
 }
 
 function drawLayoutA(w, h, floor, bldg, occ, isVacant, isPartial) {
-  const occColor = isVacant ? '#fee2e2' : isPartial ? '#fef3c7' : '#dcfce7';
-  const vacColor = '#fee2e2';
+  const tenantColor = '#bbf7d0'; const tenantText = '#166534';
+  const vacantColor = '#fecaca'; const vacantText = '#991b1b';
+  const sharedColor = '#e0f2fe'; const sharedText = '#1e40af';
   const wallColor = '#94a3b8';
-  const occFill = isVacant ? '#fecaca' : isPartial ? '#fde68a' : '#bbf7d0';
+  const tFill = isVacant ? vacantColor : tenantColor;
+  const tText = isVacant ? vacantText : tenantText;
+  const tName = isVacant ? 'AVAILABLE' : floor.tenant.substring(0, 18);
 
   let svg = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="display:block;border-radius:8px;border:1px solid #d1d5db;margin-bottom:10px;background:#fafafa">`;
   svg += `<rect x="2" y="2" width="${w-4}" height="${h-4}" rx="4" fill="none" stroke="${wallColor}" stroke-width="1.5"/>`;
-  svg += `<rect x="2" y="${h/2-4}" width="${w-4}" height="8" fill="#e2e8f0"/>`;
-  svg += `<text x="${w/2}" y="${h/2+3}" text-anchor="middle" font-size="7" fill="#94a3b8">CORRIDOR</text>`;
-  svg += `<rect x="6" y="6" width="50" height="${h/2-10}" rx="2" fill="${occFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
-  svg += `<text x="31" y="22" text-anchor="middle" font-size="7" fill="#475569" font-weight="600">Meeting</text>`;
-  svg += `<text x="31" y="31" text-anchor="middle" font-size="6" fill="#64748b">Room A</text>`;
-  svg += `<rect x="6" y="${h/2+6}" width="50" height="${h/2-12}" rx="2" fill="${occFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
-  svg += `<text x="31" y="${h/2+22}" text-anchor="middle" font-size="7" fill="#475569" font-weight="600">Meeting</text>`;
-  svg += `<text x="31" y="${h/2+31}" text-anchor="middle" font-size="6" fill="#64748b">Room B</text>`;
-  const centerOcc = isPartial ? occ : (isVacant ? 0 : 100);
-  const centerW = 130;
-  const occW = Math.round(centerW * centerOcc / 100);
-  svg += `<rect x="62" y="6" width="${centerW}" height="${h/2-10}" rx="2" fill="${isPartial||isVacant?vacColor:occFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
-  if (isPartial && occW > 0) svg += `<rect x="62" y="6" width="${occW}" height="${h/2-10}" rx="2" fill="${occFill}"/>`;
-  svg += `<text x="${62+centerW/2}" y="25" text-anchor="middle" font-size="8" fill="#475569" font-weight="600">Open Workstations</text>`;
-  svg += `<text x="${62+centerW/2}" y="36" text-anchor="middle" font-size="7" fill="#64748b">${floor.tenant}${isPartial?' ('+occ+'%)':''}</text>`;
-  svg += `<rect x="62" y="${h/2+6}" width="60" height="${h/2-12}" rx="2" fill="#e0f2fe" stroke="${wallColor}" stroke-width="0.5"/>`;
-  svg += `<text x="92" y="${h/2+22}" text-anchor="middle" font-size="7" fill="#475569">Pantry</text>`;
-  svg += `<rect x="128" y="${h/2+6}" width="64" height="${h/2-12}" rx="2" fill="#f0e4ff" stroke="${wallColor}" stroke-width="0.5"/>`;
-  svg += `<text x="160" y="${h/2+22}" text-anchor="middle" font-size="7" fill="#475569">Washrooms</text>`;
-  svg += `<rect x="198" y="6" width="38" height="25" rx="2" fill="${occFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
-  svg += `<text x="217" y="22" text-anchor="middle" font-size="6" fill="#475569">Cabin 1</text>`;
-  svg += `<rect x="198" y="34" width="38" height="25" rx="2" fill="${occFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
-  svg += `<text x="217" y="50" text-anchor="middle" font-size="6" fill="#475569">Cabin 2</text>`;
-  svg += `<rect x="240" y="6" width="36" height="${h/2-10}" rx="2" fill="${occFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
-  svg += `<text x="258" y="28" text-anchor="middle" font-size="7" fill="#475569" font-weight="600">Server</text>`;
-  svg += `<text x="258" y="37" text-anchor="middle" font-size="6" fill="#64748b">Room</text>`;
-  svg += `<rect x="198" y="${h/2+6}" width="76" height="${h/2-12}" rx="2" fill="#fef3c7" stroke="${wallColor}" stroke-width="0.5"/>`;
-  svg += `<text x="236" y="${h/2+22}" text-anchor="middle" font-size="7" fill="#475569">Reception & Lobby</text>`;
+  // Corridor
+  svg += `<rect x="2" y="${h/2-4}" width="${w-4}" height="8" fill="#f1f5f9"/>`;
+  svg += `<text x="${w/2}" y="${h/2+3}" text-anchor="middle" font-size="6" fill="#94a3b8" font-weight="600">SHARED CORRIDOR</text>`;
+  // Main workspace — shows tenant vs available split
+  const mainW = 140;
+  if (isPartial) {
+    const occW = Math.round(mainW * occ / 100);
+    svg += `<rect x="58" y="6" width="${mainW}" height="${h/2-10}" rx="2" fill="${vacantColor}" stroke="${wallColor}" stroke-width="0.5"/>`;
+    svg += `<rect x="58" y="6" width="${occW}" height="${h/2-10}" rx="2" fill="${tenantColor}"/>`;
+    svg += `<text x="${58+occW/2}" y="20" text-anchor="middle" font-size="7" fill="${tenantText}" font-weight="700">${tName}</text>`;
+    svg += `<text x="${58+occW/2}" y="30" text-anchor="middle" font-size="6" fill="${tenantText}">${occ}% occupied</text>`;
+    svg += `<text x="${58+occW+(mainW-occW)/2}" y="25" text-anchor="middle" font-size="7" fill="${vacantText}" font-weight="700">AVAILABLE</text>`;
+  } else {
+    svg += `<rect x="58" y="6" width="${mainW}" height="${h/2-10}" rx="2" fill="${tFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
+    svg += `<text x="${58+mainW/2}" y="20" text-anchor="middle" font-size="8" fill="${tText}" font-weight="700">${tName}</text>`;
+    svg += `<text x="${58+mainW/2}" y="31" text-anchor="middle" font-size="6" fill="${tText}">${isVacant?floor.area.toLocaleString()+' sqft available':'Workstations'}</text>`;
+  }
+  // Meeting rooms
+  svg += `<rect x="6" y="6" width="46" height="${h/2-10}" rx="2" fill="${tFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="29" y="22" text-anchor="middle" font-size="6" fill="${tText}">Meeting</text>`;
+  svg += `<text x="29" y="31" text-anchor="middle" font-size="5" fill="${tText}">Room A</text>`;
+  // Cabins
+  svg += `<rect x="204" y="6" width="34" height="24" rx="2" fill="${tFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="221" y="21" text-anchor="middle" font-size="5" fill="${tText}">Cabin 1</text>`;
+  svg += `<rect x="242" y="6" width="34" height="24" rx="2" fill="${tFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="259" y="21" text-anchor="middle" font-size="5" fill="${tText}">Cabin 2</text>`;
+  svg += `<rect x="204" y="33" width="72" height="${h/2-37}" rx="2" fill="${tFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="240" y="44" text-anchor="middle" font-size="6" fill="${tText}">Server Room</text>`;
+  // Shared facilities (bottom row)
+  svg += `<rect x="6" y="${h/2+6}" width="50" height="${h/2-12}" rx="2" fill="${sharedColor}" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="31" y="${h/2+22}" text-anchor="middle" font-size="6" fill="${sharedText}">Pantry</text>`;
+  svg += `<rect x="60" y="${h/2+6}" width="50" height="${h/2-12}" rx="2" fill="#f3e8ff" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="85" y="${h/2+22}" text-anchor="middle" font-size="6" fill="#6b21a8">Washrooms</text>`;
+  svg += `<rect x="114" y="${h/2+6}" width="50" height="${h/2-12}" rx="2" fill="${sharedColor}" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="139" y="${h/2+22}" text-anchor="middle" font-size="6" fill="${sharedText}">Meeting B</text>`;
+  svg += `<rect x="168" y="${h/2+6}" width="108" height="${h/2-12}" rx="2" fill="#fef3c7" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="222" y="${h/2+22}" text-anchor="middle" font-size="7" fill="#92400e" font-weight="600">Reception & Lobby</text>`;
+  // Entry
   svg += `<rect x="${w-6}" y="${h/2-6}" width="4" height="12" fill="#4f46e5" rx="1"/>`;
-  svg += `<text x="${w-14}" y="${h/2+3}" text-anchor="end" font-size="6" fill="#4f46e5" font-weight="700">ENTRY</text>`;
-  svg += `<text x="${w/2}" y="${h-4}" text-anchor="middle" font-size="8" fill="#64748b">F${floor.floor} — ${floor.area.toLocaleString()} sqft</text>`;
+  // Legend
+  svg += `<text x="${w/2}" y="${h-3}" text-anchor="middle" font-size="7" fill="#64748b">F${floor.floor} · ${floor.area.toLocaleString()} sqft · <tspan fill="#16a34a">■</tspan> Tenant <tspan fill="#dc2626">■</tspan> Available <tspan fill="#3b82f6">■</tspan> Shared</text>`;
   svg += '</svg>';
   return svg;
 }
 
 function drawLayoutB(w, h, floor, bldg, occ, isVacant, isPartial) {
-  const occFill = isVacant ? '#fecaca' : isPartial ? '#fde68a' : '#bbf7d0';
-  const vacColor = '#fee2e2';
+  const tFill = isVacant ? '#fecaca' : '#bbf7d0';
+  const tText = isVacant ? '#991b1b' : '#166534';
+  const vacFill = '#fecaca';
   const wallColor = '#94a3b8';
+  const tName = isVacant ? 'AVAILABLE' : floor.tenant.substring(0, 20);
   let svg = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="display:block;border-radius:8px;border:1px solid #d1d5db;margin-bottom:10px;background:#fafafa">`;
   svg += `<rect x="2" y="2" width="${w-4}" height="${h-4}" rx="4" fill="none" stroke="${wallColor}" stroke-width="1.5"/>`;
+  // Perimeter cabins (5) — color based on occupancy
   for (let i = 0; i < 5; i++) {
     const cx = 8 + i * 54;
-    svg += `<rect x="${cx}" y="6" width="48" height="22" rx="2" fill="${occFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
-    svg += `<text x="${cx+24}" y="20" text-anchor="middle" font-size="6" fill="#475569">Cabin ${i+1}</text>`;
+    const cabFill = isVacant ? vacFill : (isPartial && i >= Math.ceil(5*occ/100) ? vacFill : tFill);
+    const cabText = cabFill === vacFill ? '#991b1b' : '#166534';
+    const cabLabel = cabFill === vacFill ? 'Available' : 'Cabin '+(i+1);
+    svg += `<rect x="${cx}" y="6" width="48" height="22" rx="2" fill="${cabFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
+    svg += `<text x="${cx+24}" y="20" text-anchor="middle" font-size="6" fill="${cabText}" font-weight="600">${cabLabel}</text>`;
   }
+  // Main open area — split for partial
   const openH = h - 68;
-  svg += `<rect x="8" y="32" width="${w-16}" height="${openH}" rx="3" fill="${isPartial?vacColor:occFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
-  if (isPartial) { const ow = Math.round((w-16)*occ/100); svg += `<rect x="8" y="32" width="${ow}" height="${openH}" rx="3" fill="${occFill}"/>`; }
-  svg += `<text x="${w/2}" y="${32+openH/2}" text-anchor="middle" font-size="10" fill="#334155" font-weight="700">Open Plan — ${floor.tenant}</text>`;
-  svg += `<text x="${w/2}" y="${32+openH/2+14}" text-anchor="middle" font-size="8" fill="#64748b">${isPartial?occ+'% occupied':'Fully occupied'}</text>`;
+  if (isPartial) {
+    const ow = Math.round((w-16)*occ/100);
+    svg += `<rect x="8" y="32" width="${w-16}" height="${openH}" rx="3" fill="${vacFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
+    svg += `<rect x="8" y="32" width="${ow}" height="${openH}" rx="3" fill="${tFill}"/>`;
+    svg += `<text x="${8+ow/2}" y="${32+openH/2-2}" text-anchor="middle" font-size="9" fill="#166534" font-weight="700">${tName}</text>`;
+    svg += `<text x="${8+ow/2}" y="${32+openH/2+10}" text-anchor="middle" font-size="7" fill="#166534">${occ}%</text>`;
+    svg += `<text x="${8+ow+(w-16-ow)/2}" y="${32+openH/2+2}" text-anchor="middle" font-size="8" fill="#991b1b" font-weight="700">AVAILABLE</text>`;
+  } else {
+    svg += `<rect x="8" y="32" width="${w-16}" height="${openH}" rx="3" fill="${tFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
+    svg += `<text x="${w/2}" y="${32+openH/2-2}" text-anchor="middle" font-size="10" fill="${tText}" font-weight="700">${tName}</text>`;
+    svg += `<text x="${w/2}" y="${32+openH/2+12}" text-anchor="middle" font-size="7" fill="${tText}">${isVacant?floor.area.toLocaleString()+' sqft':'Fully occupied'}</text>`;
+  }
+  // Shared facilities
   svg += `<rect x="8" y="${h-30}" width="80" height="22" rx="2" fill="#e0f2fe" stroke="${wallColor}" stroke-width="0.5"/>`;
-  svg += `<text x="48" y="${h-16}" text-anchor="middle" font-size="7" fill="#475569">Pantry & Break</text>`;
-  svg += `<rect x="94" y="${h-30}" width="60" height="22" rx="2" fill="#f0e4ff" stroke="${wallColor}" stroke-width="0.5"/>`;
-  svg += `<text x="124" y="${h-16}" text-anchor="middle" font-size="7" fill="#475569">Washrooms</text>`;
+  svg += `<text x="48" y="${h-16}" text-anchor="middle" font-size="6" fill="#1e40af">Pantry & Break</text>`;
+  svg += `<rect x="94" y="${h-30}" width="60" height="22" rx="2" fill="#f3e8ff" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="124" y="${h-16}" text-anchor="middle" font-size="6" fill="#6b21a8">Washrooms</text>`;
   svg += `<rect x="160" y="${h-30}" width="56" height="22" rx="2" fill="#fef3c7" stroke="${wallColor}" stroke-width="0.5"/>`;
-  svg += `<text x="188" y="${h-16}" text-anchor="middle" font-size="7" fill="#475569">Conference</text>`;
-  svg += `<rect x="222" y="${h-30}" width="52" height="22" rx="2" fill="#dcfce7" stroke="${wallColor}" stroke-width="0.5"/>`;
-  svg += `<text x="248" y="${h-16}" text-anchor="middle" font-size="7" fill="#475569">Reception</text>`;
-  svg += `<rect x="${w-6}" y="${h/2-6}" width="4" height="12" fill="#4f46e5" rx="1"/>`;
-  svg += `<text x="${w/2}" y="${h-2}" text-anchor="middle" font-size="8" fill="#64748b">F${floor.floor} — ${floor.area.toLocaleString()} sqft</text>`;
+  svg += `<text x="188" y="${h-16}" text-anchor="middle" font-size="6" fill="#92400e">Conference</text>`;
+  svg += `<rect x="222" y="${h-30}" width="52" height="22" rx="2" fill="#e0f2fe" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="248" y="${h-16}" text-anchor="middle" font-size="6" fill="#1e40af">Reception</text>`;
+  svg += `<text x="${w/2}" y="${h-2}" text-anchor="middle" font-size="7" fill="#64748b">F${floor.floor} · ${floor.area.toLocaleString()} sqft · <tspan fill="#16a34a">■</tspan> Tenant <tspan fill="#dc2626">■</tspan> Available <tspan fill="#3b82f6">■</tspan> Shared</text>`;
   svg += '</svg>';
   return svg;
 }
@@ -4002,9 +4030,9 @@ function renderFloorCards(building, highlightFloorIndex) {
               <button class="fcv2-compare-btn" data-fid="${building.id}-${f.floor}" data-bid="${building.id}" data-fnum="${f.floor}" title="Add to compare">+</button>
             </div>
             <div class="fcv2-row2">
-              <span class="fcv2-pill occ" style="background:${occColor}" data-tooltip="% of floor space currently leased">${f.occupancy}% occ</span>
-              <span class="fcv2-pill" data-tooltip="Monthly rent per square foot">\u20B9${f.rentPerSqft}/sqft</span>
-              <span class="fcv2-pill" data-tooltip="Annual rental return on capital value">${f.rentalYield}% yield</span>
+              <span class="fcv2-pill occ" style="background:${occColor}" data-tip="% of floor space currently leased">${f.occupancy}% occ</span>
+              <span class="fcv2-pill" data-tip="Monthly rent per square foot">\u20B9${f.rentPerSqft}/sqft</span>
+              <span class="fcv2-pill" data-tip="Annual rental return on capital value">${f.rentalYield}% yield</span>
             </div>
           </div>
         </div>
@@ -4021,10 +4049,10 @@ function renderFloorCards(building, highlightFloorIndex) {
             <span class="fd-status ${statusCls}">${f.status}</span>
             <div class="fd-grid">
               <div class="fd-item"><div class="fd-label">Tenant</div><div class="fd-value">${f.tenant}</div></div>
-              <div class="fd-item"><div class="fd-label" data-tooltip="Usable area excluding walls, columns, common spaces">Carpet Area</div><div class="fd-value">${f.carpetArea.toLocaleString()} sqft</div></div>
-              <div class="fd-item"><div class="fd-label" data-tooltip="Total area including common areas and walls">Super Built-up</div><div class="fd-value">${f.superBuiltUp.toLocaleString()} sqft</div></div>
-              <div class="fd-item"><div class="fd-label" data-tooltip="Bare Shell (empty), Warm Shell (basic), Fully Fitted (ready)">Fit-out</div><div class="fd-value">${f.fitOut}</div></div>
-              <div class="fd-item"><div class="fd-label" data-tooltip="Minimum lease period — tenant cannot exit before this">Lock-in</div><div class="fd-value">${f.lockInPeriod || 'N/A'}${f.lockInEnd ? ' (ends ' + f.lockInEnd + ')' : ''}</div></div>
+              <div class="fd-item"><div class="fd-label" data-tip="Usable area excluding walls, columns, common spaces">Carpet Area</div><div class="fd-value">${f.carpetArea.toLocaleString()} sqft</div></div>
+              <div class="fd-item"><div class="fd-label" data-tip="Total area including common areas and walls">Super Built-up</div><div class="fd-value">${f.superBuiltUp.toLocaleString()} sqft</div></div>
+              <div class="fd-item"><div class="fd-label" data-tip="Bare Shell (empty), Warm Shell (basic), Fully Fitted (ready)">Fit-out</div><div class="fd-value">${f.fitOut}</div></div>
+              <div class="fd-item"><div class="fd-label" data-tip="Minimum lease period — tenant cannot exit before this">Lock-in</div><div class="fd-value">${f.lockInPeriod || 'N/A'}${f.lockInEnd ? ' (ends ' + f.lockInEnd + ')' : ''}</div></div>
               <div class="fd-item"><div class="fd-label">Lease Period</div><div class="fd-value">${f.leaseStart} to ${f.leaseEnd}</div></div>
             </div>
           </div>
@@ -4035,8 +4063,8 @@ function renderFloorCards(building, highlightFloorIndex) {
               <div class="fd-item"><div class="fd-label">Rent/sqft</div><div class="fd-value">\u20B9${f.rentPerSqft}</div></div>
               <div class="fd-item"><div class="fd-label">Monthly Revenue</div><div class="fd-value">${formatCurrency(f.monthlyRevenue)}</div></div>
               <div class="fd-item"><div class="fd-label">Annual Revenue</div><div class="fd-value">${formatCurrency(f.annualRevenue)}</div></div>
-              <div class="fd-item"><div class="fd-label" data-tooltip="Annual rental income as % of capital value">Rental Yield</div><div class="fd-value">${f.rentalYield}%</div></div>
-              <div class="fd-item"><div class="fd-label" data-tooltip="Refundable deposit, typically 6-12 months rent">Security Deposit</div><div class="fd-value">${f.securityDeposit} months</div></div>
+              <div class="fd-item"><div class="fd-label" data-tip="Annual rental income as % of capital value">Rental Yield</div><div class="fd-value">${f.rentalYield}%</div></div>
+              <div class="fd-item"><div class="fd-label" data-tip="Refundable deposit, typically 6-12 months rent">Security Deposit</div><div class="fd-value">${f.securityDeposit} months</div></div>
               <div class="fd-item"><div class="fd-label">CAM Charges</div><div class="fd-value">\u20B9${building.camCharges}/sqft</div></div>
             </div>
             <div class="roi-calculator">
@@ -4218,11 +4246,11 @@ function openPanel(building, highlightFloorIndex) {
         <div class="ph-stat"><div class="ph-stat-label">Year Built</div><div class="ph-stat-value">${building.yearBuilt}</div></div>
         <div class="ph-stat"><div class="ph-stat-label">Avg Occupancy</div><div class="ph-stat-value">${avgOcc}%</div></div>
         <div class="ph-stat"><div class="ph-stat-label">Avg Rent</div><div class="ph-stat-value">\u20B9${avgRent}/sqft</div></div>
-        <div class="ph-stat"><div class="ph-stat-label" data-tooltip="Annual rental income as % of property value">Avg Yield</div><div class="ph-stat-value">${avgYield}%</div></div>
-        <div class="ph-stat"><div class="ph-stat-label" data-tooltip="Common Area Maintenance — monthly charges for shared facilities">CAM</div><div class="ph-stat-value">\u20B9${building.camCharges}/sqft</div></div>
-        <div class="ph-stat"><div class="ph-stat-label" data-tooltip="Car parking spaces per 1000 sqft of office area">Parking</div><div class="ph-stat-value">${building.parkingRatio}/1K sqft</div></div>
-        <div class="ph-stat"><div class="ph-stat-label" data-tooltip="Carpet (usable) area as % of total built-up area">Efficiency</div><div class="ph-stat-value">${building.efficiencyRatio}%</div></div>
-        <div class="ph-stat"><div class="ph-stat-label" data-tooltip="Rent increase clause — typically applied every 3 years">Escalation</div><div class="ph-stat-value">${building.escalation}</div></div>
+        <div class="ph-stat"><div class="ph-stat-label" data-tip="Annual rental income as % of property value">Avg Yield</div><div class="ph-stat-value">${avgYield}%</div></div>
+        <div class="ph-stat"><div class="ph-stat-label" data-tip="Common Area Maintenance — monthly charges for shared facilities">CAM</div><div class="ph-stat-value">\u20B9${building.camCharges}/sqft</div></div>
+        <div class="ph-stat"><div class="ph-stat-label" data-tip="Car parking spaces per 1000 sqft of office area">Parking</div><div class="ph-stat-value">${building.parkingRatio}/1K sqft</div></div>
+        <div class="ph-stat"><div class="ph-stat-label" data-tip="Carpet (usable) area as % of total built-up area">Efficiency</div><div class="ph-stat-value">${building.efficiencyRatio}%</div></div>
+        <div class="ph-stat"><div class="ph-stat-label" data-tip="Rent increase clause — typically applied every 3 years">Escalation</div><div class="ph-stat-value">${building.escalation}</div></div>
         <div class="ph-stat full-width"><div class="ph-stat-label">Power</div><div class="ph-stat-value" title="${building.powerBackup}">${building.powerBackup}</div></div>
         <div class="ph-stat full-width"><div class="ph-stat-label">Micro-market</div><div class="ph-stat-value" title="${building.microMarket}">${building.microMarket}</div></div>
       </div>
@@ -7044,6 +7072,26 @@ window.exportComparisonReport = function() {
   w.document.write(compareContent.innerHTML);
   w.document.write('<footer>Generated from Prestige Tech Park 3D Explorer</footer></body></html>');
 };
+
+// Info tooltip system for data-tip elements
+const infoTip = document.getElementById('info-tooltip');
+document.addEventListener('mouseover', (e) => {
+  const el = e.target.closest('[data-tip]');
+  if (el) {
+    infoTip.textContent = el.getAttribute('data-tip');
+    infoTip.style.display = 'block';
+  }
+});
+document.addEventListener('mousemove', (e) => {
+  if (infoTip.style.display === 'block') {
+    infoTip.style.left = Math.min(e.clientX + 12, window.innerWidth - 300) + 'px';
+    infoTip.style.top = (e.clientY - 30) + 'px';
+  }
+});
+document.addEventListener('mouseout', (e) => {
+  const el = e.target.closest('[data-tip]');
+  if (el) infoTip.style.display = 'none';
+});
 
 </script>
 </body>
