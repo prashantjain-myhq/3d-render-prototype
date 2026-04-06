@@ -1732,6 +1732,7 @@
   /* City View */
   #view-fade { position:fixed; inset:0; background:#0a0e1a; z-index:200; opacity:0; pointer-events:none; transition:opacity 0.3s; }
   #view-fade.active { opacity:1; pointer-events:auto; }
+  @keyframes loadPulse { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
   .city-view-active #park-switcher-wrap, .city-view-active #time-slider-wrap, .city-view-active #heatmap-legend { display:none !important; }
   #city-breadcrumb { display:none !important; }
     /* Park Landing Overlay */
@@ -6770,11 +6771,19 @@ function transitionToView(targetView) {
     savedParkCameraTarget = controls.target.clone();
   }
 
-  // Fade in
+  // Show loading overlay with context-aware message
+  const loadMsg = targetView === 'park' ? 'Entering Prestige Tech Park...' : 'Loading Bangalore City View...';
+  viewFade.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%">
+    <div style="font-size:11px;font-weight:700;color:#818cf8;text-transform:uppercase;letter-spacing:3px;margin-bottom:8px">myHQ</div>
+    <div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:16px">${loadMsg}</div>
+    <div style="width:160px;height:3px;background:#1e293b;border-radius:2px;overflow:hidden">
+      <div style="width:100%;height:100%;background:linear-gradient(90deg,#6366f1,#818cf8);border-radius:2px;animation:loadPulse 1s ease infinite"></div>
+    </div>
+  </div>`;
   viewFade.classList.add('active');
 
   setTimeout(() => {
-    // Clear stale CSS2D labels from previous view
+    // Clear stale CSS2D labels
     while (labelRenderer.domElement.firstChild) {
       labelRenderer.domElement.removeChild(labelRenderer.domElement.firstChild);
     }
@@ -6809,7 +6818,46 @@ function transitionToView(targetView) {
 
     // Fade out
     setTimeout(() => { viewFade.classList.remove('active'); }, 50);
-  }, 300);
+
+    // Cinematic camera animation after transition
+    if (targetView === 'city') {
+      // City view: orbit from high angle, zooming in toward the parks
+      cityControls.enabled = false;
+      const cStart = performance.now();
+      const cDur = 3000;
+      function cityIntro() {
+        const t = Math.min((performance.now() - cStart) / cDur, 1);
+        const e = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2;
+        const angle = (1-e) * 0.6;
+        const r = 700 - e * 200;
+        const h = 600 - e * 100;
+        cityCamera.position.set(Math.cos(angle) * r, h, Math.sin(angle) * r);
+        cityCamera.lookAt(0, 0, 0);
+        if (t < 1) requestAnimationFrame(cityIntro);
+        else { cityControls.enabled = true; cityControls.update(); }
+      }
+      cityIntro();
+    } else {
+      // Park view: swoop in from above
+      controls.enabled = false;
+      const pStart = performance.now();
+      const pDur = 3000;
+      const pFrom = { x: 40, y: 35, z: 40 };
+      const pTo = savedParkCameraPos || new THREE.Vector3(25, 22, 30);
+      camera.position.set(pFrom.x, pFrom.y, pFrom.z);
+      function parkIntro() {
+        const t = Math.min((performance.now() - pStart) / pDur, 1);
+        const e = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2;
+        camera.position.x = pFrom.x + (pTo.x - pFrom.x) * e;
+        camera.position.y = pFrom.y + (pTo.y - pFrom.y) * e;
+        camera.position.z = pFrom.z + (pTo.z - pFrom.z) * e;
+        camera.lookAt(0, 1, 0);
+        if (t < 1) requestAnimationFrame(parkIntro);
+        else { controls.enabled = true; controls.update(); }
+      }
+      parkIntro();
+    }
+  }, 1000);
 }
 
 // City View button
