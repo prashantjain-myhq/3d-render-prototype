@@ -1760,6 +1760,9 @@
     .city-view-active #controls-bar #cb-cityview { background: rgba(99,102,241,0.3); color: #fff; }
     .city-view-active #tb-gallery-btn { display: none; }
 
+  [data-tooltip] { position:relative; cursor:help; }
+  [data-tooltip]:hover::after { content:attr(data-tooltip); position:absolute; bottom:100%; left:50%; transform:translateX(-50%); background:#1e293b; color:#fff; font-size:11px; font-weight:500; padding:4px 10px; border-radius:6px; white-space:nowrap; z-index:999; pointer-events:none; margin-bottom:4px; box-shadow:0 2px 8px rgba(0,0,0,0.2); }
+  #shortcut-hint { position:fixed; top:52px; left:50%; transform:translateX(-50%); font-size:10px; color:#94a3b8; z-index:10; pointer-events:none; transition:opacity 1s; }
   </style>
 </head>
 <body>
@@ -1784,15 +1787,16 @@
     <h1>Prestige Tech Park</h1>
     <p>Outer Ring Road, Kadubeesanahalli &middot; 6M+ sqft &middot; 19 Buildings</p>
   </div>
-  <div id="visitor-counter" style="display:flex;align-items:center;gap:6px;pointer-events:none;padding:0 12px">
+  <div id="visitor-counter" title="People currently exploring this property" style="display:flex;align-items:center;gap:6px;pointer-events:none;padding:0 12px">
     <span style="width:7px;height:7px;background:#22c55e;border-radius:50%;animation:pulse 2s infinite"></span>
     <span style="font-size:11px;color:#64748b;font-weight:600"><span id="visitor-count">12</span> viewing now</span>
   </div>
   <div style="display:flex;gap:8px;pointer-events:auto">
-    <button id="tb-gallery-btn" style="padding:8px 16px;background:linear-gradient(135deg,#f8fafc,#e2e8f0);border:1px solid #cbd5e1;border-radius:10px;font-size:12px;font-weight:700;color:#334155;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;transition:all 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.08)" onmouseover="this.style.borderColor='#6366f1';this.style.boxShadow='0 2px 8px rgba(99,102,241,0.2)'" onmouseout="this.style.borderColor='#cbd5e1';this.style.boxShadow='0 1px 3px rgba(0,0,0,0.08)'">&#128247; Gallery</button>
-    <button id="tb-enquiry-btn" style="padding:8px 20px;background:linear-gradient(135deg,#6366f1,#4f46e5);border:none;border-radius:10px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;transition:all 0.2s;box-shadow:0 2px 8px rgba(79,70,229,0.3)" onmouseover="this.style.boxShadow='0 4px 16px rgba(79,70,229,0.4)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(79,70,229,0.3)';this.style.transform='none'">&#9993;&#65039; Enquire Now</button>
+    <button id="tb-gallery-btn" title="Browse campus photo gallery" style="padding:8px 16px;background:linear-gradient(135deg,#f8fafc,#e2e8f0);border:1px solid #cbd5e1;border-radius:10px;font-size:12px;font-weight:700;color:#334155;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;transition:all 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.08)" onmouseover="this.style.borderColor='#6366f1';this.style.boxShadow='0 2px 8px rgba(99,102,241,0.2)'" onmouseout="this.style.borderColor='#cbd5e1';this.style.boxShadow='0 1px 3px rgba(0,0,0,0.08)'">&#128247; Gallery</button>
+    <button id="tb-enquiry-btn" title="Submit an office space enquiry" style="padding:8px 20px;background:linear-gradient(135deg,#6366f1,#4f46e5);border:none;border-radius:10px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;transition:all 0.2s;box-shadow:0 2px 8px rgba(79,70,229,0.3)" onmouseover="this.style.boxShadow='0 4px 16px rgba(79,70,229,0.4)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(79,70,229,0.3)';this.style.transform='none'">&#9993;&#65039; Enquire Now</button>
   </div>
 </div>
+<div id="shortcut-hint">Press 1-3 for heatmaps · R to rotate · 0 to reset</div>
 
 <div id="tooltip">
   <div class="tt-header"></div>
@@ -2237,7 +2241,7 @@
     <span class="ts-time" id="ts-time">12:00 PM</span>
     <span class="ts-label">Time of Day</span>
   </div>
-  <input type="range" id="time-slider" min="6" max="22" step="0.5" value="12">
+  <input type="range" id="time-slider" min="6" max="22" step="0.5" value="12" title="Drag to simulate different times of day">
   <div class="ts-labels"><span>6 AM</span><span>10 PM</span></div>
 </div>
 
@@ -3998,9 +4002,9 @@ function renderFloorCards(building, highlightFloorIndex) {
               <button class="fcv2-compare-btn" data-fid="${building.id}-${f.floor}" data-bid="${building.id}" data-fnum="${f.floor}" title="Add to compare">+</button>
             </div>
             <div class="fcv2-row2">
-              <span class="fcv2-pill occ" style="background:${occColor}">${f.occupancy}% occ</span>
-              <span class="fcv2-pill">\u20B9${f.rentPerSqft}/sqft</span>
-              <span class="fcv2-pill">${f.rentalYield}% yield</span>
+              <span class="fcv2-pill occ" style="background:${occColor}" data-tooltip="% of floor space currently leased">${f.occupancy}% occ</span>
+              <span class="fcv2-pill" data-tooltip="Monthly rent per square foot">\u20B9${f.rentPerSqft}/sqft</span>
+              <span class="fcv2-pill" data-tooltip="Annual rental return on capital value">${f.rentalYield}% yield</span>
             </div>
           </div>
         </div>
@@ -4017,10 +4021,10 @@ function renderFloorCards(building, highlightFloorIndex) {
             <span class="fd-status ${statusCls}">${f.status}</span>
             <div class="fd-grid">
               <div class="fd-item"><div class="fd-label">Tenant</div><div class="fd-value">${f.tenant}</div></div>
-              <div class="fd-item"><div class="fd-label">Carpet Area</div><div class="fd-value">${f.carpetArea.toLocaleString()} sqft</div></div>
-              <div class="fd-item"><div class="fd-label">Super Built-up</div><div class="fd-value">${f.superBuiltUp.toLocaleString()} sqft</div></div>
-              <div class="fd-item"><div class="fd-label">Fit-out</div><div class="fd-value">${f.fitOut}</div></div>
-              <div class="fd-item"><div class="fd-label">Lock-in</div><div class="fd-value">${f.lockInPeriod || 'N/A'}${f.lockInEnd ? ' (ends ' + f.lockInEnd + ')' : ''}</div></div>
+              <div class="fd-item"><div class="fd-label" data-tooltip="Usable area excluding walls, columns, common spaces">Carpet Area</div><div class="fd-value">${f.carpetArea.toLocaleString()} sqft</div></div>
+              <div class="fd-item"><div class="fd-label" data-tooltip="Total area including common areas and walls">Super Built-up</div><div class="fd-value">${f.superBuiltUp.toLocaleString()} sqft</div></div>
+              <div class="fd-item"><div class="fd-label" data-tooltip="Bare Shell (empty), Warm Shell (basic), Fully Fitted (ready)">Fit-out</div><div class="fd-value">${f.fitOut}</div></div>
+              <div class="fd-item"><div class="fd-label" data-tooltip="Minimum lease period — tenant cannot exit before this">Lock-in</div><div class="fd-value">${f.lockInPeriod || 'N/A'}${f.lockInEnd ? ' (ends ' + f.lockInEnd + ')' : ''}</div></div>
               <div class="fd-item"><div class="fd-label">Lease Period</div><div class="fd-value">${f.leaseStart} to ${f.leaseEnd}</div></div>
             </div>
           </div>
@@ -4031,8 +4035,8 @@ function renderFloorCards(building, highlightFloorIndex) {
               <div class="fd-item"><div class="fd-label">Rent/sqft</div><div class="fd-value">\u20B9${f.rentPerSqft}</div></div>
               <div class="fd-item"><div class="fd-label">Monthly Revenue</div><div class="fd-value">${formatCurrency(f.monthlyRevenue)}</div></div>
               <div class="fd-item"><div class="fd-label">Annual Revenue</div><div class="fd-value">${formatCurrency(f.annualRevenue)}</div></div>
-              <div class="fd-item"><div class="fd-label">Rental Yield</div><div class="fd-value">${f.rentalYield}%</div></div>
-              <div class="fd-item"><div class="fd-label">Security Deposit</div><div class="fd-value">${f.securityDeposit} months</div></div>
+              <div class="fd-item"><div class="fd-label" data-tooltip="Annual rental income as % of capital value">Rental Yield</div><div class="fd-value">${f.rentalYield}%</div></div>
+              <div class="fd-item"><div class="fd-label" data-tooltip="Refundable deposit, typically 6-12 months rent">Security Deposit</div><div class="fd-value">${f.securityDeposit} months</div></div>
               <div class="fd-item"><div class="fd-label">CAM Charges</div><div class="fd-value">\u20B9${building.camCharges}/sqft</div></div>
             </div>
             <div class="roi-calculator">
@@ -4214,11 +4218,11 @@ function openPanel(building, highlightFloorIndex) {
         <div class="ph-stat"><div class="ph-stat-label">Year Built</div><div class="ph-stat-value">${building.yearBuilt}</div></div>
         <div class="ph-stat"><div class="ph-stat-label">Avg Occupancy</div><div class="ph-stat-value">${avgOcc}%</div></div>
         <div class="ph-stat"><div class="ph-stat-label">Avg Rent</div><div class="ph-stat-value">\u20B9${avgRent}/sqft</div></div>
-        <div class="ph-stat"><div class="ph-stat-label">Avg Yield</div><div class="ph-stat-value">${avgYield}%</div></div>
-        <div class="ph-stat"><div class="ph-stat-label">CAM</div><div class="ph-stat-value">\u20B9${building.camCharges}/sqft</div></div>
-        <div class="ph-stat"><div class="ph-stat-label">Parking</div><div class="ph-stat-value">${building.parkingRatio}/1K sqft</div></div>
-        <div class="ph-stat"><div class="ph-stat-label">Efficiency</div><div class="ph-stat-value">${building.efficiencyRatio}%</div></div>
-        <div class="ph-stat"><div class="ph-stat-label">Escalation</div><div class="ph-stat-value">${building.escalation}</div></div>
+        <div class="ph-stat"><div class="ph-stat-label" data-tooltip="Annual rental income as % of property value">Avg Yield</div><div class="ph-stat-value">${avgYield}%</div></div>
+        <div class="ph-stat"><div class="ph-stat-label" data-tooltip="Common Area Maintenance — monthly charges for shared facilities">CAM</div><div class="ph-stat-value">\u20B9${building.camCharges}/sqft</div></div>
+        <div class="ph-stat"><div class="ph-stat-label" data-tooltip="Car parking spaces per 1000 sqft of office area">Parking</div><div class="ph-stat-value">${building.parkingRatio}/1K sqft</div></div>
+        <div class="ph-stat"><div class="ph-stat-label" data-tooltip="Carpet (usable) area as % of total built-up area">Efficiency</div><div class="ph-stat-value">${building.efficiencyRatio}%</div></div>
+        <div class="ph-stat"><div class="ph-stat-label" data-tooltip="Rent increase clause — typically applied every 3 years">Escalation</div><div class="ph-stat-value">${building.escalation}</div></div>
         <div class="ph-stat full-width"><div class="ph-stat-label">Power</div><div class="ph-stat-value" title="${building.powerBackup}">${building.powerBackup}</div></div>
         <div class="ph-stat full-width"><div class="ph-stat-label">Micro-market</div><div class="ph-stat-value" title="${building.microMarket}">${building.microMarket}</div></div>
       </div>
@@ -5177,6 +5181,9 @@ window.addEventListener('keydown', (e) => {
     controls.autoRotateSpeed = 1.5;
   }
 });
+
+// Fade out shortcut hint after 8 seconds
+setTimeout(() => { const h = document.getElementById('shortcut-hint'); if(h) h.style.opacity = '0'; }, 8000);
 
 // ============================================================
 // Feature: Bangalore Map Panel
