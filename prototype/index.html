@@ -3832,7 +3832,7 @@ function filterFloors(floors, filter) {
 }
 
 function generateFloorPlanSVG(floor, building) {
-  const w = 280, h = 120;
+  const w = 280, h = 135;
   const occ = floor.occupancy;
   const isVacant = floor.status === 'Vacant';
   const isPartial = floor.status === 'Partially Vacant';
@@ -3901,7 +3901,14 @@ function drawLayoutA(w, h, floor, bldg, occ, isVacant, isPartial) {
   // Entry
   svg += `<rect x="${w-6}" y="${h/2-6}" width="4" height="12" fill="#4f46e5" rx="1"/>`;
   // Legend
-  svg += `<text x="${w/2}" y="${h-3}" text-anchor="middle" font-size="7" fill="#64748b">F${floor.floor} · ${floor.area.toLocaleString()} sqft · <tspan fill="#16a34a">■</tspan> Tenant <tspan fill="#dc2626">■</tspan> Available <tspan fill="#3b82f6">■</tspan> Shared</text>`;
+  svg += `<text x="${w/2}" y="${h-3}" text-anchor="middle" font-size="7" fill="#64748b">F${floor.floor} · ${floor.area.toLocaleString()} sqft</text>`;
+  // Color legend bar
+  svg += `<rect x="60" y="${h-14}" width="10" height="8" rx="1" fill="#bbf7d0" stroke="#16a34a" stroke-width="0.5"/>`;
+  svg += `<text x="73" y="${h-8}" font-size="7" fill="#166534" font-weight="600">Tenant</text>`;
+  svg += `<rect x="105" y="${h-14}" width="10" height="8" rx="1" fill="#fecaca" stroke="#dc2626" stroke-width="0.5"/>`;
+  svg += `<text x="118" y="${h-8}" font-size="7" fill="#991b1b" font-weight="600">Available</text>`;
+  svg += `<rect x="158" y="${h-14}" width="10" height="8" rx="1" fill="#e0f2fe" stroke="#3b82f6" stroke-width="0.5"/>`;
+  svg += `<text x="171" y="${h-8}" font-size="7" fill="#1e40af" font-weight="600">Shared</text>`;
   svg += '</svg>';
   return svg;
 }
@@ -3946,7 +3953,14 @@ function drawLayoutB(w, h, floor, bldg, occ, isVacant, isPartial) {
   svg += `<text x="188" y="${h-16}" text-anchor="middle" font-size="6" fill="#92400e">Conference</text>`;
   svg += `<rect x="222" y="${h-30}" width="52" height="22" rx="2" fill="#e0f2fe" stroke="${wallColor}" stroke-width="0.5"/>`;
   svg += `<text x="248" y="${h-16}" text-anchor="middle" font-size="6" fill="#1e40af">Reception</text>`;
-  svg += `<text x="${w/2}" y="${h-2}" text-anchor="middle" font-size="7" fill="#64748b">F${floor.floor} · ${floor.area.toLocaleString()} sqft · <tspan fill="#16a34a">■</tspan> Tenant <tspan fill="#dc2626">■</tspan> Available <tspan fill="#3b82f6">■</tspan> Shared</text>`;
+  svg += `<text x="${w/2}" y="${h-2}" text-anchor="middle" font-size="7" fill="#64748b">F${floor.floor} · ${floor.area.toLocaleString()} sqft</text>`;
+  // Color legend bar
+  svg += `<rect x="60" y="${h-14}" width="10" height="8" rx="1" fill="#bbf7d0" stroke="#16a34a" stroke-width="0.5"/>`;
+  svg += `<text x="73" y="${h-8}" font-size="7" fill="#166534" font-weight="600">Tenant</text>`;
+  svg += `<rect x="105" y="${h-14}" width="10" height="8" rx="1" fill="#fecaca" stroke="#dc2626" stroke-width="0.5"/>`;
+  svg += `<text x="118" y="${h-8}" font-size="7" fill="#991b1b" font-weight="600">Available</text>`;
+  svg += `<rect x="158" y="${h-14}" width="10" height="8" rx="1" fill="#e0f2fe" stroke="#3b82f6" stroke-width="0.5"/>`;
+  svg += `<text x="171" y="${h-8}" font-size="7" fill="#1e40af" font-weight="600">Shared</text>`;
   svg += '</svg>';
   return svg;
 }
@@ -6529,7 +6543,31 @@ document.getElementById('tb-enquiry-btn').addEventListener('click', () => {
 
 // City Scene (assigned to vars declared before animate)
 cityScene = new THREE.Scene();
-cityScene.background = new THREE.Color(0xe8e4de); // match Mapbox streets style
+// Procedural sky with gradient and clouds
+const citySkyCanvas = document.createElement('canvas');
+citySkyCanvas.width = 1024;
+citySkyCanvas.height = 512;
+const csCtx = citySkyCanvas.getContext('2d');
+const skyGrad = csCtx.createLinearGradient(0, 0, 0, 512);
+skyGrad.addColorStop(0, '#4a90d9');
+skyGrad.addColorStop(0.3, '#7ab8e8');
+skyGrad.addColorStop(0.6, '#a8d4f0');
+skyGrad.addColorStop(0.85, '#d4e8f0');
+skyGrad.addColorStop(1, '#e8e4de');
+csCtx.fillStyle = skyGrad;
+csCtx.fillRect(0, 0, 1024, 512);
+csCtx.fillStyle = 'rgba(255,255,255,0.4)';
+[[200,120,120,30],[400,80,150,35],[700,140,100,28],[150,200,80,22],[550,170,130,32],[850,100,90,25],[300,250,110,28]].forEach(([cx,cy,rw,rh]) => {
+  csCtx.beginPath(); csCtx.ellipse(cx,cy,rw,rh,0,0,Math.PI*2); csCtx.fill();
+  csCtx.fillStyle = 'rgba(255,255,255,0.3)';
+  csCtx.beginPath(); csCtx.ellipse(cx+10,cy-5,rw*0.7,rh*0.7,0,0,Math.PI*2); csCtx.fill();
+  csCtx.fillStyle = 'rgba(255,255,255,0.4)';
+});
+const citySkyTex = new THREE.CanvasTexture(citySkyCanvas);
+const citySkyMat = new THREE.MeshBasicMaterial({ map: citySkyTex, side: THREE.BackSide });
+const citySky = new THREE.Mesh(new THREE.SphereGeometry(3500, 16, 8), citySkyMat);
+cityScene.add(citySky);
+cityScene.background = null;
 // No fog — we want to see everything at city scale
 
 // City Camera — closer start, can zoom out
@@ -7077,7 +7115,7 @@ window.exportComparisonReport = function() {
 const infoTip = document.getElementById('info-tooltip');
 document.addEventListener('mouseover', (e) => {
   const el = e.target.closest('[data-tip]');
-  if (el) {
+  if (el && !el.classList.contains('cb-btn')) {
     infoTip.textContent = el.getAttribute('data-tip');
     infoTip.style.display = 'block';
   }
