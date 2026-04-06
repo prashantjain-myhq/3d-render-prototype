@@ -1734,6 +1734,7 @@
   #view-fade { position:fixed; inset:0; background:#0a0e1a; z-index:200; opacity:0; pointer-events:none; transition:opacity 0.3s; }
   #view-fade.active { opacity:1; pointer-events:auto; }
   @keyframes loadPulse { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
   .city-view-active #park-switcher-wrap, .city-view-active #time-slider-wrap, .city-view-active #heatmap-legend { display:none !important; }
   #city-breadcrumb { display:none !important; }
     /* Park Landing Overlay */
@@ -1782,6 +1783,10 @@
   <div style="flex:1">
     <h1>Prestige Tech Park</h1>
     <p>Outer Ring Road, Kadubeesanahalli &middot; 6M+ sqft &middot; 19 Buildings</p>
+  </div>
+  <div id="visitor-counter" style="display:flex;align-items:center;gap:6px;pointer-events:none;padding:0 12px">
+    <span style="width:7px;height:7px;background:#22c55e;border-radius:50%;animation:pulse 2s infinite"></span>
+    <span style="font-size:11px;color:#64748b;font-weight:600"><span id="visitor-count">12</span> viewing now</span>
   </div>
   <div style="display:flex;gap:8px;pointer-events:auto">
     <button id="tb-gallery-btn" style="padding:8px 16px;background:linear-gradient(135deg,#f8fafc,#e2e8f0);border:1px solid #cbd5e1;border-radius:10px;font-size:12px;font-weight:700;color:#334155;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;transition:all 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.08)" onmouseover="this.style.borderColor='#6366f1';this.style.boxShadow='0 2px 8px rgba(99,102,241,0.2)'" onmouseout="this.style.borderColor='#cbd5e1';this.style.boxShadow='0 1px 3px rgba(0,0,0,0.08)'">&#128247; Gallery</button>
@@ -5141,6 +5146,37 @@ setTimeout(() => {
     introAnimate();
   }, 400);
 }, 1500); // loading screen shows for 1.5s
+
+// ============================================================
+// VISITOR COUNTER (simulated)
+// ============================================================
+const vcEl = document.getElementById('visitor-count');
+setInterval(() => {
+  const change = Math.random() > 0.5 ? 1 : -1;
+  let count = parseInt(vcEl.textContent) + change;
+  if (count < 8) count = 8;
+  if (count > 24) count = 24;
+  vcEl.textContent = count;
+}, 5000);
+
+// ============================================================
+// KEYBOARD SHORTCUTS (1=occupancy, 2=rent, 3=yield, 0=default, R=rotate)
+// ============================================================
+let autoRotating = false;
+window.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (currentView !== 'park') return;
+
+  if (e.key === '1') { const btn = document.querySelector('#heatmap-toggle button[data-mode="occupancy"]'); if(btn) btn.click(); }
+  if (e.key === '2') { const btn = document.querySelector('#heatmap-toggle button[data-mode="rent"]'); if(btn) btn.click(); }
+  if (e.key === '3') { const btn = document.querySelector('#heatmap-toggle button[data-mode="yield"]'); if(btn) btn.click(); }
+  if (e.key === '0') { const btn = document.querySelector('#heatmap-toggle button[data-mode="default"]'); if(btn) btn.click(); }
+  if (e.key === 'r' || e.key === 'R') {
+    autoRotating = !autoRotating;
+    controls.autoRotate = autoRotating;
+    controls.autoRotateSpeed = 1.5;
+  }
+});
 
 // ============================================================
 // Feature: Bangalore Map Panel
