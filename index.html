@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prestige Tech Park — 3D Explorer</title>
+  <title>myHQ × Prestige Tech Park | 3D Office Space Explorer</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%234f46e5'/><text x='16' y='22' text-anchor='middle' font-size='18' font-weight='900' fill='white' font-family='system-ui'>m</text></svg>">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -21,24 +22,58 @@
       top: 0;
       left: 0;
       right: 0;
-      padding: 14px 24px 16px;
-      background: linear-gradient(to bottom, rgba(10,14,26,0.85) 0%, rgba(10,14,26,0.4) 70%, transparent 100%);
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
       z-index: 10;
       pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
 
     #title-bar h1 {
-      color: #fff;
-      font-size: 22px;
-      font-weight: 700;
+      color: #0f172a;
+      font-size: 18px;
+      font-weight: 800;
       letter-spacing: -0.3px;
+      line-height: 1.1;
     }
 
     #title-bar p {
+      color: #64748b;
+      font-size: 11px;
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    .tb-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-right: 16px;
+      border-right: 1px solid rgba(0,0,0,0.1);
+      flex-shrink: 0;
+    }
+    .tb-logo-myhq {
+      font-size: 16px;
+      font-weight: 900;
+      color: #4f46e5;
+      letter-spacing: -0.5px;
+    }
+    .tb-logo-x {
+      font-size: 10px;
       color: #94a3b8;
-      font-size: 13px;
-      margin-top: 4px;
-      font-weight: 400;
+      font-weight: 600;
+    }
+    .tb-logo-prestige {
+      font-size: 12px;
+      font-weight: 700;
+      color: #1e293b;
+      letter-spacing: 1px;
+      text-transform: uppercase;
     }
 
     /* Tooltip */
@@ -102,17 +137,18 @@
     #heatmap-legend {
       position: fixed;
       bottom: 50px;
-      left: 24px;
-      background: rgba(10,14,26,0.92);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(99,102,241,0.25);
-      border-radius: 12px;
-      padding: 14px 18px;
+      right: 70px;
+      background: rgba(10,14,26,0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(99,102,241,0.2);
+      border-radius: 10px;
+      padding: 10px 14px;
       z-index: 15;
       display: none;
-      min-width: 200px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      min-width: 180px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      font-size: 11px;
     }
     #heatmap-legend.visible { display: block; }
     #heatmap-legend .hl-title {
@@ -659,7 +695,6 @@
       border: 1px solid #e2e8f0;
       border-radius: 8px;
       padding: 6px 8px;
-      overflow: hidden;
     }
 
     .ph-stat.full-width {
@@ -1335,9 +1370,7 @@
     .fcv2-row1 { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
     .fcv2-row1 .fcv2-floor { font-size: 11px; font-weight: 700; color: #fff; background: #6366f1; border-radius: 4px; padding: 2px 6px; flex-shrink: 0; }
     .fcv2-row1 .fcv2-tenant { font-size: 12px; font-weight: 600; color: #1e293b; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .fcv2-star { font-size: 15px; cursor: pointer; color: #cbd5e1; transition: color 0.15s; flex-shrink: 0; line-height: 1; padding: 0 2px; }
-    .fcv2-star.starred { color: #eab308; }
-    .fcv2-star:hover { color: #facc15; }
+    .fcv2-star { display: none; }
     .fcv2-row2 { display: flex; gap: 6px; }
     .fcv2-pill { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; white-space: nowrap; }
     .fcv2-pill.occ { color: #fff; border-color: transparent; }
@@ -1385,51 +1418,57 @@
     #search-panel .sp-body::-webkit-scrollbar-track { background: transparent; }
     #search-panel .sp-body::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
     .sp-search-input {
-      width: 100%; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 10px;
-      font-size: 13px; font-family: inherit; color: #1e293b; background: #f8fafc;
-      outline: none; margin-bottom: 16px; transition: border-color 0.15s;
+      width: 100%; padding: 10px 14px; border: 2px solid #e2e8f0; border-radius: 12px;
+      font-size: 14px; font-family: inherit; color: #1e293b; background: #fff;
+      outline: none; margin-bottom: 16px; transition: border-color 0.2s;
     }
-    .sp-search-input:focus { border-color: #818cf8; }
-    .sp-filter-section { margin-bottom: 14px; }
+    .sp-search-input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+    .sp-filter-section {
+      margin-bottom: 16px; padding: 12px; background: #f8fafc; border-radius: 10px;
+      border: 1px solid #f1f5f9;
+    }
     .sp-filter-label {
       font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
-      color: #94a3b8; margin-bottom: 6px;
+      color: #64748b; margin-bottom: 8px;
     }
-    .sp-pills { display: flex; gap: 4px; flex-wrap: wrap; }
+    .sp-pills { display: flex; gap: 6px; flex-wrap: wrap; }
     .sp-pill {
-      padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 600;
-      cursor: pointer; border: 1px solid #e2e8f0; background: #fff; color: #64748b;
+      padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600;
+      cursor: pointer; border: 1px solid #e2e8f0; background: #fff; color: #475569;
       transition: all 0.15s;
     }
+    .sp-pill:hover { border-color: #c7d2fe; background: #eef2ff; }
     .sp-pill.active { background: #4f46e5; color: #fff; border-color: #4f46e5; }
     .sp-range-row { display: flex; gap: 8px; align-items: center; }
     .sp-range-input {
-      flex: 1; padding: 6px 10px; border: 1px solid #e2e8f0; border-radius: 6px;
-      font-size: 12px; font-family: inherit; color: #1e293b; outline: none; background: #fff;
+      flex: 1; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px;
+      font-size: 13px; font-family: inherit; color: #1e293b; outline: none; background: #fff;
     }
-    .sp-range-input:focus { border-color: #818cf8; }
-    .sp-phase-checks { display: flex; flex-wrap: wrap; gap: 6px; }
+    .sp-range-input:focus { border-color: #6366f1; }
+    .sp-phase-checks { display: flex; flex-wrap: wrap; gap: 8px; }
     .sp-phase-check {
-      display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600;
-      color: #475569; cursor: pointer;
+      display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600;
+      color: #475569; cursor: pointer; padding: 4px 8px; background: #fff;
+      border: 1px solid #e2e8f0; border-radius: 6px;
     }
-    .sp-phase-check input { accent-color: #6366f1; }
+    .sp-phase-check:hover { border-color: #c7d2fe; }
+    .sp-phase-check input { accent-color: #6366f1; width: 14px; height: 14px; }
     .sp-results-count {
-      font-size: 11px; font-weight: 600; color: #94a3b8; margin-bottom: 10px; padding-top: 8px;
-      border-top: 1px solid #e2e8f0;
+      font-size: 12px; font-weight: 700; color: #4f46e5; margin-bottom: 10px; padding: 8px 0;
+      border-top: 2px solid #e2e8f0;
     }
     .sp-clear-btn {
-      padding: 6px 14px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff;
-      color: #64748b; font-size: 11px; font-weight: 600; cursor: pointer; font-family: inherit;
-      transition: all 0.15s; margin-bottom: 12px;
+      padding: 8px 16px; border: 1px solid #dc2626; border-radius: 8px; background: #fff;
+      color: #dc2626; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
+      transition: all 0.15s; margin-bottom: 14px; width: 100%;
     }
-    .sp-clear-btn:hover { border-color: #c7d2fe; color: #4f46e5; }
+    .sp-clear-btn:hover { background: #fef2f2; }
     .sp-result-card {
-      padding: 10px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;
-      margin-bottom: 4px; cursor: pointer; transition: border-color 0.15s, background 0.15s;
-      font-size: 12px; color: #334155; font-weight: 500; line-height: 1.5;
+      padding: 10px 14px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
+      margin-bottom: 6px; cursor: pointer; transition: all 0.15s;
+      font-size: 12px; color: #334155; font-weight: 500; line-height: 1.6;
     }
-    .sp-result-card:hover { border-color: #c7d2fe; background: #eef2ff; }
+    .sp-result-card:hover { border-color: #6366f1; background: #eef2ff; box-shadow: 0 2px 8px rgba(99,102,241,0.1); }
 
     /* ========== Feature 2: Enquiry Modal ========== */
     #enquiry-overlay {
@@ -1438,6 +1477,52 @@
       backdrop-filter: blur(4px);
     }
     #enquiry-overlay.open { display: flex; }
+
+    /* Gallery — Modern fullscreen */
+    #gallery-overlay {
+      position: fixed; inset: 0; background: #000; z-index: 110;
+      display: none; flex-direction: column;
+    }
+    #gallery-overlay.open { display: flex; }
+    .gal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 28px; flex-shrink: 0; background: rgba(0,0,0,0.6);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .gal-header h2 { font-size: 16px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
+    .gal-header .gal-count { font-size: 12px; color: #64748b; font-weight: 500; }
+    .gal-close {
+      width: 36px; height: 36px; border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.05); border-radius: 10px; font-size: 18px;
+      color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .gal-close:hover { background: rgba(255,255,255,0.15); }
+    .gal-body {
+      flex: 1; overflow-y: auto; padding: 20px 28px 28px;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: 280px;
+      gap: 10px; align-content: start;
+    }
+    .gal-card {
+      border-radius: 10px; overflow: hidden; position: relative; cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .gal-card:hover { transform: scale(1.03); box-shadow: 0 8px 32px rgba(0,0,0,0.6); z-index: 2; }
+    .gal-card.gal-featured { grid-column: span 2; grid-row: span 2; }
+    .gal-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .gal-card .gal-overlay {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+      padding: 40px 16px 14px;
+    }
+    .gal-card .gal-caption { font-size: 13px; font-weight: 700; color: #fff; }
+    .gal-card .gal-sub { font-size: 11px; color: rgba(255,255,255,0.6); font-weight: 400; margin-top: 2px; }
+    .gal-card .gal-badge {
+      position: absolute; top: 10px; left: 10px; padding: 3px 10px;
+      background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); border-radius: 6px;
+      font-size: 10px; font-weight: 600; color: #fff; letter-spacing: 0.5px;
+    }
     #enquiry-modal {
       background: #fff; border-radius: 16px; width: 400px; max-width: 92vw;
       max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
@@ -1494,7 +1579,7 @@
 
     /* ========== Feature 4: Time-of-Day Slider ========== */
     #time-slider-wrap {
-      position: fixed; bottom: 60px; left: 24px; z-index: 15;
+      position: fixed; bottom: 40px; left: 16px; z-index: 15;
       background: rgba(10,14,26,0.92); backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(99,102,241,0.25);
       border-radius: 12px; padding: 12px 16px; min-width: 220px;
@@ -1621,16 +1706,99 @@
       color: #fca5a5;
     }
     .wa-esc:hover { background: rgba(220,38,38,0.4); color: #fff; }
+
+    /* ========== Shortlist + Compare ========== */
+    #shortlist-tray { position:fixed; bottom:36px; left:50%; transform:translateX(-50%); background:rgba(15,23,42,0.95); backdrop-filter:blur(16px); border:1px solid rgba(99,102,241,0.3); border-radius:14px; padding:8px 12px; z-index:18; display:none; align-items:center; gap:8px; max-width:90vw; box-shadow:0 8px 32px rgba(0,0,0,0.4); }
+    #shortlist-tray.visible { display:flex; }
+    .sl-chip { display:flex; align-items:center; gap:6px; padding:5px 10px; background:rgba(99,102,241,0.15); border:1px solid rgba(99,102,241,0.3); border-radius:8px; font-size:11px; font-weight:600; color:#e2e8f0; white-space:nowrap; }
+    .sl-chip .sl-remove { cursor:pointer; color:#94a3b8; font-size:14px; }
+    .sl-chip .sl-remove:hover { color:#f87171; }
+    .sl-compare-btn { padding:6px 16px; background:#4f46e5; color:#fff; border:none; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
+    .sl-compare-btn:hover { background:#4338ca; }
+    .fcv2-compare-btn { width:24px; height:24px; border-radius:6px; border:1px solid #e2e8f0; background:#fff; color:#6366f1; font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .fcv2-compare-btn.added { background:#4f46e5; color:#fff; border-color:#4f46e5; }
+    .compare-cards { display:flex; gap:12px; overflow-x:auto; padding-bottom:8px; margin-bottom:24px; }
+    .compare-card { min-width:220px; flex-shrink:0; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:16px; border-top:3px solid #6366f1; }
+    .compare-card h4 { font-size:14px; font-weight:700; margin-bottom:12px; }
+    .compare-card .cc-row { display:flex; justify-content:space-between; padding:4px 0; font-size:12px; border-bottom:1px solid #f1f5f9; }
+    .compare-card .cc-label { color:#64748b; }
+    .compare-card .cc-val { font-weight:600; color:#1e293b; }
+    .compare-card .cc-val.best { color:#16a34a; }
+    .cost-table { width:100%; border-collapse:collapse; font-size:13px; margin-bottom:24px; }
+    .cost-table th { text-align:left; padding:8px 12px; background:#f8fafc; border-bottom:2px solid #e2e8f0; font-size:11px; text-transform:uppercase; color:#64748b; }
+    .cost-table td { padding:8px 12px; border-bottom:1px solid #f1f5f9; }
+    .cost-table tr.total-row td { font-weight:700; border-top:2px solid #e2e8f0; background:#f0f9ff; }
+    .cost-table .best-cost { color:#16a34a; font-weight:700; }
+  /* City View */
+  #view-fade { position:fixed; inset:0; background:#0a0e1a; z-index:200; opacity:0; pointer-events:none; transition:opacity 0.3s; }
+  #view-fade.active { opacity:1; pointer-events:auto; }
+  @keyframes loadPulse { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .city-view-active #park-switcher-wrap, .city-view-active #time-slider-wrap, .city-view-active #heatmap-legend { display:none !important; }
+  #city-breadcrumb { display:none !important; }
+    /* Park Landing Overlay */
+    #park-landing { position:fixed; inset:0; z-index:115; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); }
+    #park-landing.open { display:flex; }
+    #park-landing-card { background:#fff; border-radius:20px; width:480px; max-width:92vw; padding:40px; text-align:center; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+    #park-landing-card .pl-close { position:absolute; top:14px; right:14px; width:32px; height:32px; border:none; background:#f1f5f9; border-radius:50%; font-size:16px; color:#64748b; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+    #park-landing-card .pl-icon { width:64px; height:64px; border-radius:16px; margin:0 auto 16px; display:flex; align-items:center; justify-content:center; font-size:28px; }
+    #park-landing-card h2 { font-size:24px; font-weight:800; color:#0f172a; margin-bottom:4px; }
+    #park-landing-card .pl-sub { font-size:13px; color:#64748b; margin-bottom:20px; }
+    #park-landing-card .pl-stats { display:flex; gap:12px; justify-content:center; margin-bottom:24px; }
+    #park-landing-card .pl-stat { padding:10px 16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; }
+    #park-landing-card .pl-stat-val { font-size:16px; font-weight:700; color:#0f172a; }
+    #park-landing-card .pl-stat-label { font-size:10px; color:#94a3b8; text-transform:uppercase; }
+    #park-landing-card .pl-badge { display:inline-block; padding:6px 16px; background:linear-gradient(135deg,#fef3c7,#fde68a); color:#92400e; border-radius:999px; font-size:13px; font-weight:700; margin-bottom:20px; }
+    #park-landing-card .pl-actions { display:flex; gap:10px; justify-content:center; }
+    #park-landing-card .pl-btn { padding:10px 20px; border-radius:10px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; border:none; }
+    #park-landing-card .pl-btn-primary { background:linear-gradient(135deg,#6366f1,#4f46e5); color:#fff; box-shadow:0 2px 8px rgba(99,102,241,0.3); }
+    #park-landing-card .pl-btn-secondary { background:#fff; border:1px solid #e2e8f0; color:#475569; }
+
+    /* Fix 3: Hide irrelevant controls in city view */
+    .city-view-active #controls-bar .cb-btn:not(#cb-cityview):not(#cb-city-toggle) { display: none; }
+    .city-view-active #controls-bar #cb-cityview { background: rgba(99,102,241,0.3); color: #fff; }
+    #cb-city-toggle { display: none; }
+    .city-view-active #cb-city-toggle { display: flex; }
+    .city-view-active #tb-gallery-btn { display: none; }
+
+  [data-tip] { cursor:help; border-bottom:1px dotted #94a3b8; }
+  #info-tooltip { position:fixed; display:none; padding:6px 12px; background:#1e293b; color:#fff; font-size:11px; font-weight:500; border-radius:6px; z-index:999; pointer-events:none; max-width:280px; white-space:normal; line-height:1.4; box-shadow:0 4px 12px rgba(0,0,0,0.3); }
+  #shortcut-hint { position:fixed; top:52px; left:50%; transform:translateX(-50%); font-size:10px; color:#94a3b8; z-index:10; pointer-events:none; transition:opacity 1s; }
   </style>
 </head>
 <body>
 
-<div id="title-bar">
-  <div style="font-size:11px;font-weight:700;color:#818cf8;text-transform:uppercase;letter-spacing:4px;margin-bottom:4px">Prestige</div>
-  <h1 style="font-size:26px;font-weight:800;letter-spacing:-0.5px">Tech Park</h1>
-  <p style="margin-top:6px;font-size:11px;color:#64748b">Outer Ring Road, Kadubeesanahalli &middot; 6M+ sqft &middot; 18 Buildings</p>
-  <div style="width:60px;height:3px;background:linear-gradient(to right, #6366f1, #818cf8);border-radius:2px;margin-top:8px"></div>
+<!-- Loading Screen -->
+<div id="loading-screen" style="position:fixed;inset:0;z-index:999;background:#0f172a;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.6s">
+  <div style="font-size:12px;font-weight:700;color:#818cf8;text-transform:uppercase;letter-spacing:3px;margin-bottom:8px">myHQ × Prestige</div>
+  <div style="font-size:28px;font-weight:800;color:#fff;margin-bottom:24px">Prestige Tech Park</div>
+  <div style="width:200px;height:3px;background:#1e293b;border-radius:2px;overflow:hidden">
+    <div id="loading-bar" style="width:0%;height:100%;background:linear-gradient(90deg,#6366f1,#818cf8);border-radius:2px;transition:width 0.3s"></div>
+  </div>
+  <div style="font-size:12px;color:#64748b;margin-top:12px" id="loading-text">Loading Bangalore...</div>
 </div>
+
+<div id="info-tooltip"></div>
+<div id="title-bar">
+  <div class="tb-logo">
+    <span class="tb-logo-myhq">myHQ</span>
+    <span class="tb-logo-x">&times;</span>
+    <span class="tb-logo-prestige">Prestige</span>
+  </div>
+  <div style="flex:1">
+    <h1>Prestige Tech Park</h1>
+    <p>Outer Ring Road, Kadubeesanahalli &middot; 6M+ sqft &middot; 19 Buildings</p>
+  </div>
+  <div id="visitor-counter" title="People currently exploring this property" style="display:flex;align-items:center;gap:6px;pointer-events:none;padding:0 12px">
+    <span style="width:7px;height:7px;background:#22c55e;border-radius:50%;animation:pulse 2s infinite"></span>
+    <span style="font-size:11px;color:#64748b;font-weight:600"><span id="visitor-count">12</span> viewing now</span>
+  </div>
+  <div style="display:flex;gap:8px;pointer-events:auto">
+    <button id="tb-gallery-btn" title="Browse campus photo gallery" style="padding:8px 16px;background:linear-gradient(135deg,#f8fafc,#e2e8f0);border:1px solid #cbd5e1;border-radius:10px;font-size:12px;font-weight:700;color:#334155;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;transition:all 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.08)" onmouseover="this.style.borderColor='#6366f1';this.style.boxShadow='0 2px 8px rgba(99,102,241,0.2)'" onmouseout="this.style.borderColor='#cbd5e1';this.style.boxShadow='0 1px 3px rgba(0,0,0,0.08)'">&#128247; Gallery</button>
+    <button id="tb-enquiry-btn" title="Submit an office space enquiry" style="padding:8px 20px;background:linear-gradient(135deg,#6366f1,#4f46e5);border:none;border-radius:10px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;transition:all 0.2s;box-shadow:0 2px 8px rgba(79,70,229,0.3)" onmouseover="this.style.boxShadow='0 4px 16px rgba(79,70,229,0.4)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(79,70,229,0.3)';this.style.transform='none'">&#9993;&#65039; Enquire Now</button>
+  </div>
+</div>
+<div id="shortcut-hint">Press 1-3 for heatmaps · R to rotate · 0 to reset</div>
 
 <div id="tooltip">
   <div class="tt-header"></div>
@@ -1655,14 +1823,17 @@
 
 <!-- Right-side Controls Toolbar -->
 <div id="controls-bar">
+  <button class="cb-btn" id="cb-cityview" data-tip="City View" style="font-size:15px">&#127758;</button>
+  <button class="cb-btn" id="cb-city-toggle" data-tip="Toggle 3D / Cards" style="font-size:14px">&#127970;</button>
   <button class="cb-btn" id="cb-search" data-tip="Search">&#128269;</button>
   <button class="cb-btn" id="cb-compare" data-tip="Compare">&#9878;&#65039;</button>
   <button class="cb-btn" id="cb-heatmap" data-tip="Heat Map">&#127777;&#65039;</button>
-  <button class="cb-btn" id="cb-bgmode" data-tip="Background Mode">&#127769;</button>
+  <button class="cb-btn" id="cb-bgmode" data-tip="Background Mode">&#9728;&#65039;</button>
   <button class="cb-btn" id="cb-theme" data-tip="Building Theme">&#127912;</button>
   <button class="cb-btn" id="cb-labels" data-tip="Labels">&#127991;&#65039;</button>
   <button class="cb-btn" id="cb-tenants" data-tip="Tenant Analysis">&#128101;</button>
-  <button class="cb-btn" id="cb-walk" data-tip="Walkthrough">&#128694;</button>
+  <button class="cb-btn" id="cb-transactions" data-tip="Transactions">&#128176;</button>
+  <!-- walkthrough removed -->
   <button class="cb-btn" id="cb-map" data-tip="Map">&#128205;</button>
 </div>
 
@@ -1969,6 +2140,12 @@
   </div>
 </div>
 
+<div id="shortlist-tray">
+  <span style="font-size:10px;color:#94a3b8;font-weight:600" id="sl-count">0/5</span>
+  <div id="sl-chips" style="display:flex;gap:6px;overflow-x:auto"></div>
+  <button class="sl-compare-btn" id="sl-compare-btn">Compare</button>
+</div>
+
 <!-- Tech Park Switcher (collapsible) -->
 <div id="park-switcher-wrap">
   <div id="park-switcher-tab">&#9650; Switch Tech Park</div>
@@ -2035,10 +2212,28 @@
 </div>
 
 <!-- Feature 2: Enquiry Modal -->
+<!-- Gallery Overlay -->
+<div id="gallery-overlay">
+  <div class="gal-header">
+    <h2>&#128247; Prestige Tech Park Gallery</h2>
+    <button class="gal-close" id="gal-close">&times;</button>
+  </div>
+  <div class="gal-body" id="gal-body"></div>
+</div>
+
 <div id="enquiry-overlay">
   <div id="enquiry-modal">
     <button class="eq-close" id="eq-close">&times;</button>
-    <div id="enquiry-body"></div>
+    <h3>Enquire About Office Space</h3>
+    <div class="eq-floor-info" id="eq-floor-info">General Enquiry — Prestige Tech Park</div>
+    <div id="enquiry-body">
+      <input type="text" placeholder="Full Name" style="width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:inherit;margin-bottom:10px;outline:none">
+      <input type="email" placeholder="Email Address" style="width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:inherit;margin-bottom:10px;outline:none">
+      <input type="tel" placeholder="Phone Number" style="width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:inherit;margin-bottom:10px;outline:none">
+      <input type="text" placeholder="Company Name" style="width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:inherit;margin-bottom:10px;outline:none">
+      <textarea placeholder="Your Requirement (area needed, budget, timeline...)" rows="3" style="width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:inherit;margin-bottom:14px;outline:none;resize:vertical"></textarea>
+      <button onclick="this.textContent='Thank you! We will contact you within 24 hours.';this.style.background='#16a34a';setTimeout(()=>{document.getElementById('enquiry-overlay').classList.remove('open')},2000)" style="width:100%;padding:12px;background:#4f46e5;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Submit Enquiry</button>
+    </div>
   </div>
 </div>
 
@@ -2049,7 +2244,7 @@
     <span class="ts-time" id="ts-time">12:00 PM</span>
     <span class="ts-label">Time of Day</span>
   </div>
-  <input type="range" id="time-slider" min="6" max="22" step="0.5" value="12">
+  <input type="range" id="time-slider" min="6" max="22" step="0.5" value="12" title="Drag to simulate different times of day">
   <div class="ts-labels"><span>6 AM</span><span>10 PM</span></div>
 </div>
 
@@ -2061,21 +2256,33 @@
   </div>
 </div>
 
-<!-- Feature 6: Walkthrough Message -->
-<div id="walkthrough-msg">Use arrows or WASD to move &middot; ESC to exit</div>
+<!-- Transactions Overlay -->
+<div id="txn-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)">
+  <div style="background:#fff;border-radius:16px;width:92vw;max-width:900px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.4);position:relative">
+    <button id="txn-close" style="position:absolute;top:12px;right:12px;width:36px;height:36px;border:none;background:#f1f5f9;border-radius:50%;font-size:18px;color:#475569;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5">&times;</button>
+    <div id="txn-content" style="overflow-y:auto;padding:28px"></div>
+  </div>
+</div>
 
-<!-- On-screen arrow controls -->
-<div id="walk-arrows">
-  <div class="wa-row">
-    <div class="wa-btn" data-key="arrowup" id="wa-up">&#9650;</div>
-  </div>
-  <div class="wa-row">
-    <div class="wa-btn" data-key="arrowleft" id="wa-left">&#9664;</div>
-    <div class="wa-btn" data-key="arrowdown" id="wa-down">&#9660;</div>
-    <div class="wa-btn" data-key="arrowright" id="wa-right">&#9654;</div>
-  </div>
-  <div class="wa-row">
-    <div class="wa-btn wa-esc" id="wa-esc">ESC &mdash; Exit</div>
+<!-- Feature 6: Walkthrough Message -->
+<!-- walkthrough UI removed -->
+
+<div id="view-fade"></div>
+<div id="city-breadcrumb"><a id="breadcrumb-city">Bangalore</a><span>›</span><span id="breadcrumb-park">Prestige Tech Park</span></div>
+
+<div id="park-landing">
+  <div id="park-landing-card">
+    <button class="pl-close" onclick="document.getElementById('park-landing').classList.remove('open')">&times;</button>
+    <div class="pl-icon" id="pl-icon"></div>
+    <h2 id="pl-name"></h2>
+    <div class="pl-sub" id="pl-sub"></div>
+    <div class="pl-badge">Coming Soon</div>
+    <div class="pl-stats" id="pl-stats"></div>
+    <p style="font-size:13px;color:#64748b;line-height:1.6;margin-bottom:20px">We're building the 3D explorer for this tech park. Get notified when it's ready, or enquire about available office space.</p>
+    <div class="pl-actions">
+      <button class="pl-btn pl-btn-primary" onclick="document.getElementById('park-landing').classList.remove('open');document.getElementById('enquiry-overlay').classList.add('open');document.getElementById('eq-floor-info').textContent=document.getElementById('pl-name').textContent+' — Office Space Enquiry'">Enquire Now</button>
+      <button class="pl-btn pl-btn-secondary" onclick="this.textContent='Notified ✓';this.style.background='#dcfce7';this.style.color='#166534';this.style.borderColor='#86efac'">Notify Me</button>
+    </div>
   </div>
 </div>
 
@@ -2092,6 +2299,9 @@
 
 <script type="module">
 import * as THREE from 'three';
+
+// Map service token
+const MAPBOX_TOKEN = atob('cGsuZXlKMUlqb2ljSEpoYzJoaGJuUnFZV2x1TFcxNWFIRWlMQ0poSWpvaVkyMXVhSE16WWpadU1ERjJaekp5YzJKbFlXdzVjakp5TXlKOS5ZSnNtVk5Salg4WWZ0MGlTaWhpbU9R');
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
@@ -2100,7 +2310,7 @@ import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer
 // ============================================================
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0a0e1a);
-scene.fog = new THREE.FogExp2(0x0a0e1a, 0.01);
+scene.fog = new THREE.FogExp2(0x0a0e1a, 0.006);
 
 const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 300);
 camera.position.set(25, 22, 30);
@@ -2108,9 +2318,8 @@ camera.lookAt(-3, 0, 0);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.shadowMap.enabled = false;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.4;
 document.body.appendChild(renderer.domElement);
@@ -2141,8 +2350,8 @@ scene.add(ambient);
 const dirLight = new THREE.DirectionalLight(0xffeedd, 1.5);
 dirLight.position.set(15, 22, 12);
 dirLight.castShadow = true;
-dirLight.shadow.mapSize.width = 2048;
-dirLight.shadow.mapSize.height = 2048;
+dirLight.shadow.mapSize.width = 1024;
+dirLight.shadow.mapSize.height = 1024;
 dirLight.shadow.camera.near = 0.5;
 dirLight.shadow.camera.far = 80;
 dirLight.shadow.camera.left = -40;
@@ -2156,13 +2365,8 @@ fillLight.position.set(-15, 14, -12);
 scene.add(fillLight);
 
 // Subtle warm uplights at building bases
+// Building uplights removed for performance (18 point lights)
 const buildingUpLights = [];
-TECH_PARK_DATA.buildings.forEach(b => {
-  const upLight = new THREE.PointLight(0xddeeff, 0.5, 10);
-  upLight.position.set(b.position.x, 1, b.position.z);
-  scene.add(upLight);
-  buildingUpLights.push(upLight);
-});
 
 // Central warm point light
 const warmPoint = new THREE.PointLight(0xffaa44, 0.6, 30);
@@ -2289,35 +2493,32 @@ function createWindowTexture(phase, widthPx, heightPx, cols, rows) {
 function createTree(x, z, scale) {
   const group = new THREE.Group();
   const trunkH = 0.7 * scale;
-  const trunkGeo = new THREE.CylinderGeometry(0.06 * scale, 0.09 * scale, trunkH, 6);
+  const trunkGeo = new THREE.CylinderGeometry(0.06 * scale, 0.09 * scale, trunkH, 4);
   const trunkMat = new THREE.MeshStandardMaterial({ color: 0x5c3d2e, roughness: 0.9 });
   const trunk = new THREE.Mesh(trunkGeo, trunkMat);
   trunk.position.y = trunkH / 2;
-  trunk.castShadow = true;
   group.add(trunk);
 
   const type = Math.random();
   if (type < 0.5) {
     const coneH = 1.2 * scale;
-    const coneGeo = new THREE.ConeGeometry(0.45 * scale, coneH, 7);
+    const coneGeo = new THREE.ConeGeometry(0.45 * scale, coneH, 5);
     const coneMat = new THREE.MeshStandardMaterial({
       color: new THREE.Color().setHSL(0.3 + Math.random() * 0.08, 0.5 + Math.random() * 0.2, 0.18 + Math.random() * 0.1),
       roughness: 0.85
     });
     const cone = new THREE.Mesh(coneGeo, coneMat);
     cone.position.y = trunkH + coneH / 2 - 0.1;
-    cone.castShadow = true;
     group.add(cone);
   } else {
     const sphereR = 0.5 * scale;
-    const sphereGeo = new THREE.SphereGeometry(sphereR, 8, 6);
+    const sphereGeo = new THREE.SphereGeometry(sphereR, 5, 4);
     const sphereMat = new THREE.MeshStandardMaterial({
       color: new THREE.Color().setHSL(0.28 + Math.random() * 0.1, 0.45 + Math.random() * 0.2, 0.15 + Math.random() * 0.12),
       roughness: 0.85
     });
     const sphere = new THREE.Mesh(sphereGeo, sphereMat);
     sphere.position.y = trunkH + sphereR * 0.8;
-    sphere.castShadow = true;
     group.add(sphere);
   }
 
@@ -2332,7 +2533,6 @@ function createPalmTree(x, z, scale) {
   const trunkMat = new THREE.MeshStandardMaterial({ color: 0x6b4e37, roughness: 0.9 });
   const trunk = new THREE.Mesh(trunkGeo, trunkMat);
   trunk.position.y = trunkH / 2;
-  trunk.castShadow = true;
   group.add(trunk);
 
   // Palm frond cluster — 5-6 elongated cones fanning out
@@ -2353,7 +2553,6 @@ function createPalmTree(x, z, scale) {
     );
     frond.rotation.x = Math.sin(angle) * 0.6;
     frond.rotation.z = -Math.cos(angle) * 0.6;
-    frond.castShadow = true;
     group.add(frond);
   }
 
@@ -2368,23 +2567,21 @@ function createPalmTree(x, z, scale) {
   return group;
 }
 
-// Place 55+ trees total: 22 palms along paths + entrance, 33+ round/cone near buildings
+// Place 55+ trees total: 22 palms along paths + entrance, 40+ round/cone near buildings
 const palmPositions = [
-  // Palm-lined entrance from gate (6 palms)
-  {x:2,z:16}, {x:4,z:16}, {x:2,z:14}, {x:4,z:14},
-  {x:2,z:12}, {x:4,z:12},
-  // Along main E-W boulevard z=-1.2
-  {x:-14,z:-1.8}, {x:-8,z:-1.8}, {x:2,z:-1.8}, {x:10,z:-1.8},
-  // Along central spine x=6.5
-  {x:7.2,z:-8}, {x:7.2,z:-2}, {x:7.2,z:3}, {x:7.2,z:8},
-  // Phase I courtyard
-  {x:-12,z:-5.5}, {x:-9,z:-5.5},
-  // Platina area
-  {x:8,z:6}, {x:12,z:6},
-  // Between Phase II and Electra
-  {x:-12,z:6}, {x:-6,z:6},
+  // Palm-lined entry from east gate (6 palms)
+  {x:19,z:-1.2}, {x:19,z:1.2}, {x:18,z:-1.2}, {x:18,z:1.2},
+  {x:17,z:-1.2}, {x:17,z:1.2},
+  // Along main E-W boulevard z=2.2
+  {x:-12,z:1.5}, {x:-5,z:1.5}, {x:3,z:1.5}, {x:12,z:1.5},
+  // Along N-S spine x=7
+  {x:7.5,z:-6}, {x:7.5,z:-2}, {x:7.5,z:4},
+  // West N-S corridor (x=-7.5)
+  {x:-7,z:-4}, {x:-7,z:0}, {x:-7,z:4},
+  // Center campus area
+  {x:0,z:0}, {x:1,z:1},
   // South area
-  {x:0,z:10}, {x:8,z:12},
+  {x:0,z:14}, {x:4,z:10}, {x:-6,z:18}, {x:6,z:12},
 ];
 palmPositions.forEach(p => {
   const scale = 0.7 + Math.random() * 0.4;
@@ -2392,30 +2589,32 @@ palmPositions.forEach(p => {
 });
 
 const regularTreePositions = [
-  // Phase I courtyard (around -10.5, -5.5)
-  {x:-12,z:-6.5}, {x:-9,z:-6.5}, {x:-11,z:-4.5}, {x:-10,z:-7},
-  {x:-13,z:-5}, {x:-8.5,z:-5},
-  // Phase I perimeter
-  {x:-18,z:-12}, {x:-5,z:-12}, {x:-17,z:-9}, {x:-5,z:-9},
-  // Along main boulevard z≈-1
-  {x:-16,z:-2}, {x:-12,z:-2}, {x:-6,z:-2}, {x:0,z:-2}, {x:4,z:-2}, {x:12,z:-2},
-  // Between Phase II and Platina (south area z:12-15)
-  {x:-10,z:13}, {x:-6,z:14}, {x:-2,z:13}, {x:4,z:14}, {x:8,z:13}, {x:14,z:14},
-  // Phase II area (near Elnath/Etamin/Electra)
-  {x:-19,z:3}, {x:-19,z:5}, {x:-4,z:3}, {x:-4,z:5},
-  {x:-14,z:12}, {x:-6,z:12},
-  // Phase III area
-  {x:-4,z:-10}, {x:0,z:-10}, {x:5,z:-10},
-  // Phase IV area
-  {x:8,z:-8}, {x:18,z:-8}, {x:18,z:-3},
-  // Platina area
-  {x:6,z:8}, {x:15,z:10}, {x:13,z:14}, {x:16,z:12},
-  // Perimeter trees (campus boundary feel) — x:-20 to 19, z:-13 to 16
-  {x:-20,z:-12}, {x:-20,z:-6}, {x:-20,z:0}, {x:-20,z:6}, {x:-20,z:12},
-  {x:19,z:-10}, {x:19,z:-4}, {x:19,z:4}, {x:19,z:10},
-  {x:-12,z:15.5}, {x:10,z:15.5},
-  // Open spaces
-  {x:-3,z:10}, {x:2,z:8}, {x:15,z:2},
+  // North perimeter
+  {x:-14,z:-18}, {x:-6,z:-19}, {x:2,z:-19}, {x:6,z:-18},
+  // Northwest near Elnath
+  {x:-15,z:-16}, {x:-3,z:-16},
+  // Along north E-W road z=-7.5
+  {x:-10,z:-8}, {x:-4,z:-8}, {x:4,z:-8}, {x:10,z:-8},
+  // Along main boulevard z=2.2
+  {x:-14,z:3}, {x:-10,z:3}, {x:4,z:3}, {x:10,z:3}, {x:14,z:3},
+  // West perimeter
+  {x:-19,z:-14}, {x:-19,z:-6}, {x:-19,z:0}, {x:-19,z:10}, {x:-19,z:14},
+  // East perimeter (inside wall)
+  {x:19,z:-8}, {x:19,z:-4}, {x:19,z:4},
+  // South area (between Venus/Jupiter and far south)
+  {x:-8,z:14}, {x:-4,z:16}, {x:2,z:16}, {x:8,z:14},
+  // Far south near Cosmos/Gravity
+  {x:-12,z:18}, {x:-8,z:19}, {x:-2,z:18}, {x:4,z:18},
+  // Center open areas
+  {x:-2,z:0}, {x:2,z:-2}, {x:12,z:-6},
+  // Between buildings — safe gaps
+  {x:-12,z:1}, {x:12,z:6}, {x:16,z:8},
+  // South-east between Venus and Jupiter
+  {x:4,z:8}, {x:8,z:12}, {x:14,z:10},
+  // Far south-west
+  {x:-16,z:12}, {x:-14,z:16},
+  // Additional perimeter scatter
+  {x:-10,z:-14}, {x:10,z:-14}, {x:16,z:-10}, {x:-16,z:8},
 ];
 regularTreePositions.forEach(p => {
   const scale = 0.9 + Math.random() * 0.6;
@@ -2427,23 +2626,19 @@ regularTreePositions.forEach(p => {
 // ============================================================
 const hedgeMat = new THREE.MeshStandardMaterial({ color: 0x2d5a2e, roughness: 0.85 });
 const hedges = [
-  // Along main east-west boulevard (both sides, z=-1.2)
-  {x:-10,z:-1.7,w:10,d:0.3,h:0.3}, {x:8,z:-1.7,w:8,d:0.3,h:0.3},
-  {x:-10,z:-0.7,w:10,d:0.3,h:0.3}, {x:8,z:-0.7,w:8,d:0.3,h:0.3},
-  // Along entrance road
-  {x:2,z:14,w:0.3,d:4,h:0.3}, {x:4,z:14,w:0.3,d:4,h:0.3},
-  // Phase I courtyard borders
-  {x:-13,z:-5.5,w:0.3,d:4,h:0.3}, {x:-8,z:-5.5,w:0.3,d:4,h:0.3},
-  {x:-10.5,z:-3.8,w:5,d:0.3,h:0.3},
-  // Phase II building perimeters
-  {x:-19,z:3,w:0.3,d:4,h:0.3}, {x:-19,z:8,w:0.3,d:4,h:0.3},
-  // Phase III building edges
-  {x:-4,z:-6,w:0.3,d:3,h:0.3}, {x:5,z:-6,w:0.3,d:3,h:0.3},
-  // Platina perimeter
-  {x:8,z:4,w:8,d:0.3,h:0.3}, {x:16,z:7,w:0.3,d:6,h:0.3},
-  {x:10,z:14.5,w:8,d:0.3,h:0.3},
-  // Between Phase II south and Electra north
-  {x:-9,z:6.5,w:8,d:0.3,h:0.3}, {x:-9,z:11.5,w:8,d:0.3,h:0.3},
+  // Along main E-W boulevard z=2.2 (both sides)
+  {x:-8,z:1.8,w:10,d:0.3,h:0.3}, {x:8,z:1.8,w:10,d:0.3,h:0.3},
+  {x:-8,z:2.6,w:10,d:0.3,h:0.3}, {x:8,z:2.6,w:10,d:0.3,h:0.3},
+  // Along N-S spine x=7 sides
+  {x:6.6,z:-4,w:0.3,d:6,h:0.3}, {x:7.4,z:-4,w:0.3,d:6,h:0.3},
+  // Along entry from east gate
+  {x:18,z:-0.8,w:0.3,d:3,h:0.3}, {x:18,z:0.8,w:0.3,d:3,h:0.3},
+  // West N-S road sides
+  {x:-7.1,z:0,w:0.3,d:8,h:0.3}, {x:-7.9,z:0,w:0.3,d:8,h:0.3},
+  // South connector edges
+  {x:-4,z:6.8,w:12,d:0.3,h:0.3},
+  // Center campus around water feature
+  {x:-1,z:-0.5,w:3,d:0.3,h:0.3}, {x:1,z:0.5,w:3,d:0.3,h:0.3},
 ];
 hedges.forEach(h => {
   const geo = new THREE.BoxGeometry(h.w, h.h, h.d);
@@ -2458,16 +2653,20 @@ hedges.forEach(h => {
 // ============================================================
 const flowerColors = [0xd4668e, 0xc4a84d, 0xd4668e, 0xc4a84d, 0xd4668e];
 const flowerBeds = [
-  // Along main boulevard z=-1.2
-  {x:-14,z:-0.5}, {x:-8,z:-0.5}, {x:4,z:-0.5}, {x:10,z:-0.5},
-  // Along entrance road
-  {x:2,z:13}, {x:4,z:13}, {x:2,z:11}, {x:4,z:11},
-  // Near Platina area
-  {x:8,z:4.5}, {x:12,z:4.5},
-  // Near Phase II area
-  {x:-14,z:0.5}, {x:-6,z:0.5},
-  // Near water feature
-  {x:-11.5,z:-5}, {x:-9.5,z:-5},
+  // Along main boulevard z=2.2
+  {x:-6,z:2.8}, {x:4,z:2.8}, {x:12,z:2.8},
+  // Center campus near water feature
+  {x:-0.5,z:0.5}, {x:0.5,z:-0.5},
+  // Near east gate entry
+  {x:18,z:-1.5}, {x:18,z:1.5},
+  // Along N-S spine
+  {x:7,z:-5}, {x:7,z:5},
+  // West corridor
+  {x:-7.5,z:-4}, {x:-7.5,z:2},
+  // South area between Venus and Jupiter
+  {x:4,z:7}, {x:8,z:7},
+  // North open area
+  {x:-4,z:-9}, {x:4,z:-9},
 ];
 flowerBeds.forEach((fb, idx) => {
   const geo = new THREE.BoxGeometry(0.8, 0.08, 0.4);
@@ -2488,14 +2687,12 @@ const secPathMat = new THREE.MeshStandardMaterial({ color: 0xa88060, roughness: 
 // All coordinates verified against building footprints
 // ================================================================
 
-// Main paths (1.0 wide, brick color)
+// Main paths (0.8 wide, brick color)
 const mainPaths = [
-  // E-W path along the boulevard, pedestrian side
-  { x: -18, z: -0.5, w: 3, d: 1.0 },    // West entry from perimeter to Neptune area
-
-  // N-S path alongside central spine x=6.5
-  { x: 5.8, z: -5, w: 0.8, d: 6 },      // Alongside central spine, Phase III/IV area
-  { x: 5.8, z: 5, w: 0.8, d: 6 },       // South of boulevard, toward Platina
+  // E-W path alongside boulevard z=2.2
+  { x: 0, z: 2.8, w: 24, d: 0.4 },
+  // N-S path alongside spine x=7
+  { x: 7.5, z: -2, w: 0.4, d: 12 },
 ];
 mainPaths.forEach(p => {
   const geo = new THREE.BoxGeometry(p.w, 0.06, p.d);
@@ -2505,37 +2702,44 @@ mainPaths.forEach(p => {
   scene.add(mesh);
 });
 
-// Secondary paths (0.6 wide) — short stubs connecting buildings to nearest road
+// Secondary paths (0.5 wide) — short stubs connecting buildings to nearest road
 const secPaths = [
-  // Phase I: paths from Phase I road (z=-8) to building entrances
-  { x: -14, z: -8.2, w: 0.6, d: 0.8 },  // Mercury south entrance
-  { x: -7, z: -8.2, w: 0.6, d: 0.8 },   // Venus south entrance
-  { x: -10.5, z: -7.2, w: 0.6, d: 1.0 },// Jupiter north entrance
-  { x: -17, z: -7.2, w: 0.6, d: 0.8 },  // Neptune T1 east entrance
-  { x: -17, z: -3.5, w: 0.6, d: 0.8 },  // Neptune T2 east entrance
-
-  // Phase II: paths from Phase II roads to buildings
-  { x: -14, z: 0.5, w: 0.6, d: 0.6 },   // Elnath north entrance
-  { x: -4, z: 0.5, w: 0.6, d: 0.6 },    // Etamin north entrance
-  { x: -9, z: 6.5, w: 0.6, d: 0.6 },    // Electra north entrance
-
-  // Phase III: paths from roads to buildings
-  { x: -2, z: -9.5, w: 0.6, d: 0.8 },   // Vector south entrance
-  { x: 3, z: -9.5, w: 0.6, d: 0.8 },    // Velocity south entrance
-  { x: 0.5, z: -2.5, w: 0.6, d: 0.6 },  // Valence north entrance
-
-  // Phase IV: from roads
-  { x: 10, z: -6.5, w: 0.6, d: 0.6 },   // Block 1 south entrance
-  { x: 15, z: -6, w: 0.6, d: 0.6 },     // Cosmos south entrance
-  { x: 12.5, z: -1.5, w: 0.6, d: 0.6 }, // Gravity north entrance
-
-  // Platina: from Platina roads
-  { x: 8, z: 4.5, w: 0.6, d: 0.6 },     // Platina B1 north entrance
-  { x: 13, z: 5.2, w: 0.6, d: 0.6 },    // Platina B2 north entrance
-  { x: 10.5, z: 10.2, w: 0.6, d: 0.6 }, // Platina B3 north entrance
-
-  // Food Court
-  { x: 2, z: 6.2, w: 0.6, d: 0.6 },     // Food Court entrance
+  // Elnath to north road
+  { x: -9, z: -8, w: 0.5, d: 0.5 },
+  // Etamin to north road
+  { x: 2, z: -8, w: 0.5, d: 0.5 },
+  // Platina B1 approach
+  { x: 9, z: -7, w: 0.5, d: 0.5 },
+  // Platina B2 approach
+  { x: 16, z: -4, w: 0.5, d: 0.5 },
+  // Platina B3 approach
+  { x: 2, z: -3, w: 0.5, d: 0.5 },
+  // Electra approach
+  { x: -13, z: -2, w: 0.5, d: 0.5 },
+  // Neptune T1 approach
+  { x: -5, z: 0, w: 0.5, d: 0.5 },
+  // Food Court approach
+  { x: 5, z: 0, w: 0.5, d: 0.5 },
+  // Mercury approach
+  { x: 12, z: 2, w: 0.5, d: 0.5 },
+  // Vector approach
+  { x: -16, z: 4, w: 0.5, d: 0.5 },
+  // Neptune T2 approach
+  { x: -3, z: 5, w: 0.5, d: 0.5 },
+  // Velocity approach
+  { x: -10, z: 5, w: 0.5, d: 0.5 },
+  // Venus approach
+  { x: 3, z: 8, w: 0.5, d: 0.5 },
+  // Jupiter approach
+  { x: 12, z: 8, w: 0.5, d: 0.5 },
+  // Valence approach
+  { x: -15, z: 9, w: 0.5, d: 0.5 },
+  // Block 1 approach
+  { x: -9, z: 10, w: 0.5, d: 0.5 },
+  // Cosmos approach
+  { x: -5, z: 14, w: 0.5, d: 0.5 },
+  // Gravity approach
+  { x: -12, z: 15, w: 0.5, d: 0.5 },
 ];
 secPaths.forEach(p => {
   const geo = new THREE.BoxGeometry(p.w, 0.05, p.d);
@@ -2548,9 +2752,8 @@ secPaths.forEach(p => {
 // ============================================================
 // Decorative water features
 // ============================================================
-// Water feature in Phase I courtyard (between Mercury/Venus and Jupiter)
-// Center at (-10.5, -5.5), radius 1.0
-const waterGeo = new THREE.CircleGeometry(1.0, 32);
+// Water feature at center of campus (0, 0)
+const waterGeo = new THREE.CircleGeometry(0.8, 32);
 const waterMat = new THREE.MeshStandardMaterial({
   color: 0x1a3a5c,
   roughness: 0.05,
@@ -2560,18 +2763,18 @@ const waterMat = new THREE.MeshStandardMaterial({
 });
 const water = new THREE.Mesh(waterGeo, waterMat);
 water.rotation.x = -Math.PI / 2;
-water.position.set(-10.5, 0.04, -5.5);
+water.position.set(0, 0.04, 0);
 scene.add(water);
 
-const rimGeo = new THREE.TorusGeometry(1.1, 0.06, 8, 32);
+const rimGeo = new THREE.TorusGeometry(0.9, 0.06, 8, 32);
 const rimMat = new THREE.MeshStandardMaterial({ color: 0x6b7a86, roughness: 0.5 });
 const rim = new THREE.Mesh(rimGeo, rimMat);
 rim.rotation.x = -Math.PI / 2;
-rim.position.set(-10.5, 0.05, -5.5);
+rim.position.set(0, 0.05, 0);
 scene.add(rim);
 
-// Small rectangular reflecting pool in Platina area
-const reflPoolGeo = new THREE.BoxGeometry(2.5, 0.04, 1.0);
+// Reflecting pool between Mercury and Platina B2 at (10, -2)
+const reflPoolGeo = new THREE.BoxGeometry(2.0, 0.04, 0.8);
 const reflPoolMat = new THREE.MeshStandardMaterial({
   color: 0x1a3a5c,
   roughness: 0.05,
@@ -2580,15 +2783,16 @@ const reflPoolMat = new THREE.MeshStandardMaterial({
   opacity: 0.82,
 });
 const reflPool = new THREE.Mesh(reflPoolGeo, reflPoolMat);
-reflPool.position.set(10.2, 0.04, 6);
+reflPool.position.set(10, 0.04, -2);
 scene.add(reflPool);
 
 // ============================================================
-// Terraced landscaping — stepped green terraces near courtyard
+// Terraced landscaping — stepped green terraces in central corridor
 // ============================================================
+// Terraced landscaping near center campus
 for (let i = 0; i < 4; i++) {
-  const tw = 3.5 - i * 0.5;
-  const td = 1.2 - i * 0.15;
+  const tw = 3.0 - i * 0.4;
+  const td = 1.0 - i * 0.12;
   const th = 0.1;
   const tGeo = new THREE.BoxGeometry(tw, th, td);
   const tMat = new THREE.MeshStandardMaterial({
@@ -2596,7 +2800,7 @@ for (let i = 0; i < 4; i++) {
     roughness: 0.85
   });
   const terrace = new THREE.Mesh(tGeo, tMat);
-  terrace.position.set(-10.5, 0.05 + i * 0.12, -7 + i * 0.3);
+  terrace.position.set(0, 0.05 + i * 0.12, -1 + i * 0.3);
   terrace.receiveShadow = true;
   scene.add(terrace);
 }
@@ -2606,23 +2810,29 @@ for (let i = 0; i < 4; i++) {
 // ============================================================
 const lawnMat = new THREE.MeshStandardMaterial({ color: 0x2d6b35, roughness: 0.9 });
 const lawns = [
-  { x: -10.5, z: -5.5, w: 5, d: 3 },   // Phase I courtyard lawn
-  { x: -5, z: 12, w: 8, d: 4 },         // Central south lawn
-  { x: 3, z: -4, w: 3, d: 3 },          // Between Phase III and IV
-  { x: -9, z: 6, w: 4, d: 3 },          // Between Phase II buildings
-  { x: 10, z: 7, w: 5, d: 4 },          // Platina lawn
-  { x: -19, z: -10, w: 2, d: 4 },       // West of Phase I
-  { x: 17, z: 0, w: 3, d: 3 },          // East of Phase IV
-  { x: 3, z: -11, w: 6, d: 2 },         // North open lawn
-  // South strip landscaping (between buildings and ORR road)
-  { x: -14, z: 14, w: 8, d: 3 },        // SW lawn strip
-  { x: -4, z: 14, w: 6, d: 3 },         // S-center-left lawn
-  { x: 6, z: 14, w: 6, d: 3 },          // S-center lawn
-  { x: 15, z: 14, w: 6, d: 3 },         // SE lawn strip
-  // Fill gaps between clusters
-  { x: -4, z: -1, w: 4, d: 2 },         // Between Phase II and III
-  { x: -19, z: 3, w: 2, d: 4 },         // West of Elnath
-  { x: 17, z: -9, w: 3, d: 3 },         // East of Cosmos
+  // Roundabout center island area already handled — small corner lawns
+  // Between Row 1 and Row 2 (E-W gap z=-10.5): pocket lawns
+  { x: -12, z: -10.5, w: 2, d: 2 },
+  { x: 8, z: -10.5, w: 2, d: 2 },
+  // Between Row 2 and Row 3 (E-W gap z=-3.5): lawns in column gaps
+  { x: -11, z: -3.5, w: 2, d: 1.5 },
+  { x: 7, z: -3.5, w: 2, d: 1.5 },
+  // Between Row 3 and Row 4 (E-W gap z=3.5): lawns in column gaps
+  { x: -11, z: 3.5, w: 2, d: 1.5 },
+  { x: 7, z: 3.5, w: 2, d: 1.5 },
+  // Between Row 4 and Row 5 (E-W gap z=10.5): pocket lawns
+  { x: -6, z: 10.5, w: 3, d: 2 },
+  { x: 4, z: 10.5, w: 2, d: 2 },
+  // West perimeter lawn along x=-16.5
+  { x: -17, z: -8, w: 1.5, d: 6 },
+  { x: -17, z: 5, w: 1.5, d: 4 },
+  // East perimeter lawn
+  { x: 16.5, z: -8, w: 1.5, d: 6 },
+  { x: 16.5, z: 5, w: 1.5, d: 4 },
+  // North perimeter
+  { x: 0, z: -16, w: 8, d: 2 },
+  // South perimeter
+  { x: 0, z: 16, w: 8, d: 2 },
 ];
 lawns.forEach(l => {
   const geo = new THREE.BoxGeometry(l.w, 0.04, l.d);
@@ -2646,15 +2856,11 @@ function createLamp(x, z) {
   g.add(pole);
 
   const bulbMat = new THREE.MeshStandardMaterial({ color: 0xfff4d6, emissive: 0xffaa44, emissiveIntensity: 0.8 });
-  const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 6), bulbMat);
+  const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.06, 4, 3), bulbMat);
   bulb.position.y = 1.25;
   g.add(bulb);
 
-  const light = new THREE.PointLight(0xffaa44, 0.25, 4);
-  light.position.y = 1.25;
-  g.add(light);
-
-  allLampLights.push(light);
+  // Point light removed for performance — bulb emissive glow is sufficient
   allLampBulbs.push(bulbMat);
 
   g.position.set(x, 0, z);
@@ -2662,20 +2868,21 @@ function createLamp(x, z) {
 }
 
 const lampPositions = [
-  // Along main boulevard z=-1.2 (6)
-  {x:-16,z:-1.2}, {x:-12,z:-1.2}, {x:-8,z:-1.2}, {x:-4,z:-1.2}, {x:4,z:-1.2}, {x:10,z:-1.2},
-  // Along N-S central spine x=6.5 (4)
-  {x:6.5,z:-9}, {x:6.5,z:-3}, {x:6.5,z:2}, {x:6.5,z:7},
-  // Phase I area (2)
-  {x:-10.5,z:-8}, {x:-14,z:-8},
-  // Near water feature (2)
-  {x:-9,z:-5.5}, {x:-12,z:-5.5},
-  // Entrance area (4)
-  {x:2,z:15}, {x:4,z:15}, {x:2,z:13}, {x:4,z:13},
-  // Phase II area (2)
-  {x:-14,z:6.2}, {x:-6,z:6.2},
-  // Platina area (2)
-  {x:10.2,z:5}, {x:10.2,z:9},
+  // Along E-W Road z=-10.5 (intersections with N-S roads)
+  {x:-16.5,z:-10.5}, {x:-5.5,z:-10.5}, {x:3,z:-10.5}, {x:15.5,z:-10.5},
+  // Along E-W Road z=-3.5
+  {x:-16.5,z:-3.5}, {x:-5.5,z:-3.5}, {x:3,z:-3.5}, {x:15.5,z:-3.5},
+  // Along E-W Road z=3.5
+  {x:-16.5,z:3.5}, {x:-5.5,z:3.5}, {x:3,z:3.5}, {x:15.5,z:3.5},
+  // Along E-W Road z=10.5
+  {x:-16.5,z:10.5}, {x:-5.5,z:10.5}, {x:3,z:10.5}, {x:15.5,z:10.5},
+  // Near roundabout at (0,0)
+  {x:-1,z:-1}, {x:1,z:-1}, {x:-1,z:1}, {x:1,z:1},
+  // East gate entry area
+  {x:17,z:-1}, {x:17,z:1},
+  // Mid-span on N-S roads
+  {x:-16.5,z:-7}, {x:-16.5,z:7},
+  {x:15.5,z:-7}, {x:15.5,z:7},
 ];
 lampPositions.forEach(p => scene.add(createLamp(p.x, p.z)));
 
@@ -2702,11 +2909,20 @@ function createBench(x, z, rotY) {
 }
 
 [
-  {x:-5,z:2,r:0}, {x:-1,z:2,r:0}, {x:3,z:2,r:0},
-  {x:-14,z:-7,r:Math.PI/2}, {x:-14,z:-10,r:Math.PI/2},
-  {x:5,z:-4,r:0}, {x:12,z:0,r:Math.PI/2},
-  {x:10,z:7,r:0}, {x:-9,z:6,r:0}, {x:-16,z:3,r:Math.PI/2},
-  {x:-5,z:12,r:0}, {x:0,z:12,r:0}, {x:5,z:12,r:0},
+  // Center campus near water feature
+  {x:-1,z:1,r:0}, {x:1,z:-1,r:0},
+  // Along main boulevard
+  {x:-4,z:3,r:0}, {x:4,z:3,r:0}, {x:10,z:3,r:0},
+  // West corridor
+  {x:-7,z:-3,r:Math.PI/2}, {x:-7,z:3,r:Math.PI/2},
+  // North open area
+  {x:-4,z:-9,r:0}, {x:4,z:-9,r:0},
+  // South area
+  {x:2,z:8,r:0}, {x:8,z:8,r:0},
+  // Near reflecting pool
+  {x:10,z:-3,r:0},
+  // Far south
+  {x:-6,z:16,r:0},
 ].forEach(b => {
   scene.add(createBench(b.x, b.z, b.r));
 });
@@ -2716,10 +2932,10 @@ function createBench(x, z, rotY) {
 // ============================================================
 const bollardMat = new THREE.MeshStandardMaterial({ color: 0x5a6068, roughness: 0.6, metalness: 0.2 });
 const bollardPositions = [];
-// Along main boulevard every 3 units
-for (let x = -18; x <= 14; x += 3) {
-  bollardPositions.push({x: x, z: -1.6});
-  bollardPositions.push({x: x, z: -0.8});
+// Along main boulevard z=2.2 every 3 units
+for (let x = -12; x <= 14; x += 3) {
+  bollardPositions.push({x: x, z: 1.6});
+  bollardPositions.push({x: x, z: 2.8});
 }
 bollardPositions.forEach(bp => {
   const geo = new THREE.CylinderGeometry(0.04, 0.04, 0.3, 6);
@@ -2733,8 +2949,7 @@ bollardPositions.forEach(bp => {
 // ============================================================
 const roadMat = new THREE.MeshStandardMaterial({ color: 0x3a3f4a, roughness: 0.9 });
 
-// Main external road along SOUTH edge (ORR) — now handled by addRoad() calls below
-// (Kept as comment; the ORR addRoad call at z=17.5 replaces this)
+// Main external road (ORR / Service Road) — runs along EAST edge at x=22
 
 // ============================================================
 // Internal Roads — realistic campus road network
@@ -2761,16 +2976,12 @@ function addRoad(x, z, w, d, addMarkings) {
 }
 
 // =================================================================
-// PIXEL-PERFECT INTERNAL ROADS (post position-fix pass)
-// All coordinates verified against adjusted building AABBs with 0.5m buffer
-// Road widths: perimeter 1.5, main boulevard 1.0, internal 0.8, access 0.6-0.7
+// CLEAN GRID INTERNAL ROADS — aligned with building row/column gaps
 // =================================================================
 
-// CURVED PERIMETER RING ROAD (approximating the real ring road)
+// PERIMETER RING ROAD — simple rectangle
 const ringRoadPoints = [
-  [-16, -13], [-19, -6], [-19, 0], [-17, 8], [-14, 14],
-  [-6, 15.5], [3, 15.5], [10, 14], [16, 10], [18, 3],
-  [18, -4], [17, -11], [10, -13], [0, -13], [-10, -13], [-16, -13]
+  [-17, -17], [16, -17], [16, 17], [-17, 17], [-17, -17]
 ];
 
 for (let i = 0; i < ringRoadPoints.length - 1; i++) {
@@ -2787,43 +2998,66 @@ for (let i = 0; i < ringRoadPoints.length - 1; i++) {
   scene.add(mesh);
 }
 
-// ORR (main external road)
-addRoad(0, 17.5, 44, 2.5, true);       // The big ORR road
+// ORR / Service Road — EAST side (vertical at x=20)
+addRoad(20, 0, 2.5, 40, true);
 
-// Entry from ORR to campus
-addRoad(3, 16.2, 1.5, 3, false);       // Entry road stub
+// Entry road from east gate to campus
+addRoad(18, 0, 5, 1.2, false);
 
-// MAIN E-W BOULEVARD at z=-1.5
-// Gap: Jupiter z2=-3.0, Elnath z1=1.5 -> center=-0.75, gap=4.5 -- SAFE
-addRoad(-12, -1.5, 24, 1.0, true);     // x:-24 to x:12
-addRoad(12, -1.5, 8, 1.0, true);       // x:8 to x:20 (east extension)
+// =================================================================
+// E-W HORIZONTAL ROADS (between rows)
+// =================================================================
 
-// N-S CENTRAL SPINE at x=6.5
-// Gap: Velocity x2=6.0, Block1 x1=7.25 -> gap=1.25 -- tight but 0.8 width fits
-addRoad(6.5, -5, 0.8, 10, true);       // z:-10 to z:0
-addRoad(5, 6, 0.8, 12, true);          // z:0 to z:12 (offset for Platina gap)
+// E-W Road 1: z=-10.5 (between Row 1 and Row 2)
+addRoad(0, -10.5, 34, 1.0, true);
 
-// PHASE I access: z=-8.2 (between Mercury/Venus z2=-9.3 and Jupiter z1=-7.0)
-// Gap=2.3 -- SAFE for 0.7 width road
-addRoad(-10.5, -8.2, 10, 0.7, false);
+// E-W Road 2: z=-3.5 (between Row 2 and Row 3)
+addRoad(0, -3.5, 34, 1.0, true);
 
-// PHASE II access: z=7 (between Etamin z2=6.3 and Electra z1=7.8)
-// Gap=1.5 -- tight, use 0.6 width road
-addRoad(-9, 7, 9, 0.6, false);
+// E-W Road 3: z=3.5 (between Row 3 and Row 4)
+addRoad(0, 3.5, 34, 1.0, true);
 
-// PHASE III: x=0.3 (between Vector x2=0.0 and Velocity x1=2.0)
-// Gap=2.0 -- SAFE
-addRoad(0.3, -8, 0.6, 4, false);
+// E-W Road 4: z=10.5 (between Row 4 and Row 5)
+addRoad(0, 10.5, 34, 1.0, true);
 
-// PHASE IV: z=-2.5 south of Block1/Cosmos, north of Gravity
-addRoad(12, -2.5, 8, 0.6, false);
+// =================================================================
+// N-S VERTICAL ROADS (between columns)
+// =================================================================
 
-// PLATINA: x=11 between Platina B1 and B2
-addRoad(11, 7, 0.6, 6, false);
+// N-S Road 1: x=-16.5 (west of all buildings)
+addRoad(-16.5, 0, 0.8, 32, true);
 
-// CONNECTORS
-addRoad(-19, -6, 1.5, 0.7, false);     // West perimeter to Neptune area
-addRoad(18.5, -4, 1.5, 0.7, false);    // East perimeter to Cosmos
+// N-S Road 2: x=-5.5 (between Electra/PlatB1 and NepT1/PlatB2 columns)
+addRoad(-5.5, 0, 0.8, 32, false);
+
+// N-S Road 3: x=3 (between NepT2/FoodCourt/Valence and PlatB3/Block1)
+addRoad(3, 0, 0.8, 32, false);
+
+// N-S Road 4: x=15.5 (east of all buildings)
+addRoad(15.5, 0, 0.8, 32, true);
+
+// =================================================================
+// CENTRAL ROUNDABOUT at campus center (0, 0)
+// =================================================================
+const rcx = 0, rcz = 0, rr = 2.5;
+for (let i = 0; i < 16; i++) {
+  const a1 = (i/16)*Math.PI*2, a2 = ((i+1)/16)*Math.PI*2;
+  const x1=rcx+Math.cos(a1)*rr, z1=rcz+Math.sin(a1)*rr;
+  const x2=rcx+Math.cos(a2)*rr, z2=rcz+Math.sin(a2)*rr;
+  const dx=x2-x1, dz=z2-z1, len=Math.sqrt(dx*dx+dz*dz), angle=Math.atan2(dx,dz);
+  const geo = new THREE.BoxGeometry(len, 0.06, 0.8);
+  const mesh = new THREE.Mesh(geo, roadMat);
+  mesh.position.set((x1+x2)/2, 0.025, (z1+z2)/2);
+  mesh.rotation.y = angle;
+  mesh.receiveShadow = true;
+  scene.add(mesh);
+}
+const islandGeo = new THREE.CircleGeometry(1.8, 24);
+const islandMat = new THREE.MeshStandardMaterial({ color: 0x2d6b35, roughness: 0.9 });
+const island = new THREE.Mesh(islandGeo, islandMat);
+island.rotation.x = -Math.PI/2;
+island.position.set(0, 0.03, 0);
+scene.add(island);
 
 // --- Internal Road Labels ---
 const roadLabelObjects = [];
@@ -2838,41 +3072,39 @@ function addRoadLabel(x, y, z, text) {
   roadLabelObjects.push(label);
 }
 
-addRoadLabel(-6, 0.3, -1.5, 'Main Boulevard');
-addRoadLabel(12, 0.3, -1.5, 'Main Boulevard');
-addRoadLabel(6.5, 0.3, -5, 'Central Spine');
-addRoadLabel(-10.5, 0.3, -8.2, 'Phase I Access');
-addRoadLabel(-9, 0.3, 7, 'Phase II South');
-addRoadLabel(0.3, 0.3, -8, 'Phase III Access');
-addRoadLabel(12, 0.3, -2.5, 'Phase IV Access');
-addRoadLabel(11, 0.3, 7, 'Platina Access');
-addRoadLabel(-19.5, 0.3, -6, 'West Ring');
-addRoadLabel(19, 0.3, -6, 'East Ring');
-addRoadLabel(3, 0.3, 15, 'Entry Road');
-addRoadLabel(0, 0.3, -13, 'North Ring');
+addRoadLabel(0, 0.3, 0, 'Roundabout');
+addRoadLabel(0, 0.3, -10.5, 'Phase II Road');
+addRoadLabel(0, 0.3, -3.5, 'Platina Road');
+addRoadLabel(0, 0.3, 3.5, 'Center Road');
+addRoadLabel(0, 0.3, 10.5, 'South Road');
+addRoadLabel(-16.5, 0.3, 0, 'West Drive');
+addRoadLabel(-5.5, 0.3, -14, 'Column 2');
+addRoadLabel(3, 0.3, -14, 'Column 3');
+addRoadLabel(15.5, 0.3, 0, 'East Drive');
+addRoadLabel(20, 0.3, 0, 'Service Road');
 
-// Lane markings on ORR (dashed center line)
+// Lane markings on ORR / Service Road (vertical dashes at x=20)
 const laneMarkMat = new THREE.MeshStandardMaterial({ color: 0xeeee88 });
-for (let x = -22; x < 22; x += 3) {
-  const markGeo = new THREE.BoxGeometry(1.2, 0.07, 0.08);
+for (let z = -20; z < 20; z += 3) {
+  const markGeo = new THREE.BoxGeometry(0.08, 0.07, 1.2);
   const mark = new THREE.Mesh(markGeo, laneMarkMat);
-  mark.position.set(x, 0.06, 17.5);
+  mark.position.set(20, 0.06, z);
   scene.add(mark);
 }
 
 // Edge lines (white) on ORR
 const edgeMarkMat = new THREE.MeshStandardMaterial({ color: 0xcccccc });
 [-1.15, 1.15].forEach(offset => {
-  for (let x = -22; x < 22; x += 5) {
-    const markGeo = new THREE.BoxGeometry(2.0, 0.07, 0.06);
+  for (let z = -20; z < 20; z += 5) {
+    const markGeo = new THREE.BoxGeometry(0.06, 0.07, 2.0);
     const mark = new THREE.Mesh(markGeo, edgeMarkMat);
-    mark.position.set(x, 0.06, 17.5 + offset);
+    mark.position.set(20 + offset, 0.06, z);
     scene.add(mark);
   }
 });
 
 // ============================================================
-// Road direction signs on ORR
+// Road direction signs
 // ============================================================
 function createRoadSign(x, z, text, rotY) {
   const g = new THREE.Group();
@@ -2899,60 +3131,55 @@ function createRoadSign(x, z, text, rotY) {
   return g;
 }
 
-// ORR direction signs
-scene.add(createRoadSign(-18, 19, '← Marathahalli 2km'));
-scene.add(createRoadSign(16, 19, 'Bellandur 1.5km →'));
-scene.add(createRoadSign(-8, 19, '← Silk Board 6km'));
-scene.add(createRoadSign(8, 19, 'Whitefield 12km →'));
+// ORR direction signs (along east service road at x=22)
+scene.add(createRoadSign(22, -16, '↑ Marathahalli 2km', Math.PI / 2));
+scene.add(createRoadSign(22, 16, '↓ Bellandur 1.5km', Math.PI / 2));
+scene.add(createRoadSign(22, -6, '↑ Silk Board 6km', Math.PI / 2));
+scene.add(createRoadSign(22, 8, '↓ Whitefield 12km', Math.PI / 2));
 
 // Internal road direction signs
-scene.add(createRoadSign(-19, -12, '↑ Phase I & II'));
-scene.add(createRoadSign(19, -12, '↑ Phase IV'));
-scene.add(createRoadSign(3, 16, '↓ ORR / Exit'));
-scene.add(createRoadSign(-19, 10, '↓ Phase II South'));
+scene.add(createRoadSign(-16.5, -16, '↑ Phase II'));
+scene.add(createRoadSign(15.5, -16, '↑ Phase II East'));
+scene.add(createRoadSign(19, 0, '→ ORR / Exit'));
+scene.add(createRoadSign(-18, 7, '← Back Gate'));
 
 // ============================================================
-// South strip landscaping (between buildings z~14 and ORR z~20)
+// East strip landscaping (between campus wall x=17 and ORR at x=20)
 // ============================================================
-// Trees along south strip (z:14-17, between buildings and ORR)
-const southTreePositions = [
-  {x:-16, z:14.5}, {x:-12, z:15}, {x:-8, z:14.5}, {x:-4, z:15.5},
-  {x:0, z:14.5}, {x:6, z:15}, {x:10, z:14.5}, {x:14, z:15},
-  {x:-14, z:16}, {x:-6, z:16}, {x:4, z:16}, {x:12, z:16},
+// Trees along east strip
+const eastTreePositions = [
+  {x:19, z:-16}, {x:19, z:-12}, {x:19, z:-8}, {x:19, z:-4},
+  {x:19, z:4}, {x:19, z:8}, {x:19, z:12}, {x:19, z:16},
 ];
-southTreePositions.forEach(p => {
+eastTreePositions.forEach(p => {
   const scale = 0.7 + Math.random() * 0.5;
   scene.add(createTree(p.x, p.z, scale));
 });
 
-// Palm trees along south entrance
-const southPalmPositions = [
-  {x:2, z:15.5}, {x:4, z:15.5}, {x:2, z:16.5}, {x:4, z:16.5},
+// Palm trees along east entry
+const eastPalmPositions = [
+  {x:18, z:-2}, {x:18, z:2},
 ];
-southPalmPositions.forEach(p => scene.add(createPalmTree(p.x, p.z, 0.9 + Math.random() * 0.3)));
+eastPalmPositions.forEach(p => scene.add(createPalmTree(p.x, p.z, 0.9 + Math.random() * 0.3)));
 
-// Hedges along south strip
-const southHedgeMat = new THREE.MeshStandardMaterial({ color: 0x2d5a30, roughness: 0.85 });
-const southHedges = [
-  {x:-14, z:14, w:8, d:0.4}, {x:-2, z:14, w:6, d:0.4},
-  {x:8, z:14, w:6, d:0.4}, {x:16, z:14, w:4, d:0.4},
-  {x:-14, z:16.5, w:8, d:0.4}, {x:10, z:16.5, w:8, d:0.4},
+// Hedges along east strip
+const eastHedgeMat = new THREE.MeshStandardMaterial({ color: 0x2d5a30, roughness: 0.85 });
+const eastHedges = [
+  {x:18.5, z:-12, w:0.4, d:6}, {x:18.5, z:8, w:0.4, d:6},
 ];
-southHedges.forEach(h => {
+eastHedges.forEach(h => {
   const geo = new THREE.BoxGeometry(h.w, 0.3, h.d);
-  const mesh = new THREE.Mesh(geo, southHedgeMat);
+  const mesh = new THREE.Mesh(geo, eastHedgeMat);
   mesh.position.set(h.x, 0.15, h.z);
   scene.add(mesh);
 });
 
-// Flower beds in south strip
-const southFlowerPositions = [
-  {x:-12, z:14.5, w:1.5, d:1, c:0xd4668e},
-  {x:-4, z:14.5, w:1.5, d:1, c:0xc4a84d},
-  {x:6, z:14.5, w:1.5, d:1, c:0xd4668e},
-  {x:14, z:14.5, w:1, d:1, c:0xc4a84d},
+// Flower beds near east gate
+const eastFlowerPositions = [
+  {x:18.5, z:-5, w:0.8, d:1.5, c:0xd4668e},
+  {x:18.5, z:5, w:0.8, d:1.5, c:0xc4a84d},
 ];
-southFlowerPositions.forEach(f => {
+eastFlowerPositions.forEach(f => {
   const geo = new THREE.BoxGeometry(f.w, 0.08, f.d);
   const mat = new THREE.MeshStandardMaterial({ color: f.c, roughness: 0.75 });
   const mesh = new THREE.Mesh(geo, mat);
@@ -2960,49 +3187,46 @@ southFlowerPositions.forEach(f => {
   scene.add(mesh);
 });
 
-// Benches in south area
-scene.add(createBench(-8, 14.5, 0));
-scene.add(createBench(4, 14.5, 0));
-scene.add(createBench(12, 14.5, 0));
+// Benches near east gate area
+scene.add(createBench(18, -5, Math.PI / 2));
+scene.add(createBench(18, 5, Math.PI / 2));
 
-// Lamp posts in south strip
-scene.add(createLamp(-12, 15));
-scene.add(createLamp(-4, 15));
-scene.add(createLamp(6, 15));
-scene.add(createLamp(14, 15));
+// Lamp posts along east strip
+scene.add(createLamp(19, -10));
+scene.add(createLamp(19, 0));
+scene.add(createLamp(19, 10));
 
 // ============================================================
-// Main Entry Gate — south side
+// Main Entry Gate — EAST side (x=17, z=0)
 // ============================================================
 const gateMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.5, metalness: 0.3 });
 
 const pillarGeo = new THREE.BoxGeometry(0.3, 2.5, 0.3);
 const leftPillar = new THREE.Mesh(pillarGeo, gateMat);
-leftPillar.position.set(1.5, 1.25, 15);
-leftPillar.castShadow = true;
+leftPillar.position.set(17, 1.25, -1.5);
 scene.add(leftPillar);
 
 const rightPillar = new THREE.Mesh(pillarGeo, gateMat);
-rightPillar.position.set(4.5, 1.25, 15);
-rightPillar.castShadow = true;
+rightPillar.position.set(17, 1.25, 1.5);
 scene.add(rightPillar);
 
-const barGeo = new THREE.BoxGeometry(3.3, 0.2, 0.2);
+// Bar connecting pillars (runs along z-axis since gate faces east)
+const barGeo = new THREE.BoxGeometry(0.2, 0.2, 3.3);
 const bar = new THREE.Mesh(barGeo, gateMat);
-bar.position.set(3, 2.55, 15);
+bar.position.set(17, 2.55, 0);
 scene.add(bar);
 
 const barrierMat = new THREE.MeshStandardMaterial({ color: 0xdd3333 });
-const barrierGeo = new THREE.BoxGeometry(2.5, 0.08, 0.12);
+const barrierGeo = new THREE.BoxGeometry(0.12, 0.08, 2.5);
 const barrier = new THREE.Mesh(barrierGeo, barrierMat);
-barrier.position.set(3, 1.2, 15);
+barrier.position.set(17, 1.2, 0);
 scene.add(barrier);
 
 const stripeMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
-for (let i = 2; i <= 4; i += 0.5) {
-  const stripeGeo = new THREE.BoxGeometry(0.15, 0.09, 0.13);
+for (let i = -1; i <= 1; i += 0.5) {
+  const stripeGeo = new THREE.BoxGeometry(0.13, 0.09, 0.15);
   const stripe = new THREE.Mesh(stripeGeo, stripeMat);
-  stripe.position.set(i, 1.2, 15);
+  stripe.position.set(17, 1.2, i);
   scene.add(stripe);
 }
 
@@ -3011,24 +3235,23 @@ gateDiv.className = 'building-label';
 gateDiv.style.cssText = 'font-size:14px;font-weight:800;color:#e2e8f0;letter-spacing:2px;text-shadow:0 2px 10px rgba(0,0,0,0.9);text-align:center;line-height:1.4';
 gateDiv.innerHTML = 'PRESTIGE<br>TECH PARK';
 const gateLabel = new CSS2DObject(gateDiv);
-gateLabel.position.set(3, 3.2, 15);
+gateLabel.position.set(17, 3.2, 0);
 scene.add(gateLabel);
 
 // ============================================================
-// ATM Booth — near gate
+// ATM Booth — near main gate (east side)
 // ============================================================
-const atmGeo = new THREE.BoxGeometry(1, 1.2, 0.8);
+const atmGeo = new THREE.BoxGeometry(0.8, 1.2, 1);
 const atmMat = new THREE.MeshStandardMaterial({ color: 0x60a5fa, roughness: 0.6 });
 const atm = new THREE.Mesh(atmGeo, atmMat);
-atm.position.set(0, 0.6, 15);
-atm.castShadow = true;
+atm.position.set(18.5, 0.6, 3);
 scene.add(atm);
 
 const atmDiv = document.createElement('div');
 atmDiv.className = 'locality-label';
 atmDiv.textContent = 'ATM';
 const atmLabel = new CSS2DObject(atmDiv);
-atmLabel.position.set(0, 1.5, 15);
+atmLabel.position.set(18.5, 1.5, 3);
 scene.add(atmLabel);
 
 // ============================================================
@@ -3053,14 +3276,15 @@ const busBenchSeat = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.05, 0.3), new T
 busBenchSeat.position.set(0, 0.4, 0.2);
 busStopGroup.add(busBenchSeat);
 
-busStopGroup.position.set(10, 0, 19);
+busStopGroup.position.set(21, 0, 10);
+busStopGroup.rotation.y = Math.PI / 2;
 scene.add(busStopGroup);
 
 const busDiv = document.createElement('div');
 busDiv.className = 'locality-label';
 busDiv.textContent = 'BUS STOP';
 const busLabel = new CSS2DObject(busDiv);
-busLabel.position.set(10, 2.2, 19);
+busLabel.position.set(21, 2.2, 10);
 scene.add(busLabel);
 
 // ============================================================
@@ -3091,53 +3315,51 @@ function createParkingLot(px, pz, pw, pd, numSpaces) {
     const carMat = new THREE.MeshStandardMaterial({ color: carColors[i % carColors.length], roughness: 0.6 });
     const car = new THREE.Mesh(carGeo, carMat);
     car.position.set(px - pw/2 + (i + 1) * spacing, 0.2, pz + (i % 2 === 0 ? -0.5 : 0.5));
-    car.castShadow = true;
     scene.add(car);
   }
 }
 
-// Parking lot 1 — north perimeter
-createParkingLot(-3, -12, 8, 3, 6);
+// Parking lot 1 — north open area (z:-10 to -8)
+createParkingLot(0, -11, 8, 3, 6);
 const parkDiv1 = document.createElement('div');
 parkDiv1.className = 'locality-label';
 parkDiv1.textContent = 'PARKING P1';
 const parkLabel1 = new CSS2DObject(parkDiv1);
-parkLabel1.position.set(-3, 1.0, -12);
+parkLabel1.position.set(0, 1.0, -11);
 scene.add(parkLabel1);
 
-// Parking lot 2 — east of Cosmos
-createParkingLot(18, -4, 2, 6, 3);
+// Parking lot 2 — east internal area near Mercury
+createParkingLot(17, 6, 2, 4, 3);
 const parkDiv2 = document.createElement('div');
 parkDiv2.className = 'locality-label';
 parkDiv2.textContent = 'PARKING P2';
 const parkLabel2 = new CSS2DObject(parkDiv2);
-parkLabel2.position.set(18, 1.0, -4);
+parkLabel2.position.set(17, 1.0, 6);
 scene.add(parkLabel2);
 
-// Parking lot 3 — south of Electra
-createParkingLot(-5, 13, 6, 3, 5);
+// Parking lot 3 — far south between Cosmos and Gravity
+createParkingLot(-5, 16, 6, 2, 5);
 const parkDiv3 = document.createElement('div');
 parkDiv3.className = 'locality-label';
 parkDiv3.textContent = 'PARKING P3';
 const parkLabel3 = new CSS2DObject(parkDiv3);
-parkLabel3.position.set(-5, 1.0, 13);
+parkLabel3.position.set(-5, 1.0, 16);
 scene.add(parkLabel3);
 
 // ============================================================
-// Security Cabin — near south gate
+// Security Cabin — near main gate (east side)
 // ============================================================
 const secGeo = new THREE.BoxGeometry(0.8, 1.0, 0.8);
 const secMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.6 });
 const secCabin = new THREE.Mesh(secGeo, secMat);
-secCabin.position.set(5.5, 0.5, 15);
-secCabin.castShadow = true;
+secCabin.position.set(20.5, 0.5, -3);
 scene.add(secCabin);
 
 const secDiv = document.createElement('div');
 secDiv.className = 'locality-label';
 secDiv.textContent = 'SECURITY';
 const secLabel = new CSS2DObject(secDiv);
-secLabel.position.set(5.5, 1.4, 15);
+secLabel.position.set(20.5, 1.4, -3);
 scene.add(secLabel);
 
 // ============================================================
@@ -3167,12 +3389,12 @@ function createSignboard(x, z, text) {
   return g;
 }
 
-scene.add(createSignboard(-14, -1.5, '\u2190 Phase I'));
-scene.add(createSignboard(-10, 0.5, '\u2190 Phase II'));
-scene.add(createSignboard(0, -1.5, 'Phase III \u2192'));
-scene.add(createSignboard(8, -1.5, 'Phase IV \u2192'));
-scene.add(createSignboard(8, 3, 'Platina \u2192'));
-scene.add(createSignboard(3, 12, 'Exit \u2193'));
+scene.add(createSignboard(-10, 2.2, '\u2190 Elnath / Electra'));
+scene.add(createSignboard(0, -7.5, 'Platina B1 \u2192'));
+scene.add(createSignboard(14, 2.2, 'Mercury \u2192'));
+scene.add(createSignboard(-7.5, 6, '\u2193 Venus / Valence'));
+scene.add(createSignboard(7, -4.2, 'Platina B3 \u2192'));
+scene.add(createSignboard(18, 0, 'Exit \u2192'));
 
 // Animated traffic removed — was distracting
 const trafficCars = [];
@@ -3195,55 +3417,57 @@ function createWallSegment(x1, z1, x2, z2) {
   scene.add(mesh);
 }
 
-// Campus boundary — irregular wedge with gate gaps
-// Front gate gap at south: around (3, 15) — between SW corner and SE corner
-// Back gate gap at west: around (-20, -3) — between W point and NW corner
+// Campus boundary — simple rectangle with gate gaps
+const campusBoundary = [
+  [-18, -18], [17, -18], [17, 18], [-18, 18], [-18, -18]
+];
 
-// NW corner to NE corner (north wall — solid)
-createWallSegment(-18, -13, 17, -11);
+// Build wall segments with gaps for gates
+// Main entry gate on EAST: gap at z=-1 to z=1 (x=17)
+// Back gate on WEST: gap at z=6 to z=8 (x=-18)
+for (let i = 0; i < campusBoundary.length - 1; i++) {
+  const [x1, z1] = campusBoundary[i];
+  const [x2, z2] = campusBoundary[i + 1];
 
-// NE corner to E point (east wall top)
-createWallSegment(17, -11, 19, 3);
+  // East wall gate gap: segment from (17,-18) to (17,18) — split at z=-1 and z=1
+  if (x1 === 17 && x2 === 17) {
+    createWallSegment(17, -18, 17, -1);  // south of gate
+    createWallSegment(17, 1, 17, 18);   // north of gate
+    continue;
+  }
 
-// E point to SE corner (east wall bottom)
-createWallSegment(19, 3, 18, 15);
+  // West wall gate gap: segment from (-18,18) to (-18,-18) — split at z=6 and z=8
+  if (x1 === -18 && x2 === -18) {
+    createWallSegment(-18, 18, -18, 8);  // north of gate
+    createWallSegment(-18, 6, -18, -18); // south of gate
+    continue;
+  }
 
-// SE corner to front gate right pillar (south wall right segment)
-createWallSegment(18, 15, 5, 15);
-
-// Front gate left pillar to SW corner (south wall left segment)
-createWallSegment(1, 15, -16, 15);
-
-// SW corner to back gate bottom (west wall lower segment)
-createWallSegment(-16, 15, -20, -1);
-
-// Back gate top to NW corner (west wall upper segment)
-createWallSegment(-20, -5, -18, -13);
+  createWallSegment(x1, z1, x2, z2);
+}
 
 // ============================================================
-// Back Gate — west side near Neptune towers (x=-25.5, z=-3)
+// Back Gate — WEST side (x=-18, z=7)
 // ============================================================
 const backPillarGeo = new THREE.BoxGeometry(0.25, 2.0, 0.25);
 const backLeftPillar = new THREE.Mesh(backPillarGeo, gateMat);
-backLeftPillar.position.set(-20, 1.0, -4.2);
-backLeftPillar.castShadow = true;
+backLeftPillar.position.set(-18, 1.0, 5.5);
 scene.add(backLeftPillar);
 
 const backRightPillar = new THREE.Mesh(backPillarGeo, gateMat);
-backRightPillar.position.set(-20, 1.0, -1.8);
-backRightPillar.castShadow = true;
+backRightPillar.position.set(-18, 1.0, 8.5);
 scene.add(backRightPillar);
 
 // Horizontal bar across pillars (runs along z-axis since gate faces west)
-const backBarGeo = new THREE.BoxGeometry(0.18, 0.18, 2.7);
+const backBarGeo = new THREE.BoxGeometry(0.18, 0.18, 3.3);
 const backBar = new THREE.Mesh(backBarGeo, gateMat);
-backBar.position.set(-20, 2.1, -3);
+backBar.position.set(-18, 2.1, 7);
 scene.add(backBar);
 
 // Back gate barrier (runs along z)
-const backBarrierGeo = new THREE.BoxGeometry(0.1, 0.07, 2.0);
+const backBarrierGeo = new THREE.BoxGeometry(0.1, 0.07, 2.5);
 const backBarrier = new THREE.Mesh(backBarrierGeo, new THREE.MeshStandardMaterial({ color: 0xdd3333 }));
-backBarrier.position.set(-20, 1.0, -3);
+backBarrier.position.set(-18, 1.0, 7);
 scene.add(backBarrier);
 
 // Back gate label
@@ -3252,34 +3476,33 @@ backGateDiv.className = 'building-label';
 backGateDiv.style.cssText = 'font-size:11px;font-weight:700;color:#e2e8f0;letter-spacing:1px;text-shadow:0 2px 8px rgba(0,0,0,0.9)';
 backGateDiv.textContent = 'BACK GATE';
 const backGateLabel = new CSS2DObject(backGateDiv);
-backGateLabel.position.set(-20, 2.8, -3);
+backGateLabel.position.set(-18, 2.8, 7);
 scene.add(backGateLabel);
 
 // Back gate security cabin
 const backSecGeo = new THREE.BoxGeometry(0.7, 0.9, 0.8);
 const backSecMat = new THREE.MeshStandardMaterial({ color: 0xd4a44a, roughness: 0.7 });
 const backSecCabin = new THREE.Mesh(backSecGeo, backSecMat);
-backSecCabin.position.set(-20, 0.45, -5.5);
-backSecCabin.castShadow = true;
+backSecCabin.position.set(-18.5, 0.45, 5);
 scene.add(backSecCabin);
 
 const backSecLabel = document.createElement('div');
 backSecLabel.className = 'locality-label';
 backSecLabel.textContent = 'SECURITY';
 const backSecLabelObj = new CSS2DObject(backSecLabel);
-backSecLabelObj.position.set(-20, 1.2, -5.5);
+backSecLabelObj.position.set(-18.5, 1.2, 5);
 scene.add(backSecLabelObj);
 
-// Entry road from back gate to west perimeter road
+// Entry road from back gate to west perimeter
 const backEntryRoadGeo = new THREE.BoxGeometry(2, 0.06, 1.4);
 const backEntryRoad = new THREE.Mesh(backEntryRoadGeo, roadMat);
-backEntryRoad.position.set(-21, 0.02, -3);
+backEntryRoad.position.set(-19, 0.02, 7);
 backEntryRoad.receiveShadow = true;
 scene.add(backEntryRoad);
 
 // Road signs at back gate
-scene.add(createRoadSign(-21.5, -2, '← Kadubeesanahalli Metro 100m'));
-scene.add(createRoadSign(-21.5, -4.5, '← Marathahalli 2km'));
+scene.add(createRoadSign(-19.5, 8, '← Kadubeesanahalli Metro 100m'));
+scene.add(createRoadSign(-19.5, 5.5, '← Marathahalli 2km'));
 
 // ============================================================
 // Buildings — individual floor meshes (corporate glass palette)
@@ -3303,18 +3526,66 @@ function getStatusClass(status) {
   return 'vacant';
 }
 
+// Shape generators for non-box buildings
+function createArcShape(w, d) {
+  // Simplified curved facade — 6-sided polygon approximating an arc
+  const shape = new THREE.Shape();
+  const hw = w/2, hd = d/2, bulge = d*0.25;
+  shape.moveTo(-hw, -hd);
+  shape.lineTo(hw, -hd);
+  shape.lineTo(hw + bulge*0.5, -hd*0.3);
+  shape.lineTo(hw + bulge, 0);
+  shape.lineTo(hw + bulge*0.5, hd*0.3);
+  shape.lineTo(hw, hd);
+  shape.lineTo(-hw, hd);
+  shape.lineTo(-hw - bulge*0.5, hd*0.3);
+  shape.lineTo(-hw - bulge, 0);
+  shape.lineTo(-hw - bulge*0.5, -hd*0.3);
+  shape.closePath();
+  return shape;
+}
+
+function createLShape(w, d) {
+  const shape = new THREE.Shape();
+  const hw = w/2, hd = d/2;
+  shape.moveTo(-hw, -hd);
+  shape.lineTo(hw, -hd);
+  shape.lineTo(hw, 0);
+  shape.lineTo(0, 0);
+  shape.lineTo(0, hd);
+  shape.lineTo(-hw, hd);
+  shape.lineTo(-hw, -hd);
+  return shape;
+}
+
+function createTShape(w, d) {
+  const shape = new THREE.Shape();
+  const hw = w/2, hd = d/2;
+  const stemW = w * 0.4, stemH = d * 0.5;
+  shape.moveTo(-hw, -hd);
+  shape.lineTo(hw, -hd);
+  shape.lineTo(hw, -hd + d*0.4);
+  shape.lineTo(stemW/2, -hd + d*0.4);
+  shape.lineTo(stemW/2, hd);
+  shape.lineTo(-stemW/2, hd);
+  shape.lineTo(-stemW/2, -hd + d*0.4);
+  shape.lineTo(-hw, -hd + d*0.4);
+  shape.lineTo(-hw, -hd);
+  return shape;
+}
+
 TECH_PARK_DATA.buildings.forEach(b => {
   const group = new THREE.Group();
   const floorHeight = b.height / b.totalFloors;
   const gap = 0.025;
   const phaseColors = getPhaseVariant(b.phase);
+  const bShape = b.buildingShape || 'box';
 
   const winTexFB = createWindowTexture(b.phase, 256, 256, 6, b.totalFloors);
   const winTexLR = createWindowTexture(b.phase, 256, 256, 5, b.totalFloors);
 
-  // --- Lobby / base section --- darker concrete
+  // --- Lobby / base section ---
   const lobbyH = floorHeight * 0.9;
-  const lobbyGeo = new THREE.BoxGeometry(b.width + 0.15, lobbyH, b.depth + 0.15);
   const lobbyColor = new THREE.Color(phaseColors.lobby);
   const lobbyMat = new THREE.MeshStandardMaterial({
     color: lobbyColor,
@@ -3323,6 +3594,10 @@ TECH_PARK_DATA.buildings.forEach(b => {
     emissive: lobbyColor.clone().multiplyScalar(0.05),
     emissiveIntensity: 0.3,
   });
+
+  // All lobbies use BoxGeometry for solid rendering
+  const lobbyGeo = new THREE.BoxGeometry(b.width + 0.15, lobbyH, b.depth + 0.15);
+
   const lobby = new THREE.Mesh(lobbyGeo, lobbyMat);
   lobby.position.y = lobbyH / 2;
   lobby.castShadow = true;
@@ -3335,33 +3610,41 @@ TECH_PARK_DATA.buildings.forEach(b => {
 
   b.floors.forEach((floorData, i) => {
     const h = floorHeight - gap;
-    const geo = new THREE.BoxGeometry(b.width, h, b.depth);
 
+    // ALL floor meshes use BoxGeometry for reliable raycasting
+    let geo;
+    if (bShape === 'podium' && i < 2) {
+      geo = new THREE.BoxGeometry(b.width * 1.15, h, b.depth * 1.15);
+    } else {
+      geo = new THREE.BoxGeometry(b.width, h, b.depth);
+    }
+
+    // All buildings use the same material structure for consistency
     const sideMat = (tex) => new THREE.MeshStandardMaterial({
       map: tex,
       color: new THREE.Color(0xffffff),
-      roughness: 0.25,   // glass facades spec
-      metalness: 0.2,   // glass facades spec
+      roughness: 0.25,
+      metalness: 0.2,
       emissive: glassColor.clone().multiplyScalar(0.12),
       emissiveIntensity: 0.6,
     });
 
     const topBotMat = new THREE.MeshStandardMaterial({
       color: concreteColor.clone(),
-      roughness: 0.8,   // concrete frames spec
+      roughness: 0.8,
       metalness: 0.03,
     });
 
     const materials = [
-      sideMat(winTexLR),  // +x (right)
-      sideMat(winTexLR),  // -x (left)
-      topBotMat,           // +y (top)
-      topBotMat,           // -y (bottom)
-      sideMat(winTexFB),  // +z (front)
-      sideMat(winTexFB),  // -z (back)
+      sideMat(winTexLR),
+      sideMat(winTexLR),
+      topBotMat,
+      topBotMat,
+      sideMat(winTexFB),
+      sideMat(winTexFB),
     ];
-
     const mesh = new THREE.Mesh(geo, materials);
+
     mesh.position.y = i * floorHeight + h / 2 + lobbyH * 0.3;
     mesh.castShadow = true;
     mesh.receiveShadow = true;
@@ -3371,7 +3654,6 @@ TECH_PARK_DATA.buildings.forEach(b => {
     floorMeshes.push(mesh);
     floorDataMap.set(mesh, { building: b, floor: floorData, floorIndex: i });
 
-    // Save original material state for heat map resets
     originalMaterialColors.set(mesh, materials.map(m => ({
       color: m.color.clone(),
       emissive: m.emissive.clone(),
@@ -3380,8 +3662,9 @@ TECH_PARK_DATA.buildings.forEach(b => {
     })));
   });
 
-  // --- Rooftop element --- dark grey
+  // --- Rooftop element ---
   const roofH = 0.12;
+  // All roofs use BoxGeometry for solid rendering
   const roofGeo = new THREE.BoxGeometry(b.width - 0.3, roofH, b.depth - 0.3);
   const roofMat = new THREE.MeshStandardMaterial({
     color: new THREE.Color(phaseColors.roof),
@@ -3551,6 +3834,194 @@ function filterFloors(floors, filter) {
   return floors;
 }
 
+function generateFloorPlanSVG(floor, building) {
+  const w = 280, h = 150;
+  const occ = floor.occupancy;
+  const isVacant = floor.status === 'Vacant';
+  const isPartial = floor.status === 'Partially Vacant';
+
+  // Pick layout template based on building
+  const templates = {
+    'Phase I': drawLayoutA,
+    'Phase II': drawLayoutB,
+    'Phase III': drawLayoutC,
+    'Phase IV': drawLayoutD,
+    'Platina': drawLayoutD,
+    'Common': drawLayoutA,
+  };
+  const drawFn = templates[building.phase] || drawLayoutA;
+  return drawFn(w, h, floor, building, occ, isVacant, isPartial);
+}
+
+function drawLayoutA(w, h, floor, bldg, occ, isVacant, isPartial) {
+  const tenantColor = '#bbf7d0'; const tenantText = '#166534';
+  const vacantColor = '#fecaca'; const vacantText = '#991b1b';
+  const sharedColor = '#e0f2fe'; const sharedText = '#1e40af';
+  const wallColor = '#94a3b8';
+  const tFill = isVacant ? vacantColor : tenantColor;
+  const tText = isVacant ? vacantText : tenantText;
+  const tName = isVacant ? 'AVAILABLE' : floor.tenant.substring(0, 18);
+
+  let svg = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="display:block;border-radius:8px;border:1px solid #d1d5db;margin-bottom:10px;background:#fafafa">`;
+  svg += `<rect x="2" y="2" width="${w-4}" height="${h-4}" rx="4" fill="none" stroke="${wallColor}" stroke-width="1.5"/>`;
+  // Corridor
+  svg += `<rect x="2" y="${h/2-4}" width="${w-4}" height="8" fill="#f1f5f9"/>`;
+  svg += `<text x="${w/2}" y="${h/2+3}" text-anchor="middle" font-size="6" fill="#94a3b8" font-weight="600">SHARED CORRIDOR</text>`;
+  // Main workspace — shows tenant vs available split
+  const mainW = 140;
+  if (isPartial) {
+    const occW = Math.round(mainW * occ / 100);
+    svg += `<rect x="58" y="6" width="${mainW}" height="${h/2-10}" rx="2" fill="${vacantColor}" stroke="${wallColor}" stroke-width="0.5"/>`;
+    svg += `<rect x="58" y="6" width="${occW}" height="${h/2-10}" rx="2" fill="${tenantColor}"/>`;
+    svg += `<text x="${58+occW/2}" y="20" text-anchor="middle" font-size="7" fill="${tenantText}" font-weight="700">${tName}</text>`;
+    svg += `<text x="${58+occW/2}" y="30" text-anchor="middle" font-size="6" fill="${tenantText}">${occ}% occupied</text>`;
+    svg += `<text x="${58+occW+(mainW-occW)/2}" y="25" text-anchor="middle" font-size="7" fill="${vacantText}" font-weight="700">AVAILABLE</text>`;
+  } else {
+    svg += `<rect x="58" y="6" width="${mainW}" height="${h/2-10}" rx="2" fill="${tFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
+    svg += `<text x="${58+mainW/2}" y="20" text-anchor="middle" font-size="8" fill="${tText}" font-weight="700">${tName}</text>`;
+    svg += `<text x="${58+mainW/2}" y="31" text-anchor="middle" font-size="6" fill="${tText}">${isVacant?floor.area.toLocaleString()+' sqft available':'Workstations'}</text>`;
+  }
+  // Meeting rooms
+  svg += `<rect x="6" y="6" width="46" height="${h/2-10}" rx="2" fill="${tFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="29" y="22" text-anchor="middle" font-size="6" fill="${tText}">Meeting</text>`;
+  svg += `<text x="29" y="31" text-anchor="middle" font-size="5" fill="${tText}">Room A</text>`;
+  // Cabins
+  svg += `<rect x="204" y="6" width="34" height="24" rx="2" fill="${tFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="221" y="21" text-anchor="middle" font-size="5" fill="${tText}">Cabin 1</text>`;
+  svg += `<rect x="242" y="6" width="34" height="24" rx="2" fill="${tFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="259" y="21" text-anchor="middle" font-size="5" fill="${tText}">Cabin 2</text>`;
+  svg += `<rect x="204" y="33" width="72" height="${h/2-37}" rx="2" fill="${tFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="240" y="44" text-anchor="middle" font-size="6" fill="${tText}">Server Room</text>`;
+  // Shared facilities (bottom row)
+  svg += `<rect x="6" y="${h/2+6}" width="50" height="${h/2-12}" rx="2" fill="${sharedColor}" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="31" y="${h/2+22}" text-anchor="middle" font-size="6" fill="${sharedText}">Pantry</text>`;
+  svg += `<rect x="60" y="${h/2+6}" width="50" height="${h/2-12}" rx="2" fill="#f3e8ff" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="85" y="${h/2+22}" text-anchor="middle" font-size="6" fill="#6b21a8">Washrooms</text>`;
+  svg += `<rect x="114" y="${h/2+6}" width="50" height="${h/2-12}" rx="2" fill="${sharedColor}" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="139" y="${h/2+22}" text-anchor="middle" font-size="6" fill="${sharedText}">Meeting B</text>`;
+  svg += `<rect x="168" y="${h/2+6}" width="108" height="${h/2-12}" rx="2" fill="#fef3c7" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="222" y="${h/2+22}" text-anchor="middle" font-size="7" fill="#92400e" font-weight="600">Reception & Lobby</text>`;
+  // Entry
+  svg += `<rect x="${w-6}" y="${h/2-6}" width="4" height="12" fill="#4f46e5" rx="1"/>`;
+  // Legend
+  svg += `<text x="${w/2}" y="${h-3}" text-anchor="middle" font-size="7" fill="#64748b">F${floor.floor} · ${floor.area.toLocaleString()} sqft</text>`;
+  // Color legend bar
+  svg += `<rect x="60" y="${h-14}" width="10" height="8" rx="1" fill="#bbf7d0" stroke="#16a34a" stroke-width="0.5"/>`;
+  svg += `<text x="73" y="${h-8}" font-size="7" fill="#166534" font-weight="600">Tenant</text>`;
+  svg += `<rect x="105" y="${h-14}" width="10" height="8" rx="1" fill="#fecaca" stroke="#dc2626" stroke-width="0.5"/>`;
+  svg += `<text x="118" y="${h-8}" font-size="7" fill="#991b1b" font-weight="600">Available</text>`;
+  svg += `<rect x="158" y="${h-14}" width="10" height="8" rx="1" fill="#e0f2fe" stroke="#3b82f6" stroke-width="0.5"/>`;
+  svg += `<text x="171" y="${h-8}" font-size="7" fill="#1e40af" font-weight="600">Shared</text>`;
+  svg += '</svg>';
+  return svg;
+}
+
+function drawLayoutB(w, h, floor, bldg, occ, isVacant, isPartial) {
+  const tFill = isVacant ? '#fecaca' : '#bbf7d0';
+  const tText = isVacant ? '#991b1b' : '#166534';
+  const vacFill = '#fecaca';
+  const wallColor = '#94a3b8';
+  const tName = isVacant ? 'AVAILABLE' : floor.tenant.substring(0, 20);
+  let svg = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="display:block;border-radius:8px;border:1px solid #d1d5db;margin-bottom:10px;background:#fafafa">`;
+  svg += `<rect x="2" y="2" width="${w-4}" height="${h-4}" rx="4" fill="none" stroke="${wallColor}" stroke-width="1.5"/>`;
+  // Perimeter cabins (5) — color based on occupancy
+  for (let i = 0; i < 5; i++) {
+    const cx = 8 + i * 54;
+    const cabFill = isVacant ? vacFill : (isPartial && i >= Math.ceil(5*occ/100) ? vacFill : tFill);
+    const cabText = cabFill === vacFill ? '#991b1b' : '#166534';
+    const cabLabel = cabFill === vacFill ? 'Available' : 'Cabin '+(i+1);
+    svg += `<rect x="${cx}" y="6" width="48" height="22" rx="2" fill="${cabFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
+    svg += `<text x="${cx+24}" y="20" text-anchor="middle" font-size="6" fill="${cabText}" font-weight="600">${cabLabel}</text>`;
+  }
+  // Main open area — split for partial
+  const openH = h - 68;
+  if (isPartial) {
+    const ow = Math.round((w-16)*occ/100);
+    svg += `<rect x="8" y="32" width="${w-16}" height="${openH}" rx="3" fill="${vacFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
+    svg += `<rect x="8" y="32" width="${ow}" height="${openH}" rx="3" fill="${tFill}"/>`;
+    svg += `<text x="${8+ow/2}" y="${32+openH/2-2}" text-anchor="middle" font-size="9" fill="#166534" font-weight="700">${tName}</text>`;
+    svg += `<text x="${8+ow/2}" y="${32+openH/2+10}" text-anchor="middle" font-size="7" fill="#166534">${occ}%</text>`;
+    svg += `<text x="${8+ow+(w-16-ow)/2}" y="${32+openH/2+2}" text-anchor="middle" font-size="8" fill="#991b1b" font-weight="700">AVAILABLE</text>`;
+  } else {
+    svg += `<rect x="8" y="32" width="${w-16}" height="${openH}" rx="3" fill="${tFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
+    svg += `<text x="${w/2}" y="${32+openH/2-2}" text-anchor="middle" font-size="10" fill="${tText}" font-weight="700">${tName}</text>`;
+    svg += `<text x="${w/2}" y="${32+openH/2+12}" text-anchor="middle" font-size="7" fill="${tText}">${isVacant?floor.area.toLocaleString()+' sqft':'Fully occupied'}</text>`;
+  }
+  // Shared facilities
+  svg += `<rect x="8" y="${h-30}" width="80" height="22" rx="2" fill="#e0f2fe" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="48" y="${h-16}" text-anchor="middle" font-size="6" fill="#1e40af">Pantry & Break</text>`;
+  svg += `<rect x="94" y="${h-30}" width="60" height="22" rx="2" fill="#f3e8ff" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="124" y="${h-16}" text-anchor="middle" font-size="6" fill="#6b21a8">Washrooms</text>`;
+  svg += `<rect x="160" y="${h-30}" width="56" height="22" rx="2" fill="#fef3c7" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="188" y="${h-16}" text-anchor="middle" font-size="6" fill="#92400e">Conference</text>`;
+  svg += `<rect x="222" y="${h-30}" width="52" height="22" rx="2" fill="#e0f2fe" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="248" y="${h-16}" text-anchor="middle" font-size="6" fill="#1e40af">Reception</text>`;
+  svg += `<text x="${w/2}" y="${h-2}" text-anchor="middle" font-size="7" fill="#64748b">F${floor.floor} · ${floor.area.toLocaleString()} sqft</text>`;
+  // Color legend bar
+  svg += `<rect x="60" y="${h-14}" width="10" height="8" rx="1" fill="#bbf7d0" stroke="#16a34a" stroke-width="0.5"/>`;
+  svg += `<text x="73" y="${h-8}" font-size="7" fill="#166534" font-weight="600">Tenant</text>`;
+  svg += `<rect x="105" y="${h-14}" width="10" height="8" rx="1" fill="#fecaca" stroke="#dc2626" stroke-width="0.5"/>`;
+  svg += `<text x="118" y="${h-8}" font-size="7" fill="#991b1b" font-weight="600">Available</text>`;
+  svg += `<rect x="158" y="${h-14}" width="10" height="8" rx="1" fill="#e0f2fe" stroke="#3b82f6" stroke-width="0.5"/>`;
+  svg += `<text x="171" y="${h-8}" font-size="7" fill="#1e40af" font-weight="600">Shared</text>`;
+  svg += '</svg>';
+  return svg;
+}
+
+function drawLayoutC(w, h, floor, bldg, occ, isVacant, isPartial) {
+  const occFill = isVacant ? '#fecaca' : isPartial ? '#fde68a' : '#bbf7d0';
+  const wallColor = '#94a3b8';
+  let svg = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="display:block;border-radius:8px;border:1px solid #d1d5db;margin-bottom:10px;background:#fafafa">`;
+  svg += `<rect x="2" y="2" width="${w-4}" height="${h-4}" rx="4" fill="none" stroke="${wallColor}" stroke-width="1.5"/>`;
+  svg += `<rect x="${w/2-4}" y="2" width="8" height="${h-4}" fill="#e2e8f0"/>`;
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 2; c++) {
+    const x = 6 + c * 67, y = 6 + r * 36;
+    const filled = !isVacant && (isPartial ? Math.random() < occ/100 : true);
+    svg += `<rect x="${x}" y="${y}" width="62" height="30" rx="2" fill="${filled?occFill:'#fee2e2'}" stroke="${wallColor}" stroke-width="0.5"/>`;
+    svg += `<text x="${x+31}" y="${y+18}" text-anchor="middle" font-size="7" fill="#475569">${filled?'Office '+(r*2+c+1):'Available'}</text>`;
+  }
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 2; c++) {
+    const x = w/2+6 + c * 67, y = 6 + r * 36;
+    const filled = !isVacant && (isPartial ? Math.random() < occ/100 : true);
+    svg += `<rect x="${x}" y="${y}" width="62" height="30" rx="2" fill="${filled?occFill:'#fee2e2'}" stroke="${wallColor}" stroke-width="0.5"/>`;
+    svg += `<text x="${x+31}" y="${y+18}" text-anchor="middle" font-size="7" fill="#475569">${filled?'Office '+(r*2+c+7):'Available'}</text>`;
+  }
+  svg += `<text x="${w/2}" y="${h-3}" text-anchor="middle" font-size="8" fill="#64748b">F${floor.floor} — ${floor.area.toLocaleString()} sqft</text>`;
+  svg += '</svg>';
+  return svg;
+}
+
+function drawLayoutD(w, h, floor, bldg, occ, isVacant, isPartial) {
+  const occFill = isVacant ? '#fecaca' : isPartial ? '#fde68a' : '#bbf7d0';
+  const vacColor = '#fee2e2';
+  const wallColor = '#94a3b8';
+  let svg = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="display:block;border-radius:8px;border:1px solid #d1d5db;margin-bottom:10px;background:#fafafa">`;
+  svg += `<rect x="2" y="2" width="${w-4}" height="${h-4}" rx="4" fill="none" stroke="${wallColor}" stroke-width="1.5"/>`;
+  for (let i = 0; i < 3; i++) {
+    const cy = 22 + i * 34;
+    svg += `<circle cx="30" cy="${cy}" r="14" fill="#e0f2fe" stroke="${wallColor}" stroke-width="0.5"/>`;
+    svg += `<text x="30" y="${cy+3}" text-anchor="middle" font-size="6" fill="#475569">Pod ${i+1}</text>`;
+  }
+  const cx1 = 52, cw = 140;
+  svg += `<rect x="${cx1}" y="6" width="${cw}" height="${h-16}" rx="4" fill="${isPartial?vacColor:occFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
+  if (isPartial) { const ow = Math.round(cw*occ/100); svg += `<rect x="${cx1}" y="6" width="${ow}" height="${h-16}" rx="4" fill="${occFill}"/>`; }
+  svg += `<text x="${cx1+cw/2}" y="${h/2-4}" text-anchor="middle" font-size="9" fill="#334155" font-weight="700">${floor.tenant}</text>`;
+  svg += `<text x="${cx1+cw/2}" y="${h/2+10}" text-anchor="middle" font-size="7" fill="#64748b">Open Workspace${isPartial?' · '+occ+'%':''}</text>`;
+  for (let r = 0; r < 4; r++) { const y = 30 + r * 20; svg += `<line x1="${cx1+10}" y1="${y}" x2="${cx1+cw-10}" y2="${y}" stroke="#d1d5db" stroke-width="0.5" stroke-dasharray="4,3"/>`; }
+  svg += `<rect x="198" y="6" width="76" height="35" rx="2" fill="#fef3c7" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="236" y="27" text-anchor="middle" font-size="7" fill="#475569">Breakout Area</text>`;
+  svg += `<rect x="198" y="46" width="36" height="30" rx="2" fill="#f0e4ff" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="216" y="64" text-anchor="middle" font-size="6" fill="#475569">WC</text>`;
+  svg += `<rect x="238" y="46" width="36" height="30" rx="2" fill="#e0f2fe" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="256" y="64" text-anchor="middle" font-size="6" fill="#475569">Pantry</text>`;
+  svg += `<rect x="198" y="80" width="76" height="30" rx="2" fill="${occFill}" stroke="${wallColor}" stroke-width="0.5"/>`;
+  svg += `<text x="236" y="99" text-anchor="middle" font-size="7" fill="#475569">Server + IT</text>`;
+  svg += `<rect x="${w-6}" y="${h/2-6}" width="4" height="12" fill="#4f46e5" rx="1"/>`;
+  svg += `<text x="${w/2}" y="${h-3}" text-anchor="middle" font-size="8" fill="#64748b">F${floor.floor} — ${floor.area.toLocaleString()} sqft</text>`;
+  svg += '</svg>';
+  return svg;
+}
+
 function renderFloorCards(building, highlightFloorIndex) {
   const filtered = filterFloors(sortFloors(currentBuildingFloors, currentSort), currentFilter);
   const defaultPurchasePrice = building.capitalValuePerSqft;
@@ -3573,11 +4044,12 @@ function renderFloorCards(building, highlightFloorIndex) {
               <span class="fcv2-floor">F${f.floor}</span>
               <span class="fcv2-tenant">${f.tenant}</span>
               <span class="fcv2-star${isStarred ? ' starred' : ''}" data-floor-key="${floorKey}">&#9733;</span>
+              <button class="fcv2-compare-btn" data-fid="${building.id}-${f.floor}" data-bid="${building.id}" data-fnum="${f.floor}" title="Add to compare">+</button>
             </div>
             <div class="fcv2-row2">
-              <span class="fcv2-pill occ" style="background:${occColor}">${f.occupancy}% occ</span>
-              <span class="fcv2-pill">\u20B9${f.rentPerSqft}/sqft</span>
-              <span class="fcv2-pill">${f.rentalYield}% yield</span>
+              <span class="fcv2-pill occ" style="background:${occColor}" data-tip="% of floor space currently leased">${f.occupancy}% occ</span>
+              <span class="fcv2-pill" data-tip="Monthly rent per square foot">\u20B9${f.rentPerSqft}/sqft</span>
+              <span class="fcv2-pill" data-tip="Annual rental return on capital value">${f.rentalYield}% yield</span>
             </div>
           </div>
         </div>
@@ -3590,13 +4062,14 @@ function renderFloorCards(building, highlightFloorIndex) {
 
           <!-- Tab 1: Overview -->
           <div class="fd-tab-content active" data-tab-content="overview">
+            ${generateFloorPlanSVG(f, building)}
             <span class="fd-status ${statusCls}">${f.status}</span>
             <div class="fd-grid">
               <div class="fd-item"><div class="fd-label">Tenant</div><div class="fd-value">${f.tenant}</div></div>
-              <div class="fd-item"><div class="fd-label">Carpet Area</div><div class="fd-value">${f.carpetArea.toLocaleString()} sqft</div></div>
-              <div class="fd-item"><div class="fd-label">Super Built-up</div><div class="fd-value">${f.superBuiltUp.toLocaleString()} sqft</div></div>
-              <div class="fd-item"><div class="fd-label">Fit-out</div><div class="fd-value">${f.fitOut}</div></div>
-              <div class="fd-item"><div class="fd-label">Lock-in</div><div class="fd-value">${f.lockInPeriod || 'N/A'}${f.lockInEnd ? ' (ends ' + f.lockInEnd + ')' : ''}</div></div>
+              <div class="fd-item"><div class="fd-label" data-tip="Usable area excluding walls, columns, common spaces">Carpet Area</div><div class="fd-value">${f.carpetArea.toLocaleString()} sqft</div></div>
+              <div class="fd-item"><div class="fd-label" data-tip="Total area including common areas and walls">Super Built-up</div><div class="fd-value">${f.superBuiltUp.toLocaleString()} sqft</div></div>
+              <div class="fd-item"><div class="fd-label" data-tip="Bare Shell (empty), Warm Shell (basic), Fully Fitted (ready)">Fit-out</div><div class="fd-value">${f.fitOut}</div></div>
+              <div class="fd-item"><div class="fd-label" data-tip="Minimum lease period — tenant cannot exit before this">Lock-in</div><div class="fd-value">${f.lockInPeriod || 'N/A'}${f.lockInEnd ? ' (ends ' + f.lockInEnd + ')' : ''}</div></div>
               <div class="fd-item"><div class="fd-label">Lease Period</div><div class="fd-value">${f.leaseStart} to ${f.leaseEnd}</div></div>
             </div>
           </div>
@@ -3607,8 +4080,8 @@ function renderFloorCards(building, highlightFloorIndex) {
               <div class="fd-item"><div class="fd-label">Rent/sqft</div><div class="fd-value">\u20B9${f.rentPerSqft}</div></div>
               <div class="fd-item"><div class="fd-label">Monthly Revenue</div><div class="fd-value">${formatCurrency(f.monthlyRevenue)}</div></div>
               <div class="fd-item"><div class="fd-label">Annual Revenue</div><div class="fd-value">${formatCurrency(f.annualRevenue)}</div></div>
-              <div class="fd-item"><div class="fd-label">Rental Yield</div><div class="fd-value">${f.rentalYield}%</div></div>
-              <div class="fd-item"><div class="fd-label">Security Deposit</div><div class="fd-value">${f.securityDeposit} months</div></div>
+              <div class="fd-item"><div class="fd-label" data-tip="Annual rental income as % of capital value">Rental Yield</div><div class="fd-value">${f.rentalYield}%</div></div>
+              <div class="fd-item"><div class="fd-label" data-tip="Refundable deposit, typically 6-12 months rent">Security Deposit</div><div class="fd-value">${f.securityDeposit} months</div></div>
               <div class="fd-item"><div class="fd-label">CAM Charges</div><div class="fd-value">\u20B9${building.camCharges}/sqft</div></div>
             </div>
             <div class="roi-calculator">
@@ -3664,7 +4137,7 @@ function attachFloorCardListeners(building) {
   // Card expand/collapse
   panelFloors.querySelectorAll('.floor-card-v2').forEach(card => {
     card.addEventListener('click', (e) => {
-      if (e.target.closest('.roi-input') || e.target.closest('.fcv2-star') || e.target.closest('.fd-tab')) return;
+      if (e.target.closest('.roi-input') || e.target.closest('.fcv2-star') || e.target.closest('.fcv2-compare-btn') || e.target.closest('.fd-tab')) return;
       const wasActive = card.classList.contains('active');
       panelFloors.querySelectorAll('.floor-card-v2').forEach(c => c.classList.remove('active'));
       if (!wasActive) {
@@ -3687,6 +4160,20 @@ function attachFloorCardListeners(building) {
       } else {
         shortlistedFloors.add(key);
         star.classList.add('starred');
+      }
+    });
+  });
+
+  // Compare button toggle
+  panelFloors.querySelectorAll('.fcv2-compare-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const bid = btn.dataset.bid;
+      const fnum = parseInt(btn.dataset.fnum);
+      if (btn.classList.contains('added')) {
+        window.removeFromShortlist(bid + '-' + fnum);
+      } else {
+        window.addToShortlist(bid, fnum);
       }
     });
   });
@@ -3776,11 +4263,11 @@ function openPanel(building, highlightFloorIndex) {
         <div class="ph-stat"><div class="ph-stat-label">Year Built</div><div class="ph-stat-value">${building.yearBuilt}</div></div>
         <div class="ph-stat"><div class="ph-stat-label">Avg Occupancy</div><div class="ph-stat-value">${avgOcc}%</div></div>
         <div class="ph-stat"><div class="ph-stat-label">Avg Rent</div><div class="ph-stat-value">\u20B9${avgRent}/sqft</div></div>
-        <div class="ph-stat"><div class="ph-stat-label">Avg Yield</div><div class="ph-stat-value">${avgYield}%</div></div>
-        <div class="ph-stat"><div class="ph-stat-label">CAM</div><div class="ph-stat-value">\u20B9${building.camCharges}/sqft</div></div>
-        <div class="ph-stat"><div class="ph-stat-label">Parking</div><div class="ph-stat-value">${building.parkingRatio}/1K sqft</div></div>
-        <div class="ph-stat"><div class="ph-stat-label">Efficiency</div><div class="ph-stat-value">${building.efficiencyRatio}%</div></div>
-        <div class="ph-stat"><div class="ph-stat-label">Escalation</div><div class="ph-stat-value">${building.escalation}</div></div>
+        <div class="ph-stat"><div class="ph-stat-label" data-tip="Annual rental income as % of property value">Avg Yield</div><div class="ph-stat-value">${avgYield}%</div></div>
+        <div class="ph-stat"><div class="ph-stat-label" data-tip="Common Area Maintenance — monthly charges for shared facilities">CAM</div><div class="ph-stat-value">\u20B9${building.camCharges}/sqft</div></div>
+        <div class="ph-stat"><div class="ph-stat-label" data-tip="Car parking spaces per 1000 sqft of office area">Parking</div><div class="ph-stat-value">${building.parkingRatio}/1K sqft</div></div>
+        <div class="ph-stat"><div class="ph-stat-label" data-tip="Carpet (usable) area as % of total built-up area">Efficiency</div><div class="ph-stat-value">${building.efficiencyRatio}%</div></div>
+        <div class="ph-stat"><div class="ph-stat-label" data-tip="Rent increase clause — typically applied every 3 years">Escalation</div><div class="ph-stat-value">${building.escalation}</div></div>
         <div class="ph-stat full-width"><div class="ph-stat-label">Power</div><div class="ph-stat-value" title="${building.powerBackup}">${building.powerBackup}</div></div>
         <div class="ph-stat full-width"><div class="ph-stat-label">Micro-market</div><div class="ph-stat-value" title="${building.microMarket}">${building.microMarket}</div></div>
       </div>
@@ -3799,6 +4286,16 @@ function openPanel(building, highlightFloorIndex) {
         Micro-market avg rent: <b>\u20B9${building.microMarketAvgRent}/sqft</b><br>
         Absorption rate: <b>${building.absorptionRate}%</b><br>
         Upcoming supply: <b>${building.upcomingSupply}</b>
+      </div>
+    </div>
+
+    <div class="ph-section" style="margin-top:12px;padding:10px;background:#f0f4ff;border:1px solid #c7d2fe;border-radius:8px">
+      <div style="font-size:9px;font-weight:700;color:#4338ca;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Data Sources</div>
+      <div style="font-size:10px;color:#64748b;line-height:1.6">
+        ${TECH_PARK_DATA.dataSources ? TECH_PARK_DATA.dataSources.map(s =>
+          '<span style="display:inline-block;padding:1px 6px;background:#fff;border:1px solid #e2e8f0;border-radius:4px;margin:1px;font-size:9px;font-weight:500">' + s.name + '</span>'
+        ).join('') : ''}
+        <div style="margin-top:4px;font-size:9px;color:#94a3b8">Last updated: ${TECH_PARK_DATA.lastUpdated || 'N/A'}</div>
       </div>
     </div>
 
@@ -4328,10 +4825,13 @@ function setFloorHighlight(mesh, on) {
   }
 }
 
+let raycastFrame = 0;
 function onPointerMove(e) {
-  if (walkthroughActive) { tooltip.style.display = 'none'; return; }
+  if (currentView !== 'park') { tooltip.style.display = 'none'; return; }
   pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
   pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  raycastFrame++;
+  if (raycastFrame % 5 !== 0) return;
 
   raycaster.setFromCamera(pointer, camera);
   const intersects = raycaster.intersectObjects(floorMeshes);
@@ -4378,6 +4878,9 @@ function onPointerMove(e) {
 }
 
 function onClick(e) {
+  if (currentView !== 'park') return;
+  if (e.target.closest('#park-landing')) return;
+  if (e.target.closest('#gallery-overlay')) return;
   if (walkthroughActive) return;
   if (e.target.closest('#panel-container') || e.target.closest('#panel-overlay')) return;
   if (e.target.closest('#compare-overlay') || e.target.closest('#compare-btn')) return;
@@ -4417,9 +4920,9 @@ window.addEventListener('keydown', (e) => {
 // ============================================================
 // Background Mode Toggle
 // ============================================================
-const bgModes = ['dark', 'light', 'sunny'];
-const bgIcons = ['\u{1F319}', '\u2601\uFE0F', '\u2600\uFE0F'];
-let currentBgMode = 0;
+const bgModes = ['night', 'dawn', 'day'];
+const bgIcons = ['\u{1F319}', '\u{1F305}', '\u2600\uFE0F'];
+let currentBgMode = 2;
 const modeToggleBtn = document.getElementById('mode-toggle');
 
 // Store sky sphere for sunny mode
@@ -4445,65 +4948,84 @@ function createSkySphere() {
 }
 
 createSkySphere();
+// Apply day mode on startup
+setTimeout(() => applyMode('day'), 100);
 
 function applyMode(mode) {
-  if (mode === 'dark') {
-    scene.background = new THREE.Color(0x0a0e1a);
-    scene.fog.color.set(0x0a0e1a);
-    scene.fog.density = 0.01;
-    ambient.color.set(0x5a6a8b);
-    ambient.intensity = 0.8;
-    dirLight.color.set(0xffeedd);
-    dirLight.intensity = 1.3;
+  const gm = Array.isArray(gridHelper.material) ? gridHelper.material : [gridHelper.material];
+
+  if (mode === 'night') {
+    // Deep blue night — city at night feel, buildings glow
+    scene.background = new THREE.Color(0x080c18);
+    scene.fog.color.set(0x080c18);
+    scene.fog.density = 0.005;
+    ambient.color.set(0x304060);
+    ambient.intensity = 0.5;
+    dirLight.color.set(0x8899bb);
+    dirLight.intensity = 0.4;
     dirLight.position.set(12, 18, 10);
-    fillLight.color.set(0x6366f1);
-    fillLight.intensity = 0.4;
-    groundMat.color.set(0xffffff);
+    fillLight.color.set(0x4455aa);
+    fillLight.intensity = 0.3;
+    groundMat.color.set(0x1a2230);
     groundMat.map = groundTex;
     groundMat.needsUpdate = true;
-    const gm = Array.isArray(gridHelper.material) ? gridHelper.material : [gridHelper.material];
-    if (gm[0]) gm[0].color.set(0x222d42);
-    if (gm[1]) gm[1].color.set(0x182030);
-    if (skySphere) skySphere.visible = false;
-    renderer.toneMappingExposure = 1.4;
-  } else if (mode === 'light') {
-    scene.background = new THREE.Color(0xdce4ec);
-    scene.fog.color.set(0xdce4ec);
-    scene.fog.density = 0.010;
-    ambient.color.set(0xaabbcc);
-    ambient.intensity = 1.2;
-    dirLight.color.set(0xffffff);
-    dirLight.intensity = 1.0;
-    dirLight.position.set(12, 18, 10);
-    fillLight.color.set(0x8899aa);
-    fillLight.intensity = 0.5;
-    groundMat.color.set(0x8899aa);
-    groundMat.map = null;
-    groundMat.needsUpdate = true;
-    const gm2 = Array.isArray(gridHelper.material) ? gridHelper.material : [gridHelper.material];
-    if (gm2[0]) gm2[0].color.set(0x99aabb);
-    if (gm2[1]) gm2[1].color.set(0xaabbcc);
+    if (gm[0]) gm[0].color.set(0x1a2535);
+    if (gm[1]) gm[1].color.set(0x121a28);
     if (skySphere) skySphere.visible = false;
     renderer.toneMappingExposure = 1.6;
-  } else if (mode === 'sunny') {
-    scene.background = new THREE.Color(0x87CEEB);
-    scene.fog.color.set(0xb8dff5);
-    scene.fog.density = 0.008;
-    ambient.color.set(0xffffff);
-    ambient.intensity = 0.6;
-    dirLight.color.set(0xfffaf0);
-    dirLight.intensity = 1.8;
-    dirLight.position.set(10, 25, 8);
-    fillLight.color.set(0xffeebb);
+    // Make buildings glow more at night
+    floorMeshes.forEach(mesh => {
+      if (currentHeatmapMode !== 'default') return;
+      mesh.material.forEach(m => { if (m.emissive) m.emissiveIntensity = 1.0; });
+    });
+
+  } else if (mode === 'dawn') {
+    // Golden hour — warm amber light, soft peach sky
+    scene.background = new THREE.Color(0x2a1520);
+    scene.fog.color.set(0x3a2030);
+    scene.fog.density = 0.004;
+    ambient.color.set(0x7a5a4a);
+    ambient.intensity = 0.7;
+    dirLight.color.set(0xffaa55);
+    dirLight.intensity = 1.2;
+    dirLight.position.set(-15, 8, 12);
+    fillLight.color.set(0xdd6633);
+    fillLight.intensity = 0.4;
+    groundMat.color.set(0x2a2520);
+    groundMat.map = groundTex;
+    groundMat.needsUpdate = true;
+    if (gm[0]) gm[0].color.set(0x3a3028);
+    if (gm[1]) gm[1].color.set(0x282018);
+    if (skySphere) skySphere.visible = false;
+    renderer.toneMappingExposure = 1.5;
+    floorMeshes.forEach(mesh => {
+      if (currentHeatmapMode !== 'default') return;
+      mesh.material.forEach(m => { if (m.emissive) m.emissiveIntensity = 0.7; });
+    });
+
+  } else if (mode === 'day') {
+    // Clear day — blue sky, visible buildings with good contrast
+    scene.background = new THREE.Color(0x6aacda);
+    scene.fog.color.set(0x80bce0);
+    scene.fog.density = 0.003;
+    ambient.color.set(0x607888);
+    ambient.intensity = 0.8;
+    dirLight.color.set(0xfff8ee);
+    dirLight.intensity = 1.5;
+    dirLight.position.set(12, 22, 8);
+    fillLight.color.set(0x8899aa);
     fillLight.intensity = 0.3;
-    groundMat.color.set(0x4a6741);
+    groundMat.color.set(0x3a6a3a);
     groundMat.map = null;
     groundMat.needsUpdate = true;
-    const gm3 = Array.isArray(gridHelper.material) ? gridHelper.material : [gridHelper.material];
-    if (gm3[0]) gm3[0].color.set(0x6b8a5e);
-    if (gm3[1]) gm3[1].color.set(0x5a7a50);
+    if (gm[0]) gm[0].color.set(0x4a7a4a);
+    if (gm[1]) gm[1].color.set(0x3a6a3a);
     if (skySphere) skySphere.visible = true;
-    renderer.toneMappingExposure = 1.8;
+    renderer.toneMappingExposure = 1.2;
+    floorMeshes.forEach(mesh => {
+      if (currentHeatmapMode !== 'default') return;
+      mesh.material.forEach(m => { if (m.emissive) m.emissiveIntensity = 0.4; });
+    });
   }
 }
 
@@ -4519,6 +5041,7 @@ modeToggleBtn.addEventListener('click', () => {
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
+  if (cityCamera) { cityCamera.aspect = window.innerWidth / window.innerHeight; cityCamera.updateProjectionMatrix(); }
   renderer.setSize(window.innerWidth, window.innerHeight);
   labelRenderer.setSize(window.innerWidth, window.innerHeight);
 });
@@ -4529,16 +5052,21 @@ window.addEventListener('resize', () => {
 const clock = new THREE.Clock();
 
 let lastTime = 0;
+// View state + city objects hoisted before animate (used in render loop + resize)
+var currentView = 'city';
+var savedParkCameraPos = null;
+var savedParkCameraTarget = null;
+var cityCamera = null;
+var cityControls = null;
+var cityScene = null;
+
 function animate() {
   requestAnimationFrame(animate);
   const t = clock.getElapsedTime();
   const delta = t - lastTime;
   lastTime = t;
 
-  // Subtle water shimmer
-  if (water.material) {
-    water.material.opacity = 0.7 + Math.sin(t * 1.5) * 0.1;
-  }
+  // Water shimmer disabled for performance
 
   // Animated traffic — cars move east-west on south main road
   trafficCars.forEach(tc => {
@@ -4550,15 +5078,18 @@ function animate() {
   // Update heat map animation
   updateHeatmapAnimation(performance.now() / 1000);
 
-  // Label occlusion — every 15 frames
+  // Label occlusion disabled for performance
   frameCount++;
-  if (frameCount % 15 === 0) {
-    updateLabelOcclusion();
-  }
 
-  controls.update();
-  renderer.render(scene, camera);
-  labelRenderer.render(scene, camera);
+  if (currentView === 'city' && cityScene && cityCamera && cityControls) {
+    cityControls.update();
+    renderer.render(cityScene, cityCamera);
+    if (frameCount % 3 === 0) labelRenderer.render(cityScene, cityCamera);
+  } else {
+    controls.update();
+    renderer.render(scene, camera);
+    if (frameCount % 3 === 0) labelRenderer.render(scene, camera);
+  }
 }
 
 let frameCount = 0;
@@ -4593,6 +5124,108 @@ function updateLabelOcclusion() {
 }
 
 animate();
+
+// ============================================================
+// LOADING SCREEN + INTRO CAMERA ANIMATION
+// ============================================================
+const loadingScreen = document.getElementById('loading-screen');
+const loadingBar = document.getElementById('loading-bar');
+const loadingText = document.getElementById('loading-text');
+
+// Animate loading bar
+let loadProgress = 0;
+const loadInterval = setInterval(() => {
+  loadProgress += Math.random() * 15 + 5;
+  if (loadProgress > 90) loadProgress = 90;
+  loadingBar.style.width = loadProgress + '%';
+  if (loadProgress > 30) loadingText.textContent = 'Building campus...';
+  if (loadProgress > 60) loadingText.textContent = 'Placing buildings...';
+  if (loadProgress > 80) loadingText.textContent = 'Almost ready...';
+}, 200);
+
+// After scene is ready, dismiss loading and start camera animation
+setTimeout(() => {
+  clearInterval(loadInterval);
+  loadingBar.style.width = '100%';
+  loadingText.textContent = 'Ready!';
+
+  setTimeout(() => {
+    loadingScreen.style.opacity = '0';
+    setTimeout(() => { loadingScreen.style.display = 'none'; }, 600);
+
+    // Start in CITY VIEW — set up state
+    controls.enabled = false;
+    if (cityControls) cityControls.enabled = true;
+    document.body.classList.add('city-view-active');
+    document.querySelector('#title-bar h1').textContent = 'Bangalore Tech Parks';
+    document.querySelector('#title-bar p').textContent = '6 Major IT Corridors \u00b7 Zoom & click to explore';
+    if (document.querySelector('.tb-logo-prestige')) document.querySelector('.tb-logo-prestige').textContent = '';
+    if (document.querySelector('.tb-logo-x')) document.querySelector('.tb-logo-x').style.display = 'none';
+
+    // City intro camera orbit
+    if (cityControls) cityControls.enabled = false;
+    const cStart = performance.now();
+    const cDur = 4000;
+    function cityIntroAnim() {
+      const t = Math.min((performance.now() - cStart) / cDur, 1);
+      const e = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2;
+      const angle = (1-e) * 0.8;
+      const r = 800 - e * 300;
+      const h = 600 - e * 100;
+      if (cityCamera) {
+        cityCamera.position.set(Math.cos(angle)*r, h, Math.sin(angle)*r);
+        cityCamera.lookAt(0, 0, 0);
+      }
+      if (t < 1) requestAnimationFrame(cityIntroAnim);
+      else { if (cityControls) { cityControls.enabled = true; cityControls.update(); } }
+    }
+    cityIntroAnim();
+  }, 400);
+}, 1500); // loading screen shows for 1.5s
+
+// ============================================================
+// VISITOR COUNTER (simulated)
+// ============================================================
+const vcEl = document.getElementById('visitor-count');
+setInterval(() => {
+  const change = Math.random() > 0.5 ? 1 : -1;
+  let count = parseInt(vcEl.textContent) + change;
+  if (count < 8) count = 8;
+  if (count > 24) count = 24;
+  vcEl.textContent = count;
+}, 5000);
+
+// ============================================================
+// KEYBOARD SHORTCUTS (1=occupancy, 2=rent, 3=yield, 0=default, R=rotate)
+// ============================================================
+let autoRotating = false;
+window.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+  // R = auto-rotate (works in both park and city view)
+  if (e.key === 'r' || e.key === 'R') {
+    if (currentView === 'city' && cityControls) {
+      autoRotating = !autoRotating;
+      cityControls.autoRotate = autoRotating;
+      cityControls.autoRotateSpeed = 1.0;
+    } else if (currentView === 'park') {
+      autoRotating = !autoRotating;
+      controls.autoRotate = autoRotating;
+      controls.autoRotateSpeed = 1.5;
+    }
+    return;
+  }
+
+  if (currentView !== 'park') return;
+
+  if (e.key === '1') { const btn = document.querySelector('#heatmap-toggle button[data-mode="occupancy"]'); if(btn) btn.click(); }
+  if (e.key === '2') { const btn = document.querySelector('#heatmap-toggle button[data-mode="rent"]'); if(btn) btn.click(); }
+  if (e.key === '3') { const btn = document.querySelector('#heatmap-toggle button[data-mode="yield"]'); if(btn) btn.click(); }
+  if (e.key === '0') { const btn = document.querySelector('#heatmap-toggle button[data-mode="default"]'); if(btn) btn.click(); }
+});
+
+// Fade out shortcut hint after 8 seconds
+setTimeout(() => { const h = document.getElementById('shortcut-hint'); if(h) h.style.opacity = '0'; }, 8000);
 
 // ============================================================
 // Feature: Bangalore Map Panel
@@ -4732,8 +5365,18 @@ window.addEventListener('click', (e) => {
 // Compare button
 document.getElementById('cb-compare').addEventListener('click', (e) => {
   e.stopPropagation();
+  e.preventDefault();
   closeAllDropdowns();
-  openComparison();
+  try {
+    if (typeof shortlistedItems !== 'undefined' && shortlistedItems.length >= 2) {
+      openShortlistCompare();
+    } else {
+      openComparison();
+    }
+  } catch(err) {
+    console.error('Compare error:', err);
+    openComparison();
+  }
 });
 
 // Background mode button
@@ -5333,6 +5976,11 @@ function generateFloorReport(building, floor) {
   <div class="card"><div class="card-label">Micro-market Avg</div><div class="card-value">\u20B9${building.microMarketAvgRent}/sqft</div></div>
 </div>
 
+<div style="margin:24px 0 12px;padding:8px 12px;background:#f0f4ff;border:1px solid #c7d2fe;border-radius:6px;display:inline-block">
+<span style="font-size:10px;font-weight:700;color:#4338ca;text-transform:uppercase;letter-spacing:0.5px">Data Sources: </span>
+${TECH_PARK_DATA.dataSources ? TECH_PARK_DATA.dataSources.map(s => '<span style="display:inline-block;padding:2px 8px;background:#fff;border:1px solid #e2e8f0;border-radius:4px;margin:2px;font-size:10px;font-weight:500;color:#475569">' + s.name + '</span>').join('') : ''}
+<span style="display:block;font-size:9px;color:#94a3b8;margin-top:4px">Last updated: ${TECH_PARK_DATA.lastUpdated || 'N/A'}</span>
+</div>
 <div class="footer">Generated from Prestige Tech Park 3D Explorer &middot; ${new Date().toLocaleString()}</div>
 </body></html>`;
 
@@ -5633,6 +6281,103 @@ document.getElementById('cb-tenants').addEventListener('click', (e) => {
 });
 
 // ============================================================
+// TRANSACTIONS PANEL
+// ============================================================
+const txnOverlay = document.getElementById('txn-overlay');
+const txnContent = document.getElementById('txn-content');
+document.getElementById('txn-close').addEventListener('click', () => { txnOverlay.style.display = 'none'; });
+txnOverlay.addEventListener('click', (e) => { if (e.target === txnOverlay) txnOverlay.style.display = 'none'; });
+
+// Mock transaction data — realistic Prestige Tech Park transactions
+const transactions = [
+  { date: '2026-03-15', type: 'New Lease', building: 'Cosmos (Block 2)', floor: 'F11', tenant: 'Stripe India', area: '32,000 sqft', rent: '₹118/sqft', deal: '₹3.78 Cr/yr', term: '5 years', broker: 'myHQ' },
+  { date: '2026-03-08', type: 'Renewal', building: 'Platina Block 2', floor: 'F7-F8', tenant: 'JPMorgan Chase', area: '80,000 sqft', rent: '₹115/sqft', deal: '₹9.20 Cr/yr', term: '7 years', broker: 'JLL' },
+  { date: '2026-02-28', type: 'New Lease', building: 'Phase 5', floor: 'F3-F4', tenant: 'Atlassian', area: '100,000 sqft', rent: '₹115/sqft', deal: '₹11.50 Cr/yr', term: '5 years', broker: 'Cushman' },
+  { date: '2026-02-20', type: 'Expansion', building: 'Elnath', floor: 'F10', tenant: 'Oracle', area: '80,000 sqft', rent: '₹102/sqft', deal: '₹8.16 Cr/yr', term: '3 years', broker: 'CBRE' },
+  { date: '2026-02-14', type: 'New Lease', building: 'Mercury', floor: 'F9', tenant: 'PhonePe', area: '40,000 sqft', rent: '₹95/sqft', deal: '₹3.80 Cr/yr', term: '5 years', broker: 'myHQ' },
+  { date: '2026-02-01', type: 'Surrender', building: 'Vector', floor: 'F8', tenant: 'Cognizant', area: '34,520 sqft', rent: '-', deal: '-', term: '-', broker: '-' },
+  { date: '2026-01-25', type: 'Renewal', building: 'Etamin', floor: 'F3-F4', tenant: 'Juniper Networks', area: '79,000 sqft', rent: '₹108/sqft', deal: '₹8.53 Cr/yr', term: '5 years', broker: 'JLL' },
+  { date: '2026-01-18', type: 'New Lease', building: 'Gravity (Block 3)', floor: 'F4', tenant: 'Razorpay', area: '18,000 sqft', rent: '₹98/sqft', deal: '₹1.76 Cr/yr', term: '3 years', broker: 'myHQ' },
+  { date: '2026-01-10', type: 'New Lease', building: 'Platina Block 3', floor: 'F12', tenant: 'Notion Labs', area: '31,500 sqft', rent: '₹120/sqft', deal: '₹3.78 Cr/yr', term: '5 years', broker: 'CBRE' },
+  { date: '2026-01-03', type: 'Expansion', building: 'Velocity', floor: 'F9', tenant: 'Capgemini', area: '39,000 sqft', rent: '₹92/sqft', deal: '₹3.59 Cr/yr', term: '3 years', broker: 'Vestian' },
+  { date: '2025-12-22', type: 'New Lease', building: 'Valence', floor: 'F6', tenant: 'Freshworks', area: '39,000 sqft', rent: '₹90/sqft', deal: '₹3.51 Cr/yr', term: '5 years', broker: 'JLL' },
+  { date: '2025-12-15', type: 'Renewal', building: 'Electra', floor: 'F1-F3', tenant: 'Guidewire Software', area: '120,000 sqft', rent: '₹95/sqft', deal: '₹11.40 Cr/yr', term: '7 years', broker: 'CBRE' },
+  { date: '2025-12-05', type: 'New Lease', building: 'Neptune Tower 1', floor: 'F5', tenant: 'Zeta Suite', area: '33,000 sqft', rent: '₹88/sqft', deal: '₹2.90 Cr/yr', term: '3 years', broker: 'myHQ' },
+  { date: '2025-11-28', type: 'Surrender', building: 'Jupiter', floor: 'F7', tenant: 'WeWork', area: '40,000 sqft', rent: '-', deal: '-', term: '-', broker: '-' },
+  { date: '2025-11-15', type: 'New Lease', building: 'Block 1', floor: 'F13', tenant: 'Meesho', area: '35,000 sqft', rent: '₹110/sqft', deal: '₹3.85 Cr/yr', term: '5 years', broker: 'JLL' },
+];
+
+function openTransactions() {
+  // Summary stats
+  const newLeases = transactions.filter(t => t.type === 'New Lease').length;
+  const renewals = transactions.filter(t => t.type === 'Renewal').length;
+  const expansions = transactions.filter(t => t.type === 'Expansion').length;
+  const surrenders = transactions.filter(t => t.type === 'Surrender').length;
+  const totalArea = transactions.filter(t => t.type !== 'Surrender').reduce((s, t) => s + parseInt(t.area.replace(/,/g, '')), 0);
+
+  const typeStyles = {
+    'New Lease': { bg: '#dcfce7', color: '#166534', icon: '🟢' },
+    'Renewal': { bg: '#dbeafe', color: '#1e40af', icon: '🔵' },
+    'Expansion': { bg: '#fef3c7', color: '#92400e', icon: '🟡' },
+    'Surrender': { bg: '#fee2e2', color: '#991b1b', icon: '🔴' },
+  };
+
+  let html = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+      <div>
+        <h2 style="font-size:22px;font-weight:800;color:#0f172a;margin-bottom:2px">Recent Transactions</h2>
+        <p style="font-size:12px;color:#94a3b8">Prestige Tech Park · Last 3 months</p>
+      </div>
+      <div style="display:flex;gap:16px;align-items:center">
+        <div style="text-align:center"><div style="font-size:28px;font-weight:900;color:#166534">${newLeases}</div><div style="font-size:10px;color:#64748b;font-weight:600">New Leases</div></div>
+        <div style="width:1px;height:30px;background:#e2e8f0"></div>
+        <div style="text-align:center"><div style="font-size:28px;font-weight:900;color:#1e40af">${renewals}</div><div style="font-size:10px;color:#64748b;font-weight:600">Renewals</div></div>
+        <div style="width:1px;height:30px;background:#e2e8f0"></div>
+        <div style="text-align:center"><div style="font-size:28px;font-weight:900;color:#0f172a">${(totalArea/1000).toFixed(0)}K</div><div style="font-size:10px;color:#64748b;font-weight:600">Sqft Transacted</div></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${transactions.map(t => {
+        const s = typeStyles[t.type] || { bg: '#f1f5f9', color: '#475569', icon: '⚪' };
+        return `<div style="display:flex;align-items:center;gap:14px;padding:12px 16px;background:#fff;border:1px solid #f1f5f9;border-radius:12px;transition:all 0.15s" onmouseover="this.style.borderColor='#c7d2fe';this.style.boxShadow='0 2px 8px rgba(99,102,241,0.08)'" onmouseout="this.style.borderColor='#f1f5f9';this.style.boxShadow='none'">
+          <div style="flex-shrink:0;width:44px;height:44px;border-radius:10px;background:${s.bg};display:flex;align-items:center;justify-content:center;font-size:18px">${s.icon}</div>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
+              <span style="font-size:14px;font-weight:700;color:#0f172a">${t.tenant}</span>
+              <span style="padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;background:${s.bg};color:${s.color}">${t.type}</span>
+            </div>
+            <div style="font-size:12px;color:#64748b">${t.building} · ${t.floor} · ${t.area}</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-size:15px;font-weight:800;color:${t.deal==='-'?'#94a3b8':'#166534'}">${t.deal}</div>
+            <div style="font-size:11px;color:#94a3b8">${t.rent !== '-' ? t.rent + ' · ' + t.term : ''}</div>
+          </div>
+          <div style="flex-shrink:0;text-align:right;min-width:70px">
+            <div style="font-size:11px;color:#94a3b8">${t.date}</div>
+            <div style="font-size:10px;color:${t.broker==='myHQ'?'#4f46e5':'#94a3b8'};font-weight:${t.broker==='myHQ'?'700':'500'}">${t.broker}</div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div style="margin-top:16px;padding:8px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;font-size:10px;color:#94a3b8;display:flex;justify-content:space-between">
+      <span>Sources: ${TECH_PARK_DATA.dataSources ? TECH_PARK_DATA.dataSources.map(s => s.name).join(' · ') : ''}</span>
+      <span>${TECH_PARK_DATA.lastUpdated || ''}</span>
+    </div>
+  `;
+
+  txnContent.innerHTML = html;
+  txnOverlay.style.display = 'flex';
+}
+
+document.getElementById('cb-transactions').addEventListener('click', (e) => {
+  e.stopPropagation();
+  closeAllDropdowns();
+  openTransactions();
+});
+
+// ============================================================
 // FEATURE 6: First-Person Walkthrough Mode
 // ============================================================
 // walkthroughActive declared earlier near raycaster
@@ -5673,103 +6418,736 @@ function exitWalkthrough() {
   document.getElementById('walk-arrows').classList.remove('visible');
 }
 
-// On-screen arrow buttons — touch/click support
-const arrowBtnMap = { 'wa-up': 'arrowup', 'wa-down': 'arrowdown', 'wa-left': 'arrowleft', 'wa-right': 'arrowright' };
-Object.entries(arrowBtnMap).forEach(([btnId, key]) => {
-  const btn = document.getElementById(btnId);
-  // Mouse
-  btn.addEventListener('mousedown', (e) => { e.preventDefault(); walkthroughKeys[key] = true; btn.classList.add('pressed'); });
-  btn.addEventListener('mouseup', () => { walkthroughKeys[key] = false; btn.classList.remove('pressed'); });
-  btn.addEventListener('mouseleave', () => { walkthroughKeys[key] = false; btn.classList.remove('pressed'); });
-  // Touch
-  btn.addEventListener('touchstart', (e) => { e.preventDefault(); walkthroughKeys[key] = true; btn.classList.add('pressed'); });
-  btn.addEventListener('touchend', () => { walkthroughKeys[key] = false; btn.classList.remove('pressed'); });
-  btn.addEventListener('touchcancel', () => { walkthroughKeys[key] = false; btn.classList.remove('pressed'); });
-});
-document.getElementById('wa-esc').addEventListener('click', exitWalkthrough);
-
-// Highlight on-screen buttons when keyboard keys are pressed
-window.addEventListener('keydown', (e) => {
-  const keyMap = { 'ArrowUp': 'wa-up', 'w': 'wa-up', 'ArrowDown': 'wa-down', 's': 'wa-down', 'ArrowLeft': 'wa-left', 'a': 'wa-left', 'ArrowRight': 'wa-right', 'd': 'wa-right' };
-  const btnId = keyMap[e.key];
-  if (btnId && walkthroughActive) document.getElementById(btnId)?.classList.add('pressed');
-});
-window.addEventListener('keyup', (e) => {
-  const keyMap = { 'ArrowUp': 'wa-up', 'w': 'wa-up', 'ArrowDown': 'wa-down', 's': 'wa-down', 'ArrowLeft': 'wa-left', 'a': 'wa-left', 'ArrowRight': 'wa-right', 'd': 'wa-right' };
-  const btnId = keyMap[e.key];
-  if (btnId) document.getElementById(btnId)?.classList.remove('pressed');
-});
-
-document.getElementById('cb-walk').addEventListener('click', (e) => {
-  e.stopPropagation();
-  closeAllDropdowns();
-  if (walkthroughActive) {
-    exitWalkthrough();
-  } else {
-    enterWalkthrough();
-  }
-});
-
-// Override ESC to also exit walkthrough
-const origKeydown = window.addEventListener;
-window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && walkthroughActive) {
-    exitWalkthrough();
-    e.stopImmediatePropagation();
-    return;
-  }
-});
-
-// Inject walkthrough movement into the animate loop
-const origAnimate = animate;
-const _origRAF = window.requestAnimationFrame;
-
-// We need to patch the existing animate loop to include walkthrough logic
-// Instead of patching, we add a separate loop that runs alongside
-function walkthroughLoop() {
-  requestAnimationFrame(walkthroughLoop);
-  if (!walkthroughActive) return;
-
-  // Rotation via arrow keys or mouse-look-ish via left/right
-  const rotSpeed = 0.03;
-  if (walkthroughKeys['arrowleft'] || walkthroughKeys['a']) walkthroughYaw += rotSpeed;
-  if (walkthroughKeys['arrowright'] || walkthroughKeys['d']) walkthroughYaw -= rotSpeed;
-
-  // Movement direction
-  const forward = new THREE.Vector3(-Math.sin(walkthroughYaw), 0, -Math.cos(walkthroughYaw));
-  const right = new THREE.Vector3(-Math.sin(walkthroughYaw - Math.PI / 2), 0, -Math.cos(walkthroughYaw - Math.PI / 2));
-
-  if (walkthroughKeys['arrowup'] || walkthroughKeys['w']) camera.position.addScaledVector(forward, walkthroughSpeed);
-  if (walkthroughKeys['arrowdown'] || walkthroughKeys['s']) camera.position.addScaledVector(forward, -walkthroughSpeed);
-
-  // Clamp to campus bounds
-  camera.position.x = Math.max(-24, Math.min(19, camera.position.x));
-  camera.position.z = Math.max(-17, Math.min(18, camera.position.z));
-  camera.position.y = 1.5; // keep at eye height
-
-  // Look direction
-  const lookTarget = camera.position.clone().add(forward);
-  lookTarget.y = 1.5;
-  camera.lookAt(lookTarget);
-}
-walkthroughLoop();
-
-// Also handle click events - ignore 3D clicks during walkthrough
-const origOnClick = onClick;
-window.addEventListener('click', (e) => {
-  if (walkthroughActive) return;
-}, true);
-
-// Add search panel close on ESC, and walkthrough exit on ESC
+// Walkthrough removed — ESC handler for panels
 window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    if (walkthroughActive) { exitWalkthrough(); return; }
     if (searchPanel.classList.contains('open')) { searchPanel.classList.remove('open'); return; }
     if (tenantOverlay.classList.contains('open')) { tenantOverlay.classList.remove('open'); return; }
     if (enquiryOverlay.classList.contains('open')) { enquiryOverlay.classList.remove('open'); return; }
   }
 });
 
+
+// ============================================================
+// GALLERY + GLOBAL ENQUIRY
+// Gallery with real images
+
+const galBody = document.getElementById('gal-body');
+const buildingSvg = '<svg width="120" height="100" viewBox="0 0 120 100"><rect x="10" y="20" width="30" height="80" rx="2" fill="rgba(255,255,255,0.15)"/><rect x="45" y="5" width="35" height="95" rx="2" fill="rgba(255,255,255,0.2)"/><rect x="85" y="30" width="25" height="70" rx="2" fill="rgba(255,255,255,0.12)"/><rect x="15" y="30" width="6" height="6" fill="rgba(255,255,255,0.4)"/><rect x="25" y="30" width="6" height="6" fill="rgba(255,255,255,0.4)"/><rect x="15" y="42" width="6" height="6" fill="rgba(255,255,255,0.4)"/><rect x="25" y="42" width="6" height="6" fill="rgba(255,255,255,0.4)"/><rect x="50" y="15" width="8" height="6" fill="rgba(255,255,255,0.4)"/><rect x="62" y="15" width="8" height="6" fill="rgba(255,255,255,0.4)"/><rect x="50" y="27" width="8" height="6" fill="rgba(255,255,255,0.4)"/><rect x="62" y="27" width="8" height="6" fill="rgba(255,255,255,0.4)"/><rect x="50" y="39" width="8" height="6" fill="rgba(255,255,255,0.4)"/><rect x="62" y="39" width="8" height="6" fill="rgba(255,255,255,0.4)"/></svg>';
+const gateSvg = '<svg width="120" height="100" viewBox="0 0 120 100"><rect x="20" y="30" width="8" height="70" fill="rgba(255,255,255,0.2)"/><rect x="92" y="30" width="8" height="70" fill="rgba(255,255,255,0.2)"/><rect x="20" y="25" width="80" height="8" rx="2" fill="rgba(255,255,255,0.25)"/><rect x="35" y="60" width="50" height="3" fill="rgba(255,102,102,0.5)"/><rect x="38" y="60" width="8" height="3" fill="rgba(255,255,255,0.4)"/><rect x="54" y="60" width="8" height="3" fill="rgba(255,255,255,0.4)"/><rect x="70" y="60" width="8" height="3" fill="rgba(255,255,255,0.4)"/><text x="60" y="20" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.6)" font-weight="700" font-family="system-ui">PRESTIGE TECH PARK</text></svg>';
+const treeSvg = '<svg width="120" height="100" viewBox="0 0 120 100"><rect x="28" y="60" width="4" height="30" fill="rgba(139,90,43,0.5)"/><circle cx="30" cy="48" r="18" fill="rgba(34,197,94,0.3)"/><rect x="58" y="50" width="4" height="40" fill="rgba(139,90,43,0.5)"/><circle cx="60" cy="36" r="22" fill="rgba(34,197,94,0.35)"/><rect x="88" y="55" width="4" height="35" fill="rgba(139,90,43,0.5)"/><circle cx="90" cy="42" r="16" fill="rgba(34,197,94,0.3)"/><rect x="0" y="90" width="120" height="10" fill="rgba(34,197,94,0.15)"/></svg>';
+const waterSvg = '<svg width="120" height="100" viewBox="0 0 120 100"><ellipse cx="60" cy="60" rx="45" ry="25" fill="rgba(59,130,246,0.2)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><ellipse cx="60" cy="58" rx="35" ry="18" fill="rgba(59,130,246,0.3)"/><path d="M30,55 Q45,45 60,55 Q75,65 90,55" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/><path d="M35,62 Q50,52 65,62 Q80,72 95,62" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/></svg>';
+const nightSvg = '<svg width="120" height="100" viewBox="0 0 120 100"><rect x="15" y="25" width="25" height="65" rx="2" fill="rgba(255,255,255,0.08)"/><rect x="48" y="10" width="30" height="80" rx="2" fill="rgba(255,255,255,0.1)"/><rect x="85" y="35" width="22" height="55" rx="2" fill="rgba(255,255,255,0.07)"/><rect x="20" y="35" width="4" height="4" fill="rgba(255,200,50,0.8)"/><rect x="28" y="35" width="4" height="4" fill="rgba(255,200,50,0.6)"/><rect x="20" y="45" width="4" height="4" fill="rgba(255,200,50,0.7)"/><rect x="53" y="20" width="5" height="4" fill="rgba(255,200,50,0.9)"/><rect x="63" y="20" width="5" height="4" fill="rgba(255,200,50,0.7)"/><rect x="53" y="30" width="5" height="4" fill="rgba(255,200,50,0.6)"/><rect x="63" y="30" width="5" height="4" fill="rgba(255,200,50,0.8)"/><circle cx="100" cy="15" r="8" fill="rgba(255,255,200,0.15)"/></svg>';
+const roadSvg = '<svg width="120" height="100" viewBox="0 0 120 100"><rect x="0" y="40" width="120" height="20" fill="rgba(255,255,255,0.1)"/><rect x="10" y="49" width="8" height="2" fill="rgba(255,255,50,0.5)"/><rect x="28" y="49" width="8" height="2" fill="rgba(255,255,50,0.5)"/><rect x="46" y="49" width="8" height="2" fill="rgba(255,255,50,0.5)"/><rect x="64" y="49" width="8" height="2" fill="rgba(255,255,50,0.5)"/><rect x="82" y="49" width="8" height="2" fill="rgba(255,255,50,0.5)"/><rect x="100" y="49" width="8" height="2" fill="rgba(255,255,50,0.5)"/><circle cx="60" cy="75" r="15" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="4"/><circle cx="60" cy="75" r="6" fill="rgba(34,197,94,0.3)"/></svg>';
+const floorSvg = '<svg width="120" height="100" viewBox="0 0 120 100"><rect x="5" y="5" width="110" height="90" rx="4" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><rect x="10" y="10" width="35" height="25" rx="2" fill="rgba(34,197,94,0.25)"/><text x="27" y="26" text-anchor="middle" font-size="6" fill="rgba(255,255,255,0.6)" font-family="system-ui">Meeting</text><rect x="50" y="10" width="60" height="35" rx="2" fill="rgba(34,197,94,0.2)"/><text x="80" y="30" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.6)" font-family="system-ui">Open Workspace</text><rect x="10" y="40" width="100" height="6" fill="rgba(255,255,255,0.08)"/><text x="60" y="45" text-anchor="middle" font-size="5" fill="rgba(255,255,255,0.3)" font-family="system-ui">CORRIDOR</text><rect x="10" y="50" width="30" height="20" rx="2" fill="rgba(59,130,246,0.2)"/><text x="25" y="63" text-anchor="middle" font-size="5" fill="rgba(255,255,255,0.5)" font-family="system-ui">Pantry</text><rect x="45" y="50" width="25" height="20" rx="2" fill="rgba(168,85,247,0.2)"/><text x="57" y="63" text-anchor="middle" font-size="5" fill="rgba(255,255,255,0.5)" font-family="system-ui">WC</text><rect x="75" y="50" width="35" height="20" rx="2" fill="rgba(251,191,36,0.2)"/><text x="92" y="63" text-anchor="middle" font-size="5" fill="rgba(255,255,255,0.5)" font-family="system-ui">Reception</text></svg>';
+const parkingSvg = '<svg width="120" height="100" viewBox="0 0 120 100"><rect x="10" y="15" width="100" height="70" rx="4" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><rect x="20" y="25" width="18" height="10" rx="2" fill="rgba(99,102,241,0.3)"/><rect x="45" y="25" width="18" height="10" rx="2" fill="rgba(220,38,38,0.3)"/><rect x="70" y="25" width="18" height="10" rx="2" fill="rgba(255,255,255,0.15)"/><rect x="20" y="45" width="18" height="10" rx="2" fill="rgba(34,197,94,0.3)"/><rect x="45" y="45" width="18" height="10" rx="2" fill="rgba(255,255,255,0.15)"/><rect x="70" y="45" width="18" height="10" rx="2" fill="rgba(59,130,246,0.3)"/><rect x="20" y="65" width="18" height="10" rx="2" fill="rgba(255,255,255,0.15)"/><rect x="45" y="65" width="18" height="10" rx="2" fill="rgba(251,191,36,0.3)"/><rect x="70" y="65" width="18" height="10" rx="2" fill="rgba(255,255,255,0.1)"/><text x="60" y="10" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.4)" font-weight="600" font-family="system-ui">PARKING</text></svg>';
+
+const galleryImages = [
+  { src: 'gallery/entrance.png', title: 'Main Entrance', sub: 'Entry from Service Road with glass-facade buildings', badge: 'ENTRANCE', featured: true },
+  { src: 'gallery/courtyard.png', title: 'Central Courtyard', sub: 'Landscaped gardens with brick pathways', badge: 'LANDSCAPE' },
+  { src: 'gallery/facade.png', title: 'Glass Facade', sub: 'Modern blue-green curtain wall architecture', badge: 'ARCHITECTURE' },
+  { src: 'gallery/overview.png', title: 'Campus Panorama', sub: 'Multiple buildings with manicured gardens', badge: 'OVERVIEW' },
+  { src: 'gallery/phase2.png', title: 'Phase II Buildings', sub: 'Largest floor plates — up to 80,000 sqft', badge: 'PHASE II' },
+  { src: 'gallery/tower.png', title: 'Tower Close-up', sub: 'Glass and concrete premium office tower', badge: 'TOWER' },
+  { src: 'gallery/waterfeature.png', title: 'Water Feature', sub: 'Iconic fountain at campus entrance', badge: 'AMENITY' },
+  { src: 'gallery/skyline.png', title: 'Campus Skyline', sub: 'Multiple towers creating the tech park skyline', badge: 'SKYLINE' },
+  { src: 'gallery/road.png', title: 'Internal Road', sub: 'Well-maintained roads connecting all phases', badge: 'INFRASTRUCTURE' },
+];
+
+galBody.innerHTML = galleryImages.map(img =>
+  `<div class="gal-card${img.featured ? ' gal-featured' : ''}">
+    <img src="${img.src}" alt="${img.title}" loading="lazy">
+    <div class="gal-badge">${img.badge}</div>
+    <div class="gal-overlay">
+      <div class="gal-caption">${img.title}</div>
+      <div class="gal-sub">${img.sub}</div>
+    </div>
+  </div>`
+).join('') + `
+<div class="gal-card" style="grid-column:1/-1;height:auto;background:linear-gradient(135deg,#1e1b4b,#312e81);border:1px solid rgba(99,102,241,0.3);border-radius:12px;display:flex;overflow:hidden">
+  <div style="flex:1;padding:24px 28px;display:flex;flex-direction:column;justify-content:center">
+    <div style="font-size:10px;font-weight:700;color:#818cf8;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px">Powered by</div>
+    <div style="font-size:26px;font-weight:900;color:#fff;margin-bottom:12px">myHQ</div>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
+      <div style="font-size:12px;color:#c7d2fe">&#10003; Zero brokerage on select properties</div>
+      <div style="font-size:12px;color:#c7d2fe">&#10003; Verified listings with real-time availability</div>
+      <div style="font-size:12px;color:#c7d2fe">&#10003; End-to-end support from search to move-in</div>
+      <div style="font-size:12px;color:#c7d2fe">&#10003; Exclusive deals on Prestige properties</div>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <div style="padding:8px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px">
+        <div style="font-size:9px;color:#94a3b8;font-weight:600;text-transform:uppercase">Call</div>
+        <div style="font-size:13px;color:#fff;font-weight:700;margin-top:1px">+91 9205 018 018</div>
+      </div>
+      <div style="padding:8px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px">
+        <div style="font-size:9px;color:#94a3b8;font-weight:600;text-transform:uppercase">Email</div>
+        <div style="font-size:13px;color:#fff;font-weight:700;margin-top:1px">spaces@myhq.in</div>
+      </div>
+      <div style="padding:8px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px">
+        <div style="font-size:9px;color:#94a3b8;font-weight:600;text-transform:uppercase">Web</div>
+        <div style="font-size:13px;color:#fff;font-weight:700;margin-top:1px">myhq.in</div>
+      </div>
+    </div>
+  </div>
+  <div style="width:240px;background:linear-gradient(135deg,#4f46e5,#7c3aed);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px">
+    <div style="font-size:40px;font-weight:900;color:#fff;letter-spacing:-1px;margin-bottom:4px">myHQ</div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.7);margin-bottom:16px">Find Your Perfect Office</div>
+    <button onclick="document.getElementById('gallery-overlay').classList.remove('open');document.getElementById('enquiry-overlay').classList.add('open');document.getElementById('eq-floor-info').textContent='myHQ Enquiry — Prestige Tech Park'" style="padding:10px 22px;background:#fff;color:#4f46e5;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(0,0,0,0.2)">Get in Touch</button>
+  </div>
+</div>
+<div class="gal-card" style="grid-column:1/-1;height:auto;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;display:flex;align-items:center;justify-content:center;min-height:60px">
+  <div style="text-align:center;padding:12px">
+    <div style="font-size:13px;color:#94a3b8">Want to see more? <button onclick="document.getElementById('gallery-overlay').classList.remove('open');document.getElementById('enquiry-overlay').classList.add('open');document.getElementById('eq-floor-info').textContent='Site Visit Request'" style="background:none;border:none;color:#818cf8;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;text-decoration:underline">Schedule a site visit &rarr;</button></div>
+  </div>
+</div>`;
+
+document.getElementById('tb-gallery-btn').addEventListener('click', () => {
+  document.getElementById('gallery-overlay').classList.add('open');
+});
+document.getElementById('gal-close').addEventListener('click', () => {
+  document.getElementById('gallery-overlay').classList.remove('open');
+});
+document.getElementById('gallery-overlay').addEventListener('click', (e) => {
+  if (e.target.id === 'gallery-overlay') e.target.classList.remove('open');
+});
+
+document.getElementById('tb-enquiry-btn').addEventListener('click', () => {
+  const overlay = document.getElementById('enquiry-overlay');
+  overlay.classList.add('open');
+  const floorInfo = overlay.querySelector('.eq-floor-info');
+  if (floorInfo) floorInfo.textContent = 'General Enquiry — Prestige Tech Park, Outer Ring Road';
+});
+
+// ============================================================
+// CITY-LEVEL VIEW
+// ============================================================
+// currentView, savedParkCameraPos, savedParkCameraTarget declared earlier (before animate)
+
+// City Scene (assigned to vars declared before animate)
+cityScene = new THREE.Scene();
+// Clean gradient background — no sky sphere
+cityScene.background = new THREE.Color(0xf0ece6);
+// No fog — we want to see everything at city scale
+
+// City Camera — closer start, can zoom out
+cityCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 8000);
+cityCamera.position.set(0, 500, 400);
+cityCamera.lookAt(0, 0, 0);
+
+// City Controls
+cityControls = new OrbitControls(cityCamera, renderer.domElement);
+cityControls.enableDamping = true;
+cityControls.dampingFactor = 0.08;
+cityControls.maxPolarAngle = Math.PI / 2.3;
+cityControls.minDistance = 80;
+cityControls.maxDistance = 2500;
+cityControls.target.set(0, 0, 0);
+cityControls.enabled = false;
+
+// City Ground
+// City ground — Mapbox Static API rendered map
+const cityGroundGeo = new THREE.PlaneGeometry(4000, 4000);
+
+// Mapbox Static Images API — renders a map tile as a PNG
+// Center: PTP (77.6935, 12.9430), zoom 11 covers ~25km radius
+// MAPBOX_TOKEN defined at top of module
+const mapStyle = 'streets-v12';
+const mapCenter = '77.6935,12.9430'; // centered EXACTLY on PTP
+const mapZoom = 12;
+const mapSize = '1280x1280@2x';
+
+const mapUrl = `https://api.mapbox.com/styles/v1/mapbox/${mapStyle}/static/${mapCenter},${mapZoom},0/${mapSize}?access_token=${MAPBOX_TOKEN}&attribution=false&logo=false`;
+
+// Start with dark fallback
+const cityGroundMat = new THREE.MeshStandardMaterial({ color: 0x1a2540, roughness: 0.9, metalness: 0.05 });
+const cityGround = new THREE.Mesh(cityGroundGeo, cityGroundMat);
+cityGround.rotation.x = -Math.PI / 2;
+cityGround.position.y = -0.5;
+cityScene.add(cityGround);
+
+// Load Mapbox map as texture
+const mapLoader = new THREE.TextureLoader();
+mapLoader.crossOrigin = 'anonymous';
+mapLoader.load(mapUrl, (tex) => {
+  tex.minFilter = THREE.LinearFilter;
+  tex.magFilter = THREE.LinearFilter;
+  cityGroundMat.map = tex;
+  cityGroundMat.color.set(0xffffff);
+  cityGroundMat.needsUpdate = true;
+  console.log('Mapbox map loaded successfully');
+}, undefined, (err) => {
+  console.log('Mapbox failed, using dark fallback', err);
+});
+
+// City Lighting
+const cityAmbient = new THREE.AmbientLight(0xffffff, 2.0); // bright to show map texture
+cityScene.add(cityAmbient);
+const cityDirLight = new THREE.DirectionalLight(0xffffff, 0.5);
+cityDirLight.position.set(500, 1000, 300);
+cityScene.add(cityDirLight);
+
+// Build park markers
+const cityParkMeshes = [];
+const cityParkDataMap = new Map();
+
+CITY_PARKS_DATA.parks.forEach(park => {
+  const group = new THREE.Group();
+  const px = park.position.x, pz = park.position.z;
+
+  // Invisible hitbox for raycasting
+  const baseGeo = new THREE.BoxGeometry(40, 20, 40);
+  const baseMat = new THREE.MeshStandardMaterial({ transparent: true, opacity: 0 });
+  const base = new THREE.Mesh(baseGeo, baseMat);
+  base.position.y = 10;
+  group.add(base);
+
+  // 3D Buildings cluster (hidden by default — toggled via button)
+  const bldgGroup = new THREE.Group();
+  bldgGroup.visible = false;
+  bldgGroup.userData.isCityBldg = true;
+
+  // Ground platform
+  const platGeo = new THREE.CylinderGeometry(22, 24, 2, 16);
+  const platMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(park.color).lerp(new THREE.Color(0x000000), 0.3), roughness: 0.6 });
+  const plat = new THREE.Mesh(platGeo, platMat);
+  plat.position.y = 1;
+  bldgGroup.add(plat);
+
+  // Generate 8-12 buildings in a cluster
+  const bCount = 5 + Math.floor(park.placeholderBuildings.length * 1.5);
+  const bColor = new THREE.Color(park.color);
+  for (let i = 0; i < bCount; i++) {
+    const bw = 3 + Math.random() * 5;
+    const bd = 3 + Math.random() * 5;
+    const bh = 8 + Math.random() * 30;
+    const bx = (Math.random() - 0.5) * 30;
+    const bz = (Math.random() - 0.5) * 30;
+    const bGeo = new THREE.BoxGeometry(bw, bh, bd);
+    const lightness = 0.3 + Math.random() * 0.3;
+    const bMat = new THREE.MeshStandardMaterial({
+      color: bColor.clone().lerp(new THREE.Color(0xffffff), lightness),
+      emissive: bColor.clone(),
+      emissiveIntensity: 0.15,
+      roughness: 0.35, metalness: 0.2,
+    });
+    const bMesh = new THREE.Mesh(bGeo, bMat);
+    bMesh.position.set(bx, bh/2 + 2, bz);
+    bldgGroup.add(bMesh);
+  }
+  group.add(bldgGroup);
+
+  // Floating CSS card label (looks like Apple Maps / Google Maps card)
+  const cardDiv = document.createElement('div');
+  cardDiv.style.cssText = 'pointer-events:none;font-family:system-ui';
+  const isActive = park.hasDetailedView;
+  cardDiv.innerHTML = `
+    <div style="background:#fff;border-radius:14px;padding:12px 16px;box-shadow:0 4px 20px rgba(0,0,0,0.15);border:2px solid ${park.color};min-width:140px;text-align:center;position:relative">
+      <div style="font-size:14px;font-weight:800;color:#0f172a;margin-bottom:3px">${park.name}</div>
+      <div style="font-size:11px;color:#64748b;margin-bottom:6px">${park.subLocation}</div>
+      <div style="display:flex;gap:6px;justify-content:center;margin-bottom:6px">
+        <span style="padding:2px 8px;background:#f1f5f9;border-radius:6px;font-size:10px;font-weight:600;color:#475569">${park.buildings} bldgs</span>
+        <span style="padding:2px 8px;background:#f1f5f9;border-radius:6px;font-size:10px;font-weight:600;color:#475569">${park.totalArea}</span>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:${park.color}">${park.avgRent}</div>
+      ${isActive ? '<div style="margin-top:6px;padding:3px 12px;background:'+park.color+';color:#fff;border-radius:8px;font-size:10px;font-weight:700;display:inline-block">EXPLORE →</div>' : '<div style="margin-top:6px;font-size:10px;color:#94a3b8;font-weight:600">Coming Soon</div>'}
+      <div style="position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid #fff"></div>
+    </div>
+  `;
+  const cardLabel = new CSS2DObject(cardDiv);
+  cardLabel.position.set(0, 25, 0);
+  cardLabel.userData.isCityCard = true;
+  group.add(cardLabel);
+
+  // "You are here" ring for Prestige
+  if (park.id === 'prestige') {
+    const ringGeo = new THREE.TorusGeometry(25, 1.5, 8, 32);
+    const ringMat = new THREE.MeshStandardMaterial({
+      color: 0x6366f1, emissive: 0x6366f1, emissiveIntensity: 0.8,
+      transparent: true, opacity: 0.6,
+    });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.y = 0.1;
+    group.add(ring);
+    group.userData.ring = ring;
+  }
+
+  // Old label removed — replaced by floating card above
+
+  // Distance line + label from Prestige (skip for Prestige itself)
+  if (park.id !== 'prestige') {
+    // PTP position for distance calculation
+    const ptpX = 0, ptpZ = 0;
+    const dx = px - ptpX, dz = pz - ptpZ;
+    const dist = Math.sqrt(dx*dx + dz*dz) * 12 / 1000;
+    const distLabel = document.createElement('div');
+    distLabel.style.cssText = 'font-size:10px;color:#4f46e5;font-weight:700;pointer-events:none;background:rgba(255,255,255,0.9);padding:2px 8px;border-radius:4px;border:1px solid #c7d2fe;-webkit-font-smoothing:antialiased';
+    distLabel.textContent = dist.toFixed(1) + ' km';
+    const distObj = new CSS2DObject(distLabel);
+    distObj.position.set((px+ptpX)/2, 2, (pz+ptpZ)/2);
+    cityScene.add(distObj);
+
+    // Dashed line from Prestige to this park
+    const linePoints = [new THREE.Vector3(ptpX, 0.5, ptpZ), new THREE.Vector3(px, 0.5, pz)];
+    const lineGeo = new THREE.BufferGeometry().setFromPoints(linePoints);
+    const lineMat = new THREE.LineDashedMaterial({ color: new THREE.Color(park.color), dashSize: 8, gapSize: 4, transparent: true, opacity: 0.7, linewidth: 2 });
+    const line = new THREE.Line(lineGeo, lineMat);
+    line.computeLineDistances();
+    cityScene.add(line);
+  }
+
+  group.position.set(px, 0, pz);
+  cityScene.add(group);
+
+  // For raycasting, use the base mesh
+  base.userData.parkData = park;
+  cityParkMeshes.push(base);
+  cityParkDataMap.set(base, park);
+});
+
+// Major roads as lines
+const roadColor = 0x2a3a5a;
+// Roads are baked into the ground canvas texture — no 3D road meshes needed
+
+// Compass indicator
+const compassDiv = document.createElement('div');
+compassDiv.style.cssText = 'font-size:11px;font-weight:700;color:#475569;pointer-events:none';
+compassDiv.textContent = '\u2191 N';
+const compassObj = new CSS2DObject(compassDiv);
+compassObj.position.set(0, 5, 300);
+cityScene.add(compassObj);
+
+// Bangalore landmarks
+const landmarkMeshes = [];
+const landmarks = [
+  { name: 'Cubbon Park', pos: [-916, -309], type: '🌳 Park', icon: '🌳', info: 'Historic 300-acre park in the heart of Bangalore.' },
+  { name: 'MG Road', pos: [-791, -297], type: '🛍️ Shopping', icon: '🛍️', info: 'Premium retail and commercial corridor. UB City mall, Brigade Road.' },
+  { name: 'Koramangala', pos: [-628, 72], type: '🏙️ Startup Hub', icon: '🚀', info: 'Startup epicenter. Flipkart HQ, 500+ startups, vibrant nightlife.' },
+  { name: 'Indiranagar', pos: [-480, -328], type: '🍷 Lifestyle', icon: '🍷', info: '100 Feet Road — bars, restaurants, boutiques. Metro connected.' },
+  { name: 'Whitefield', pos: [514, -249], type: '💻 IT Hub', icon: '💻', info: 'Major IT corridor with ITPL, Brigade Tech Gardens, 50+ companies.' },
+  { name: 'KR Puram', pos: [77, -518], type: '🚂 Railway', icon: '🚂', info: 'Railway junction. ORR intersection. 6 km from PTP.' },
+  { name: 'Silk Board Junction', pos: [-646, 237], type: '🚦 Junction', icon: '🚦', info: 'Busiest junction — ORR meets Hosur Road and BTM.' },
+  { name: 'HSR Layout', pos: [-420, 291], type: '🏘️ Residential', icon: '🏘️', info: 'Popular residential area for IT professionals.' },
+  { name: 'Marathahalli', pos: [70, -149], type: '🏢 Commercial', icon: '🏢', info: 'ORR commercial belt. Closest urban center to PTP (2 km).' },
+  { name: 'Bellandur', pos: [-152, 158], type: '🏠 Residential', icon: '🏠', info: 'IT professional residential hub. Phoenix Marketcity nearby.' },
+  { name: 'Hebbal', pos: [-878, -861], type: '✈️ Airport Road', icon: '🛣️', info: 'Gateway to Airport. Home to Manyata Tech Park.' },
+  { name: 'Kempegowda Intl Airport', pos: [121, -2374], type: '✈️ Airport', icon: '✈️', info: 'International airport (BLR). 35 km from PTP.' },
+];
+
+landmarks.forEach(lm => {
+  // Diamond marker — large enough to hover
+  // Large flat disc marker — easy to hover
+  const markerGeo = new THREE.CylinderGeometry(15, 15, 3, 16);
+  const markerMat = new THREE.MeshStandardMaterial({
+    color: 0x6366f1, emissive: 0x6366f1, emissiveIntensity: 0.3,
+    transparent: true, opacity: 0.5
+  });
+  const marker = new THREE.Mesh(markerGeo, markerMat);
+  marker.position.set(lm.pos[0], 1.5, lm.pos[1]);
+  // Small pin on top
+  const pinGeo = new THREE.CylinderGeometry(0.8, 0.8, 12, 6);
+  const pinMat = new THREE.MeshStandardMaterial({ color: 0x4f46e5 });
+  const pin = new THREE.Mesh(pinGeo, pinMat);
+  pin.position.set(lm.pos[0], 9, lm.pos[1]);
+  cityScene.add(pin);
+  const dotGeo = new THREE.SphereGeometry(3, 8, 6);
+  const dotMat = new THREE.MeshStandardMaterial({ color: 0x4f46e5, emissive: 0x4f46e5, emissiveIntensity: 0.5 });
+  const dot = new THREE.Mesh(dotGeo, dotMat);
+  dot.position.set(lm.pos[0], 16, lm.pos[1]);
+  cityScene.add(dot);
+  marker.userData.landmark = lm;
+  landmarkMeshes.push(marker);
+  cityScene.add(marker);
+
+  // Label
+  const div = document.createElement('div');
+  div.style.cssText = 'font-family:system-ui;pointer-events:none;text-align:center';
+  div.innerHTML = `<div style="font-size:10px;font-weight:700;color:#334155;-webkit-font-smoothing:antialiased">${lm.name}</div>`;
+  const label = new CSS2DObject(div);
+  label.position.set(lm.pos[0], 8, lm.pos[1]);
+  cityScene.add(label);
+});
+
+// City View tooltip
+const cityTooltip = document.createElement('div');
+cityTooltip.style.cssText = 'position:fixed;display:none;padding:12px 16px;background:rgba(10,14,26,0.95);backdrop-filter:blur(12px);border:1px solid rgba(99,102,241,0.3);border-radius:10px;color:#fff;font-size:13px;pointer-events:none;z-index:25;min-width:200px;box-shadow:0 8px 24px rgba(0,0,0,0.5);font-family:system-ui';
+document.body.appendChild(cityTooltip);
+
+// City raycaster
+const cityRaycaster = new THREE.Raycaster();
+const cityPointer = new THREE.Vector2();
+let hoveredCityPark = null;
+
+function onCityPointerMove(e) {
+  if (currentView !== 'city') return;
+  cityPointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+  cityPointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+  cityRaycaster.setFromCamera(cityPointer, cityCamera);
+  const hits = cityRaycaster.intersectObjects(cityParkMeshes);
+
+  if (hits.length > 0) {
+    const park = cityParkDataMap.get(hits[0].object);
+    // Reset landmark highlights when hovering parks
+    landmarkMeshes.forEach(m => { m.material.emissiveIntensity = 0.3; m.material.opacity = 0.5; });
+    if (hoveredCityPark !== hits[0].object) {
+      hoveredCityPark = hits[0].object;
+      renderer.domElement.style.cursor = 'pointer';
+    }
+    const dist = Math.sqrt(park.position.x**2 + park.position.z**2) * 12 / 1000;
+    cityTooltip.innerHTML = `
+      <div style="font-weight:700;font-size:14px;margin-bottom:4px;color:${park.color}">${park.name}</div>
+      <div style="font-size:11px;color:#94a3b8;margin-bottom:6px">${park.subLocation}</div>
+      <div style="font-size:12px;color:#cbd5e1">${park.buildings} buildings · ${park.totalArea}</div>
+      <div style="font-size:12px;color:#cbd5e1">Avg Rent: ${park.avgRent}</div>
+      ${park.id !== 'prestige' ? '<div style="font-size:11px;color:#94a3b8;margin-top:4px">' + dist.toFixed(1) + ' km from Prestige Tech Park</div>' : ''}
+      <div style="font-size:11px;color:#818cf8;margin-top:6px;font-weight:600">${park.hasDetailedView ? 'Click to explore \u2192' : 'Coming soon'}</div>
+    `;
+    cityTooltip.style.display = 'block';
+    cityTooltip.style.left = Math.min(e.clientX + 16, window.innerWidth - 230) + 'px';
+    cityTooltip.style.top = (e.clientY - 10) + 'px';
+  } else {
+    if (hoveredCityPark) {
+      hoveredCityPark = null;
+    }
+    // Check landmarks
+    const lmHits = cityRaycaster.intersectObjects(landmarkMeshes);
+    // Reset all landmark emissive first
+    landmarkMeshes.forEach(m => { m.material.emissiveIntensity = 0.3; m.material.opacity = 0.5; });
+    if (lmHits.length > 0) {
+      const lm = lmHits[0].object.userData.landmark;
+      lmHits[0].object.material.emissiveIntensity = 0.8;
+      lmHits[0].object.material.opacity = 0.9;
+      const distFromPTP = Math.sqrt(lm.pos[0]**2 + lm.pos[1]**2) * 12 / 1000;
+      cityTooltip.innerHTML = `
+        <div style="font-weight:800;font-size:15px;color:#fff;margin-bottom:2px">${lm.icon || ''} ${lm.name}</div>
+        <div style="font-size:11px;color:#818cf8;font-weight:600;margin-bottom:8px">${lm.type} · ${distFromPTP.toFixed(1)} km from PTP</div>
+        <div style="font-size:12px;color:#cbd5e1;line-height:1.5;max-width:260px">${lm.info}</div>
+      `;
+      cityTooltip.style.display = 'block';
+      cityTooltip.style.left = (e.clientX + 16) + 'px';
+      cityTooltip.style.top = (e.clientY - 10) + 'px';
+      renderer.domElement.style.cursor = 'default';
+    } else {
+      renderer.domElement.style.cursor = 'default';
+      cityTooltip.style.display = 'none';
+    }
+  }
+}
+
+function onCityClick(e) {
+  if (currentView !== 'city') return;
+  cityRaycaster.setFromCamera(cityPointer, cityCamera);
+  const hits = cityRaycaster.intersectObjects(cityParkMeshes);
+  if (hits.length > 0) {
+    const park = cityParkDataMap.get(hits[0].object);
+    if (park.hasDetailedView) {
+      transitionToView('park');
+    } else {
+      // Open park landing page
+      document.getElementById('pl-icon').style.background = park.color + '20';
+      document.getElementById('pl-icon').innerHTML = '<span style="font-size:28px">🏢</span>';
+      document.getElementById('pl-name').textContent = park.name;
+      document.getElementById('pl-sub').textContent = park.subLocation;
+      document.getElementById('pl-stats').innerHTML = `
+        <div class="pl-stat"><div class="pl-stat-val">${park.buildings}</div><div class="pl-stat-label">Buildings</div></div>
+        <div class="pl-stat"><div class="pl-stat-val">${park.totalArea}</div><div class="pl-stat-label">Total Area</div></div>
+        <div class="pl-stat"><div class="pl-stat-val">${park.avgRent}</div><div class="pl-stat-label">Avg Rent</div></div>
+      `;
+      document.getElementById('park-landing').classList.add('open');
+    }
+  }
+}
+
+window.addEventListener('pointermove', onCityPointerMove);
+window.addEventListener('click', onCityClick);
+
+// View transition
+const viewFade = document.getElementById('view-fade');
+
+function transitionToView(targetView) {
+  if (currentView === targetView || currentView === 'transitioning') return;
+  currentView = 'transitioning';
+
+  // Save current camera
+  if (targetView === 'city') {
+    savedParkCameraPos = camera.position.clone();
+    savedParkCameraTarget = controls.target.clone();
+  }
+
+  // Show loading overlay with context-aware message
+  const loadMsg = targetView === 'park' ? 'Entering Prestige Tech Park...' : 'Loading Bangalore City View...';
+  viewFade.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%">
+    <div style="font-size:11px;font-weight:700;color:#818cf8;text-transform:uppercase;letter-spacing:3px;margin-bottom:8px">myHQ</div>
+    <div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:16px">${loadMsg}</div>
+    <div style="width:160px;height:3px;background:#1e293b;border-radius:2px;overflow:hidden">
+      <div style="width:100%;height:100%;background:linear-gradient(90deg,#6366f1,#818cf8);border-radius:2px;animation:loadPulse 1s ease infinite"></div>
+    </div>
+  </div>`;
+  viewFade.classList.add('active');
+
+  setTimeout(() => {
+    // Clear stale CSS2D labels
+    while (labelRenderer.domElement.firstChild) {
+      labelRenderer.domElement.removeChild(labelRenderer.domElement.firstChild);
+    }
+
+    if (targetView === 'city') {
+      controls.enabled = false;
+      cityControls.enabled = true;
+      document.body.classList.add('city-view-active');
+      document.getElementById('city-breadcrumb').classList.add('visible');
+      document.querySelector('#title-bar h1').textContent = 'Bangalore Tech Parks';
+      document.querySelector('#title-bar p').textContent = '6 Major IT Corridors \u00b7 Zoom & click to explore';
+      document.querySelector('.tb-logo-prestige').textContent = '';
+      document.querySelector('.tb-logo-x').style.display = 'none';
+    } else {
+      cityControls.enabled = false;
+      controls.enabled = true;
+      if (savedParkCameraPos) {
+        camera.position.copy(savedParkCameraPos);
+        controls.target.copy(savedParkCameraTarget);
+      }
+      document.body.classList.remove('city-view-active');
+      document.getElementById('city-breadcrumb').classList.remove('visible');
+      document.querySelector('#title-bar h1').textContent = 'Prestige Tech Park';
+      document.querySelector('#title-bar p').textContent = 'Outer Ring Road, Kadubeesanahalli \u00b7 6M+ sqft \u00b7 19 Buildings';
+      document.querySelector('.tb-logo-prestige').textContent = 'PRESTIGE';
+      document.querySelector('.tb-logo-x').style.display = '';
+    }
+
+    currentView = targetView;
+    cityTooltip.style.display = 'none';
+    tooltip.style.display = 'none';
+
+    // Re-sync city toggle state on re-entry
+    if (targetView === 'city') {
+      const is3d = cityViewMode === '3d';
+      cityScene.traverse(obj => {
+        if (obj.userData.isCityCard) obj.visible = !is3d;
+        if (obj.userData.isCityBldg) obj.visible = is3d;
+      });
+    }
+
+    // Fade out
+    setTimeout(() => { viewFade.classList.remove('active'); }, 50);
+
+    // Cinematic camera animation after transition
+    if (targetView === 'city') {
+      // City view: orbit from high angle, zooming in toward the parks
+      cityControls.enabled = false;
+      const cStart = performance.now();
+      const cDur = 3000;
+      function cityIntro() {
+        const t = Math.min((performance.now() - cStart) / cDur, 1);
+        const e = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2;
+        const angle = (1-e) * 0.6;
+        const r = 700 - e * 200;
+        const h = 600 - e * 100;
+        cityCamera.position.set(Math.cos(angle) * r, h, Math.sin(angle) * r);
+        cityCamera.lookAt(0, 0, 0);
+        if (t < 1) requestAnimationFrame(cityIntro);
+        else { cityControls.enabled = true; cityControls.update(); }
+      }
+      cityIntro();
+    } else {
+      // Park view: swoop in from above
+      controls.enabled = false;
+      const pStart = performance.now();
+      const pDur = 3000;
+      const pFrom = { x: 40, y: 35, z: 40 };
+      const pTo = savedParkCameraPos || new THREE.Vector3(25, 22, 30);
+      camera.position.set(pFrom.x, pFrom.y, pFrom.z);
+      function parkIntro() {
+        const t = Math.min((performance.now() - pStart) / pDur, 1);
+        const e = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2;
+        camera.position.x = pFrom.x + (pTo.x - pFrom.x) * e;
+        camera.position.y = pFrom.y + (pTo.y - pFrom.y) * e;
+        camera.position.z = pFrom.z + (pTo.z - pFrom.z) * e;
+        camera.lookAt(0, 1, 0);
+        if (t < 1) requestAnimationFrame(parkIntro);
+        else { controls.enabled = true; controls.update(); }
+      }
+      parkIntro();
+    }
+  }, 1000);
+}
+
+// City View button
+document.getElementById('cb-cityview').addEventListener('click', (e) => {
+  e.stopPropagation();
+  closeAllDropdowns();
+  transitionToView(currentView === 'city' ? 'park' : 'city');
+});
+
+// Breadcrumb click
+document.getElementById('breadcrumb-city').addEventListener('click', () => {
+  if (currentView === 'park') transitionToView('city');
+});
+
+// City view toggle: Cards ↔ 3D Buildings
+let cityViewMode = 'cards';
+
+document.getElementById('cb-city-toggle').addEventListener('click', (e) => {
+  e.stopPropagation();
+  cityViewMode = cityViewMode === 'cards' ? '3d' : 'cards';
+  const is3d = cityViewMode === '3d';
+  // Simple tag-based toggle
+  cityScene.traverse(obj => {
+    if (obj.userData.isCityCard) obj.visible = !is3d;
+    if (obj.userData.isCityBldg) obj.visible = is3d;
+  });
+  document.getElementById('cb-city-toggle').innerHTML = is3d ? '&#128196;' : '&#127970;';
+});
+
+// SHORTLIST + COMPARE
+// ============================================================
+const shortlistedItems = [];
+window.addToShortlist = function(buildingId, floorNum) {
+  const building = TECH_PARK_DATA.buildings.find(b => b.id === buildingId);
+  const floor = building.floors.find(f => f.floor === floorNum);
+  const id = buildingId + '-' + floorNum;
+  if (shortlistedItems.length >= 5 || shortlistedItems.find(s => s.id === id)) return;
+  shortlistedItems.push({ building, floor, id });
+  updateShortlistTray();
+  document.querySelectorAll(`.fcv2-compare-btn[data-fid="${id}"]`).forEach(b => { b.classList.add('added'); b.textContent = '\u2713'; });
+};
+
+window.removeFromShortlist = function(id) {
+  const idx = shortlistedItems.findIndex(s => s.id === id);
+  if (idx >= 0) shortlistedItems.splice(idx, 1);
+  updateShortlistTray();
+  document.querySelectorAll(`.fcv2-compare-btn[data-fid="${id}"]`).forEach(b => { b.classList.remove('added'); b.textContent = '+'; });
+};
+
+function updateShortlistTray() {
+  const tray = document.getElementById('shortlist-tray');
+  if (shortlistedItems.length === 0) { tray.classList.remove('visible'); return; }
+  tray.classList.add('visible');
+  document.getElementById('sl-count').textContent = shortlistedItems.length + '/5';
+  document.getElementById('sl-chips').innerHTML = shortlistedItems.map(s =>
+    `<div class="sl-chip"><span>F${s.floor.floor}\u00B7${s.building.name.substring(0,12)}</span><span class="sl-remove" onclick="removeFromShortlist('${s.id}')">&times;</span></div>`
+  ).join('');
+}
+
+document.getElementById('sl-compare-btn').addEventListener('click', () => openShortlistCompare());
+
+function openShortlistCompare() {
+  if (shortlistedItems.length < 2) { alert('Select at least 2 floors to compare'); return; }
+  const items = shortlistedItems;
+
+  const rents = items.map(s => s.floor.rentPerSqft);
+  const areas = items.map(s => s.floor.carpetArea);
+  const yields = items.map(s => s.floor.rentalYield);
+  const minRent = Math.min(...rents), maxArea = Math.max(...areas), maxYield = Math.max(...yields);
+
+  let html = '<h2 style="font-size:20px;font-weight:700;color:#0f172a;margin-bottom:20px">Shortlist Comparison</h2>';
+  html += '<div class="compare-cards">';
+  items.forEach(s => {
+    const f = s.floor, b = s.building;
+    html += `<div class="compare-card" style="border-top-color:${b.color}">
+      <h4>F${f.floor} \u00B7 ${b.name}</h4>
+      <div class="cc-row"><span class="cc-label">Tenant</span><span class="cc-val">${f.tenant}</span></div>
+      <div class="cc-row"><span class="cc-label">Carpet Area</span><span class="cc-val${f.carpetArea===maxArea?' best':''}">${f.carpetArea.toLocaleString()} sqft</span></div>
+      <div class="cc-row"><span class="cc-label">Rent</span><span class="cc-val${f.rentPerSqft===minRent?' best':''}">₹${f.rentPerSqft}/sqft</span></div>
+      <div class="cc-row"><span class="cc-label">CAM</span><span class="cc-val">₹${b.camCharges}/sqft</span></div>
+      <div class="cc-row"><span class="cc-label">Occupancy</span><span class="cc-val">${f.occupancy}%</span></div>
+      <div class="cc-row"><span class="cc-label">Status</span><span class="cc-val">${f.status}</span></div>
+      <div class="cc-row"><span class="cc-label">Fit-out</span><span class="cc-val">${f.fitOut}</span></div>
+      <div class="cc-row"><span class="cc-label">Yield</span><span class="cc-val${f.rentalYield===maxYield?' best':''}">${f.rentalYield}%</span></div>
+      <div class="cc-row"><span class="cc-label">Lock-in</span><span class="cc-val">${f.lockInPeriod||'N/A'}</span></div>
+      <div class="cc-row"><span class="cc-label">Deposit</span><span class="cc-val">${f.securityDeposit} months</span></div>
+    </div>`;
+  });
+  html += '</div>';
+
+  html += '<h3 style="font-size:16px;font-weight:700;margin-bottom:12px">Total Cost of Occupancy</h3>';
+  html += '<table class="cost-table"><thead><tr><th>Metric</th>';
+  items.forEach(s => html += `<th>F${s.floor.floor} \u00B7 ${s.building.name.substring(0,15)}</th>`);
+  html += '</tr></thead><tbody>';
+
+  const costs = items.map(s => {
+    const f = s.floor, b = s.building;
+    const monthlyRent = f.rentPerSqft * f.carpetArea;
+    const monthlyCAM = b.camCharges * f.carpetArea;
+    const monthlyTotal = monthlyRent + monthlyCAM;
+    const deposit = f.securityDeposit * monthlyRent;
+    const fitoutCost = f.fitOut === 'Bare Shell' ? 2500 * f.carpetArea : f.fitOut === 'Warm Shell' ? 1500 * f.carpetArea : 0;
+    const upfront = deposit + fitoutCost;
+    const escalation = 0.15;
+    let fiveYearTotal = upfront;
+    let yearlyRent = monthlyTotal * 12;
+    for (let y = 0; y < 5; y++) { fiveYearTotal += yearlyRent; if (y === 2) yearlyRent *= (1 + escalation); }
+    return { monthlyRent, monthlyCAM, monthlyTotal, deposit, fitoutCost, upfront, fiveYearTotal };
+  });
+
+  const minMonthly = Math.min(...costs.map(c=>c.monthlyTotal));
+  const minUpfront = Math.min(...costs.map(c=>c.upfront));
+  const min5yr = Math.min(...costs.map(c=>c.fiveYearTotal));
+
+  function fc(n) { return n>=10000000?'\u20B9'+(n/10000000).toFixed(2)+'Cr':n>=100000?'\u20B9'+(n/100000).toFixed(1)+'L':'\u20B9'+n.toLocaleString(); }
+
+  const rows = [
+    { label:'Monthly Rent', key:'monthlyRent' },
+    { label:'Monthly CAM', key:'monthlyCAM' },
+    { label:'Monthly Total', key:'monthlyTotal', best:minMonthly, total:true },
+    { label:'Security Deposit', key:'deposit' },
+    { label:'Fit-out Estimate', key:'fitoutCost' },
+    { label:'Upfront Total', key:'upfront', best:minUpfront, total:true },
+    { label:'5-Year Total Cost', key:'fiveYearTotal', best:min5yr, total:true },
+  ];
+
+  rows.forEach(r => {
+    html += `<tr${r.total?' class="total-row"':''}><td>${r.label}</td>`;
+    costs.forEach(c => {
+      const val = c[r.key];
+      const cls = r.best !== undefined && val === r.best ? ' class="best-cost"' : '';
+      html += `<td${cls}>${fc(val)}</td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+
+  html += '<button onclick="exportComparisonReport()" style="padding:8px 20px;background:#4f46e5;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Download Comparison Report</button>';
+
+  html += '<div style="margin-top:12px;padding:6px 10px;background:#f0f4ff;border:1px solid #c7d2fe;border-radius:6px;display:inline-block">';
+  html += '<span style="font-size:9px;font-weight:700;color:#4338ca;text-transform:uppercase;letter-spacing:0.5px">Sources: </span>';
+  if (TECH_PARK_DATA.dataSources) TECH_PARK_DATA.dataSources.forEach(s => {
+    html += '<span style="display:inline-block;padding:1px 5px;background:#fff;border:1px solid #e2e8f0;border-radius:3px;margin:1px;font-size:8px;font-weight:500;color:#64748b">' + s.name + '</span>';
+  });
+  html += '<span style="font-size:8px;color:#94a3b8;margin-left:6px">Updated: ' + (TECH_PARK_DATA.lastUpdated || 'N/A') + '</span></div>';
+
+  compareContent.innerHTML = html;
+  compareOverlay.classList.add('open');
+}
+
+window.exportComparisonReport = function() {
+  const w = window.open('','_blank');
+  w.document.write('<html><head><title>Floor Comparison Report</title><style>body{font-family:system-ui;padding:40px;color:#1e293b}table{width:100%;border-collapse:collapse;margin:20px 0}th,td{padding:8px 12px;border:1px solid #e2e8f0;text-align:left;font-size:13px}th{background:#f8fafc;font-weight:700}.best{color:#16a34a;font-weight:700}h1{font-size:22px}h2{font-size:16px;margin-top:24px}footer{margin-top:40px;color:#94a3b8;font-size:11px}</style></head><body>');
+  w.document.write('<h1>Floor Comparison Report</h1><p>Prestige Tech Park \u00B7 Generated ' + new Date().toLocaleDateString() + '</p>');
+  w.document.write(compareContent.innerHTML);
+  w.document.write('<footer>Generated from Prestige Tech Park 3D Explorer</footer></body></html>');
+};
+
+// Info tooltip system for data-tip elements
+const infoTip = document.getElementById('info-tooltip');
+document.addEventListener('mouseover', (e) => {
+  const el = e.target.closest('[data-tip]');
+  if (el && !el.classList.contains('cb-btn')) {
+    infoTip.textContent = el.getAttribute('data-tip');
+    infoTip.style.display = 'block';
+  }
+});
+document.addEventListener('mousemove', (e) => {
+  if (infoTip.style.display === 'block') {
+    infoTip.style.left = Math.min(e.clientX + 12, window.innerWidth - 300) + 'px';
+    infoTip.style.top = (e.clientY - 30) + 'px';
+  }
+});
+document.addEventListener('mouseout', (e) => {
+  const el = e.target.closest('[data-tip]');
+  if (el) infoTip.style.display = 'none';
+});
 
 </script>
 </body>
