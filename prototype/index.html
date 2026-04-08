@@ -1764,6 +1764,74 @@
   [data-tip] { cursor:help; border-bottom:1px dotted #94a3b8; }
   #info-tooltip { position:fixed; display:none; padding:6px 12px; background:#1e293b; color:#fff; font-size:11px; font-weight:500; border-radius:6px; z-index:999; pointer-events:none; max-width:280px; white-space:normal; line-height:1.4; box-shadow:0 4px 12px rgba(0,0,0,0.3); }
   #shortcut-hint { position:fixed; top:52px; left:50%; transform:translateX(-50%); font-size:10px; color:#94a3b8; z-index:10; pointer-events:none; transition:opacity 1s; }
+
+  /* ========== MOBILE RESPONSIVE ========== */
+  @media (max-width: 768px) {
+    /* Header */
+    #title-bar { padding:6px 10px; gap:8px; }
+    #title-bar h1 { font-size:14px; }
+    #title-bar p { font-size:9px; }
+    .tb-logo { padding-right:8px; gap:4px; }
+    .tb-logo-myhq { font-size:12px; }
+    .tb-logo-prestige { font-size:9px; }
+    #visitor-counter { display:none; }
+    #tb-gallery-btn { font-size:10px; padding:5px 10px; }
+    #tb-enquiry-btn { font-size:10px; padding:5px 12px; }
+    #shortcut-hint { display:none; }
+
+    /* Two-panel → single panel */
+    #panel-container { width:100vw !important; }
+    #panel-left { width:100vw; min-width:0; }
+    #panel-right { width:100vw; min-width:0; }
+
+    /* Toolbar */
+    #controls-bar { right:6px; }
+    .cb-btn { width:32px !important; height:32px !important; font-size:14px !important; }
+
+    /* Time slider */
+    #time-slider-wrap { bottom:8px; left:8px; padding:8px 10px; min-width:160px; }
+    #time-slider { width:140px; }
+
+    /* Heatmap legend */
+    #heatmap-legend { bottom:80px; right:8px; min-width:150px; padding:8px 10px; }
+
+    /* Park switcher */
+    #park-switcher-wrap { display:none !important; }
+
+    /* Shortlist tray */
+    #shortlist-tray { bottom:8px; padding:6px 8px; max-width:95vw; }
+
+    /* Overlays — full screen on mobile */
+    #compare-panel { width:98vw; max-width:98vw; padding:16px; }
+    #enquiry-modal { width:95vw; padding:20px; }
+    #txn-overlay > div { width:98vw; }
+    #gallery-overlay .gal-body { grid-template-columns:1fr; padding:10px; }
+    .gal-card.gal-featured { grid-column:1; grid-row:auto; }
+
+    /* Search panel */
+    #search-panel { width:100vw; }
+
+    /* Location panel */
+    #map-panel { width:100vw; }
+
+    /* Tooltip */
+    #tooltip { min-width:200px; font-size:11px; padding:10px 12px; }
+
+    /* Floor plans */
+    .floor-card-v2 svg { width:100% !important; height:auto !important; }
+
+    /* City view cards */
+    .city-view-active #title-bar h1 { font-size:13px; }
+  }
+
+  @media (max-width: 480px) {
+    #title-bar h1 { font-size:12px; }
+    #tb-gallery-btn span, #tb-enquiry-btn span { display:none; }
+    #panel-container { flex-direction:column; }
+    #panel-left { width:100%; height:40vh; border-right:none; border-bottom:1px solid #e2e8f0; }
+    #panel-right { width:100%; height:60vh; }
+    .cb-btn { width:28px !important; height:28px !important; font-size:12px !important; }
+  }
   </style>
 </head>
 <body>
