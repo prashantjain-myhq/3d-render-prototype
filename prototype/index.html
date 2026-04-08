@@ -1755,8 +1755,10 @@
     #park-landing-card .pl-btn-secondary { background:#fff; border:1px solid #e2e8f0; color:#475569; }
 
     /* Fix 3: Hide irrelevant controls in city view */
-    .city-view-active #controls-bar .cb-btn:not(#cb-cityview) { display: none; }
+    .city-view-active #controls-bar .cb-btn:not(#cb-cityview):not(#cb-city-toggle) { display: none; }
     .city-view-active #controls-bar #cb-cityview { background: rgba(99,102,241,0.3); color: #fff; }
+    #cb-city-toggle { display: none; }
+    .city-view-active #cb-city-toggle { display: flex; }
     .city-view-active #tb-gallery-btn { display: none; }
 
   [data-tip] { cursor:help; border-bottom:1px dotted #94a3b8; }
@@ -1773,7 +1775,7 @@
   <div style="width:200px;height:3px;background:#1e293b;border-radius:2px;overflow:hidden">
     <div id="loading-bar" style="width:0%;height:100%;background:linear-gradient(90deg,#6366f1,#818cf8);border-radius:2px;transition:width 0.3s"></div>
   </div>
-  <div style="font-size:12px;color:#64748b;margin-top:12px" id="loading-text">Loading 3D model...</div>
+  <div style="font-size:12px;color:#64748b;margin-top:12px" id="loading-text">Loading Bangalore...</div>
 </div>
 
 <div id="info-tooltip"></div>
@@ -1822,6 +1824,7 @@
 <!-- Right-side Controls Toolbar -->
 <div id="controls-bar">
   <button class="cb-btn" id="cb-cityview" data-tip="City View" style="font-size:15px">&#127758;</button>
+  <button class="cb-btn" id="cb-city-toggle" data-tip="Toggle 3D / Cards" style="font-size:14px">&#127970;</button>
   <button class="cb-btn" id="cb-search" data-tip="Search">&#128269;</button>
   <button class="cb-btn" id="cb-compare" data-tip="Compare">&#9878;&#65039;</button>
   <button class="cb-btn" id="cb-heatmap" data-tip="Heat Map">&#127777;&#65039;</button>
@@ -3832,7 +3835,7 @@ function filterFloors(floors, filter) {
 }
 
 function generateFloorPlanSVG(floor, building) {
-  const w = 280, h = 135;
+  const w = 280, h = 150;
   const occ = floor.occupancy;
   const isVacant = floor.status === 'Vacant';
   const isPartial = floor.status === 'Partially Vacant';
@@ -5050,7 +5053,7 @@ const clock = new THREE.Clock();
 
 let lastTime = 0;
 // View state + city objects hoisted before animate (used in render loop + resize)
-var currentView = 'park';
+var currentView = 'city';
 var savedParkCameraPos = null;
 var savedParkCameraTarget = null;
 var cityCamera = null;
@@ -5150,46 +5153,33 @@ setTimeout(() => {
     loadingScreen.style.opacity = '0';
     setTimeout(() => { loadingScreen.style.display = 'none'; }, 600);
 
-    // Start intro camera orbit animation
-    const introStart = performance.now();
-    const introDuration = 4000; // 4 seconds
-    const startPos = { x: 35, y: 30, z: 35 };
-    const endPos = { x: 25, y: 22, z: 30 };
-
-    // Save current camera for restore
-    const origPos = camera.position.clone();
-    const origTarget = controls.target.clone();
-
-    // Set camera to a wider start position
-    camera.position.set(startPos.x, startPos.y, startPos.z);
+    // Start in CITY VIEW — set up state
     controls.enabled = false;
+    if (cityControls) cityControls.enabled = true;
+    document.body.classList.add('city-view-active');
+    document.querySelector('#title-bar h1').textContent = 'Bangalore Tech Parks';
+    document.querySelector('#title-bar p').textContent = '6 Major IT Corridors \u00b7 Zoom & click to explore';
+    if (document.querySelector('.tb-logo-prestige')) document.querySelector('.tb-logo-prestige').textContent = '';
+    if (document.querySelector('.tb-logo-x')) document.querySelector('.tb-logo-x').style.display = 'none';
 
-    function introAnimate() {
-      const elapsed = performance.now() - introStart;
-      const t = Math.min(elapsed / introDuration, 1);
-      const eased = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2;
-
-      // Orbit: rotate around the scene center while zooming in
-      const angle = (1 - eased) * 0.8; // rotate ~45 degrees
-      const radius = startPos.x - (startPos.x - endPos.x) * eased;
-      const height = startPos.y - (startPos.y - endPos.y) * eased;
-
-      camera.position.x = Math.cos(angle) * radius;
-      camera.position.z = Math.sin(angle) * radius;
-      camera.position.y = height;
-      camera.lookAt(0, 1, 0);
-
-      if (t < 1) {
-        requestAnimationFrame(introAnimate);
-      } else {
-        // Restore controls
-        controls.enabled = true;
-        controls.target.set(0, 1, 0);
-        controls.update();
+    // City intro camera orbit
+    if (cityControls) cityControls.enabled = false;
+    const cStart = performance.now();
+    const cDur = 4000;
+    function cityIntroAnim() {
+      const t = Math.min((performance.now() - cStart) / cDur, 1);
+      const e = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2;
+      const angle = (1-e) * 0.8;
+      const r = 800 - e * 300;
+      const h = 600 - e * 100;
+      if (cityCamera) {
+        cityCamera.position.set(Math.cos(angle)*r, h, Math.sin(angle)*r);
+        cityCamera.lookAt(0, 0, 0);
       }
+      if (t < 1) requestAnimationFrame(cityIntroAnim);
+      else { if (cityControls) { cityControls.enabled = true; cityControls.update(); } }
     }
-
-    introAnimate();
+    cityIntroAnim();
   }, 400);
 }, 1500); // loading screen shows for 1.5s
 
@@ -5211,17 +5201,27 @@ setInterval(() => {
 let autoRotating = false;
 window.addEventListener('keydown', (e) => {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+  // R = auto-rotate (works in both park and city view)
+  if (e.key === 'r' || e.key === 'R') {
+    if (currentView === 'city' && cityControls) {
+      autoRotating = !autoRotating;
+      cityControls.autoRotate = autoRotating;
+      cityControls.autoRotateSpeed = 1.0;
+    } else if (currentView === 'park') {
+      autoRotating = !autoRotating;
+      controls.autoRotate = autoRotating;
+      controls.autoRotateSpeed = 1.5;
+    }
+    return;
+  }
+
   if (currentView !== 'park') return;
 
   if (e.key === '1') { const btn = document.querySelector('#heatmap-toggle button[data-mode="occupancy"]'); if(btn) btn.click(); }
   if (e.key === '2') { const btn = document.querySelector('#heatmap-toggle button[data-mode="rent"]'); if(btn) btn.click(); }
   if (e.key === '3') { const btn = document.querySelector('#heatmap-toggle button[data-mode="yield"]'); if(btn) btn.click(); }
   if (e.key === '0') { const btn = document.querySelector('#heatmap-toggle button[data-mode="default"]'); if(btn) btn.click(); }
-  if (e.key === 'r' || e.key === 'R') {
-    autoRotating = !autoRotating;
-    controls.autoRotate = autoRotating;
-    controls.autoRotateSpeed = 1.5;
-  }
 });
 
 // Fade out shortcut hint after 8 seconds
@@ -6315,73 +6315,55 @@ function openTransactions() {
   const surrenders = transactions.filter(t => t.type === 'Surrender').length;
   const totalArea = transactions.filter(t => t.type !== 'Surrender').reduce((s, t) => s + parseInt(t.area.replace(/,/g, '')), 0);
 
-  const typeBadge = (type) => {
-    const colors = { 'New Lease': '#dcfce7;color:#166534', 'Renewal': '#dbeafe;color:#1e40af', 'Expansion': '#fef3c7;color:#92400e', 'Surrender': '#fee2e2;color:#991b1b' };
-    return '<span style="padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;background:' + (colors[type] || '#f1f5f9;color:#475569') + '">' + type + '</span>';
+  const typeStyles = {
+    'New Lease': { bg: '#dcfce7', color: '#166534', icon: '🟢' },
+    'Renewal': { bg: '#dbeafe', color: '#1e40af', icon: '🔵' },
+    'Expansion': { bg: '#fef3c7', color: '#92400e', icon: '🟡' },
+    'Surrender': { bg: '#fee2e2', color: '#991b1b', icon: '🔴' },
   };
 
   let html = `
-    <h2 style="font-size:20px;font-weight:800;color:#0f172a;margin-bottom:4px">Recent Transactions</h2>
-    <p style="font-size:13px;color:#64748b;margin-bottom:20px">Last 15 transactions across Prestige Tech Park</p>
-
-    <div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap">
-      <div style="flex:1;min-width:120px;padding:12px 16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px">
-        <div style="font-size:22px;font-weight:800;color:#166534">${newLeases}</div>
-        <div style="font-size:11px;color:#16a34a;font-weight:600">New Leases</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+      <div>
+        <h2 style="font-size:22px;font-weight:800;color:#0f172a;margin-bottom:2px">Recent Transactions</h2>
+        <p style="font-size:12px;color:#94a3b8">Prestige Tech Park · Last 3 months</p>
       </div>
-      <div style="flex:1;min-width:120px;padding:12px 16px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px">
-        <div style="font-size:22px;font-weight:800;color:#1e40af">${renewals}</div>
-        <div style="font-size:11px;color:#2563eb;font-weight:600">Renewals</div>
-      </div>
-      <div style="flex:1;min-width:120px;padding:12px 16px;background:#fefce8;border:1px solid #fde68a;border-radius:10px">
-        <div style="font-size:22px;font-weight:800;color:#92400e">${expansions}</div>
-        <div style="font-size:11px;color:#d97706;font-weight:600">Expansions</div>
-      </div>
-      <div style="flex:1;min-width:120px;padding:12px 16px;background:#fef2f2;border:1px solid #fecaca;border-radius:10px">
-        <div style="font-size:22px;font-weight:800;color:#991b1b">${surrenders}</div>
-        <div style="font-size:11px;color:#dc2626;font-weight:600">Surrenders</div>
-      </div>
-      <div style="flex:1;min-width:120px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px">
-        <div style="font-size:22px;font-weight:800;color:#0f172a">${(totalArea/1000).toFixed(0)}K</div>
-        <div style="font-size:11px;color:#64748b;font-weight:600">Sqft Transacted</div>
+      <div style="display:flex;gap:16px;align-items:center">
+        <div style="text-align:center"><div style="font-size:28px;font-weight:900;color:#166534">${newLeases}</div><div style="font-size:10px;color:#64748b;font-weight:600">New Leases</div></div>
+        <div style="width:1px;height:30px;background:#e2e8f0"></div>
+        <div style="text-align:center"><div style="font-size:28px;font-weight:900;color:#1e40af">${renewals}</div><div style="font-size:10px;color:#64748b;font-weight:600">Renewals</div></div>
+        <div style="width:1px;height:30px;background:#e2e8f0"></div>
+        <div style="text-align:center"><div style="font-size:28px;font-weight:900;color:#0f172a">${(totalArea/1000).toFixed(0)}K</div><div style="font-size:10px;color:#64748b;font-weight:600">Sqft Transacted</div></div>
       </div>
     </div>
 
-    <div style="overflow-x:auto">
-      <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:800px">
-        <thead>
-          <tr style="border-bottom:2px solid #e2e8f0">
-            <th style="text-align:left;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:700">Date</th>
-            <th style="text-align:left;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:700">Type</th>
-            <th style="text-align:left;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:700">Building</th>
-            <th style="text-align:left;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:700">Floor</th>
-            <th style="text-align:left;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:700">Tenant</th>
-            <th style="text-align:right;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:700">Area</th>
-            <th style="text-align:right;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:700">Rent</th>
-            <th style="text-align:right;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:700">Deal Value</th>
-            <th style="text-align:center;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:700">Term</th>
-            <th style="text-align:left;padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:700">Broker</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${transactions.map((t, i) => `<tr style="border-bottom:1px solid #f1f5f9;${i%2===0?'background:#fafafa':''}">
-            <td style="padding:8px 10px;color:#475569;font-weight:500">${t.date}</td>
-            <td style="padding:8px 10px">${typeBadge(t.type)}</td>
-            <td style="padding:8px 10px;font-weight:600;color:#1e293b">${t.building}</td>
-            <td style="padding:8px 10px;color:#6366f1;font-weight:600">${t.floor}</td>
-            <td style="padding:8px 10px;font-weight:600;color:#1e293b">${t.tenant}</td>
-            <td style="padding:8px 10px;text-align:right;color:#475569">${t.area}</td>
-            <td style="padding:8px 10px;text-align:right;font-weight:600;color:#1e293b">${t.rent}</td>
-            <td style="padding:8px 10px;text-align:right;font-weight:700;color:#166534">${t.deal}</td>
-            <td style="padding:8px 10px;text-align:center;color:#475569">${t.term}</td>
-            <td style="padding:8px 10px;color:#64748b">${t.broker}</td>
-          </tr>`).join('')}
-        </tbody>
-      </table>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${transactions.map(t => {
+        const s = typeStyles[t.type] || { bg: '#f1f5f9', color: '#475569', icon: '⚪' };
+        return `<div style="display:flex;align-items:center;gap:14px;padding:12px 16px;background:#fff;border:1px solid #f1f5f9;border-radius:12px;transition:all 0.15s" onmouseover="this.style.borderColor='#c7d2fe';this.style.boxShadow='0 2px 8px rgba(99,102,241,0.08)'" onmouseout="this.style.borderColor='#f1f5f9';this.style.boxShadow='none'">
+          <div style="flex-shrink:0;width:44px;height:44px;border-radius:10px;background:${s.bg};display:flex;align-items:center;justify-content:center;font-size:18px">${s.icon}</div>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
+              <span style="font-size:14px;font-weight:700;color:#0f172a">${t.tenant}</span>
+              <span style="padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;background:${s.bg};color:${s.color}">${t.type}</span>
+            </div>
+            <div style="font-size:12px;color:#64748b">${t.building} · ${t.floor} · ${t.area}</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-size:15px;font-weight:800;color:${t.deal==='-'?'#94a3b8':'#166534'}">${t.deal}</div>
+            <div style="font-size:11px;color:#94a3b8">${t.rent !== '-' ? t.rent + ' · ' + t.term : ''}</div>
+          </div>
+          <div style="flex-shrink:0;text-align:right;min-width:70px">
+            <div style="font-size:11px;color:#94a3b8">${t.date}</div>
+            <div style="font-size:10px;color:${t.broker==='myHQ'?'#4f46e5':'#94a3b8'};font-weight:${t.broker==='myHQ'?'700':'500'}">${t.broker}</div>
+          </div>
+        </div>`;
+      }).join('')}
     </div>
 
-    <div style="margin-top:16px;padding:10px 14px;background:#f0f4ff;border:1px solid #c7d2fe;border-radius:8px;font-size:11px;color:#4338ca">
-      <strong>Data Sources:</strong> ${TECH_PARK_DATA.dataSources ? TECH_PARK_DATA.dataSources.map(s => s.name).join(' · ') : ''} · Last updated: ${TECH_PARK_DATA.lastUpdated || 'N/A'}
+    <div style="margin-top:16px;padding:8px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;font-size:10px;color:#94a3b8;display:flex;justify-content:space-between">
+      <span>Sources: ${TECH_PARK_DATA.dataSources ? TECH_PARK_DATA.dataSources.map(s => s.name).join(' · ') : ''}</span>
+      <span>${TECH_PARK_DATA.lastUpdated || ''}</span>
     </div>
   `;
 
@@ -6543,31 +6525,8 @@ document.getElementById('tb-enquiry-btn').addEventListener('click', () => {
 
 // City Scene (assigned to vars declared before animate)
 cityScene = new THREE.Scene();
-// Procedural sky with gradient and clouds
-const citySkyCanvas = document.createElement('canvas');
-citySkyCanvas.width = 1024;
-citySkyCanvas.height = 512;
-const csCtx = citySkyCanvas.getContext('2d');
-const skyGrad = csCtx.createLinearGradient(0, 0, 0, 512);
-skyGrad.addColorStop(0, '#4a90d9');
-skyGrad.addColorStop(0.3, '#7ab8e8');
-skyGrad.addColorStop(0.6, '#a8d4f0');
-skyGrad.addColorStop(0.85, '#d4e8f0');
-skyGrad.addColorStop(1, '#e8e4de');
-csCtx.fillStyle = skyGrad;
-csCtx.fillRect(0, 0, 1024, 512);
-csCtx.fillStyle = 'rgba(255,255,255,0.4)';
-[[200,120,120,30],[400,80,150,35],[700,140,100,28],[150,200,80,22],[550,170,130,32],[850,100,90,25],[300,250,110,28]].forEach(([cx,cy,rw,rh]) => {
-  csCtx.beginPath(); csCtx.ellipse(cx,cy,rw,rh,0,0,Math.PI*2); csCtx.fill();
-  csCtx.fillStyle = 'rgba(255,255,255,0.3)';
-  csCtx.beginPath(); csCtx.ellipse(cx+10,cy-5,rw*0.7,rh*0.7,0,0,Math.PI*2); csCtx.fill();
-  csCtx.fillStyle = 'rgba(255,255,255,0.4)';
-});
-const citySkyTex = new THREE.CanvasTexture(citySkyCanvas);
-const citySkyMat = new THREE.MeshBasicMaterial({ map: citySkyTex, side: THREE.BackSide });
-const citySky = new THREE.Mesh(new THREE.SphereGeometry(3500, 16, 8), citySkyMat);
-cityScene.add(citySky);
-cityScene.background = null;
+// Clean gradient background — no sky sphere
+cityScene.background = new THREE.Color(0xf0ece6);
 // No fog — we want to see everything at city scale
 
 // City Camera — closer start, can zoom out
@@ -6635,38 +6594,73 @@ CITY_PARKS_DATA.parks.forEach(park => {
   const group = new THREE.Group();
   const px = park.position.x, pz = park.position.z;
 
-  // Base platform (glowing) — large enough to see at city scale
-  const baseGeo = new THREE.BoxGeometry(40, 1.5, 40);
-  const baseMat = new THREE.MeshStandardMaterial({
-    color: new THREE.Color(park.color),
-    emissive: new THREE.Color(park.color),
-    emissiveIntensity: 0.4,
-    roughness: 0.3,
-    metalness: 0.2,
-  });
+  // Invisible hitbox for raycasting
+  const baseGeo = new THREE.BoxGeometry(40, 20, 40);
+  const baseMat = new THREE.MeshStandardMaterial({ transparent: true, opacity: 0 });
   const base = new THREE.Mesh(baseGeo, baseMat);
-  base.position.y = 0.25;
+  base.position.y = 10;
   group.add(base);
 
-  // Placeholder buildings
-  park.placeholderBuildings.forEach(b => {
-    const scale = 6; // larger for visibility at city zoom
-    const bGeo = new THREE.BoxGeometry(b.w * scale, b.h * scale * 3, b.d * scale);
+  // 3D Buildings cluster (hidden by default — toggled via button)
+  const bldgGroup = new THREE.Group();
+  bldgGroup.visible = false;
+  bldgGroup.userData.isCityBldg = true;
+
+  // Ground platform
+  const platGeo = new THREE.CylinderGeometry(22, 24, 2, 16);
+  const platMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(park.color).lerp(new THREE.Color(0x000000), 0.3), roughness: 0.6 });
+  const plat = new THREE.Mesh(platGeo, platMat);
+  plat.position.y = 1;
+  bldgGroup.add(plat);
+
+  // Generate 8-12 buildings in a cluster
+  const bCount = 5 + Math.floor(park.placeholderBuildings.length * 1.5);
+  const bColor = new THREE.Color(park.color);
+  for (let i = 0; i < bCount; i++) {
+    const bw = 3 + Math.random() * 5;
+    const bd = 3 + Math.random() * 5;
+    const bh = 8 + Math.random() * 30;
+    const bx = (Math.random() - 0.5) * 30;
+    const bz = (Math.random() - 0.5) * 30;
+    const bGeo = new THREE.BoxGeometry(bw, bh, bd);
+    const lightness = 0.3 + Math.random() * 0.3;
     const bMat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color(park.color).lerp(new THREE.Color(0xffffff), 0.3),
-      emissive: new THREE.Color(park.color),
-      emissiveIntensity: 0.5,
-      roughness: 0.3,
-      metalness: 0.2,
+      color: bColor.clone().lerp(new THREE.Color(0xffffff), lightness),
+      emissive: bColor.clone(),
+      emissiveIntensity: 0.15,
+      roughness: 0.35, metalness: 0.2,
     });
     const bMesh = new THREE.Mesh(bGeo, bMat);
-    bMesh.position.set(b.ox * scale, b.h * scale * 1.5 + 1, b.oz * scale);
-    group.add(bMesh);
-  });
+    bMesh.position.set(bx, bh/2 + 2, bz);
+    bldgGroup.add(bMesh);
+  }
+  group.add(bldgGroup);
+
+  // Floating CSS card label (looks like Apple Maps / Google Maps card)
+  const cardDiv = document.createElement('div');
+  cardDiv.style.cssText = 'pointer-events:none;font-family:system-ui';
+  const isActive = park.hasDetailedView;
+  cardDiv.innerHTML = `
+    <div style="background:#fff;border-radius:14px;padding:12px 16px;box-shadow:0 4px 20px rgba(0,0,0,0.15);border:2px solid ${park.color};min-width:140px;text-align:center;position:relative">
+      <div style="font-size:14px;font-weight:800;color:#0f172a;margin-bottom:3px">${park.name}</div>
+      <div style="font-size:11px;color:#64748b;margin-bottom:6px">${park.subLocation}</div>
+      <div style="display:flex;gap:6px;justify-content:center;margin-bottom:6px">
+        <span style="padding:2px 8px;background:#f1f5f9;border-radius:6px;font-size:10px;font-weight:600;color:#475569">${park.buildings} bldgs</span>
+        <span style="padding:2px 8px;background:#f1f5f9;border-radius:6px;font-size:10px;font-weight:600;color:#475569">${park.totalArea}</span>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:${park.color}">${park.avgRent}</div>
+      ${isActive ? '<div style="margin-top:6px;padding:3px 12px;background:'+park.color+';color:#fff;border-radius:8px;font-size:10px;font-weight:700;display:inline-block">EXPLORE →</div>' : '<div style="margin-top:6px;font-size:10px;color:#94a3b8;font-weight:600">Coming Soon</div>'}
+      <div style="position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid #fff"></div>
+    </div>
+  `;
+  const cardLabel = new CSS2DObject(cardDiv);
+  cardLabel.position.set(0, 25, 0);
+  cardLabel.userData.isCityCard = true;
+  group.add(cardLabel);
 
   // "You are here" ring for Prestige
   if (park.id === 'prestige') {
-    const ringGeo = new THREE.TorusGeometry(35, 1.5, 8, 32);
+    const ringGeo = new THREE.TorusGeometry(25, 1.5, 8, 32);
     const ringMat = new THREE.MeshStandardMaterial({
       color: 0x6366f1, emissive: 0x6366f1, emissiveIntensity: 0.8,
       transparent: true, opacity: 0.6,
@@ -6678,16 +6672,7 @@ CITY_PARKS_DATA.parks.forEach(park => {
     group.userData.ring = ring;
   }
 
-  // Label
-  const labelDiv = document.createElement('div');
-  labelDiv.style.cssText = `font-family:system-ui;text-align:center;pointer-events:none`;
-  labelDiv.innerHTML = `
-    <div style="font-size:13px;font-weight:800;color:#1e293b;background:rgba(255,255,255,0.85);padding:2px 8px;border-radius:4px;-webkit-font-smoothing:antialiased">${park.name}</div>
-  `;
-  const label = new CSS2DObject(labelDiv);
-  const maxH = Math.max(...park.placeholderBuildings.map(b => b.h * 3));
-  label.position.set(0, maxH + 5, 0);
-  group.add(label);
+  // Old label removed — replaced by floating card above
 
   // Distance line + label from Prestige (skip for Prestige itself)
   if (park.id !== 'prestige') {
@@ -6705,7 +6690,7 @@ CITY_PARKS_DATA.parks.forEach(park => {
     // Dashed line from Prestige to this park
     const linePoints = [new THREE.Vector3(ptpX, 0.5, ptpZ), new THREE.Vector3(px, 0.5, pz)];
     const lineGeo = new THREE.BufferGeometry().setFromPoints(linePoints);
-    const lineMat = new THREE.LineDashedMaterial({ color: new THREE.Color(park.color), dashSize: 5, gapSize: 5, transparent: true, opacity: 0.3 });
+    const lineMat = new THREE.LineDashedMaterial({ color: new THREE.Color(park.color), dashSize: 8, gapSize: 4, transparent: true, opacity: 0.7, linewidth: 2 });
     const line = new THREE.Line(lineGeo, lineMat);
     line.computeLineDistances();
     cityScene.add(line);
@@ -6751,14 +6736,25 @@ const landmarks = [
 
 landmarks.forEach(lm => {
   // Diamond marker — large enough to hover
-  const markerGeo = new THREE.BoxGeometry(12, 8, 12);
+  // Large flat disc marker — easy to hover
+  const markerGeo = new THREE.CylinderGeometry(15, 15, 3, 16);
   const markerMat = new THREE.MeshStandardMaterial({
-    color: 0x4f46e5, emissive: 0x4f46e5, emissiveIntensity: 0.4,
-    transparent: true, opacity: 0.7
+    color: 0x6366f1, emissive: 0x6366f1, emissiveIntensity: 0.3,
+    transparent: true, opacity: 0.5
   });
   const marker = new THREE.Mesh(markerGeo, markerMat);
-  marker.rotation.y = Math.PI / 4;
-  marker.position.set(lm.pos[0], 4, lm.pos[1]);
+  marker.position.set(lm.pos[0], 1.5, lm.pos[1]);
+  // Small pin on top
+  const pinGeo = new THREE.CylinderGeometry(0.8, 0.8, 12, 6);
+  const pinMat = new THREE.MeshStandardMaterial({ color: 0x4f46e5 });
+  const pin = new THREE.Mesh(pinGeo, pinMat);
+  pin.position.set(lm.pos[0], 9, lm.pos[1]);
+  cityScene.add(pin);
+  const dotGeo = new THREE.SphereGeometry(3, 8, 6);
+  const dotMat = new THREE.MeshStandardMaterial({ color: 0x4f46e5, emissive: 0x4f46e5, emissiveIntensity: 0.5 });
+  const dot = new THREE.Mesh(dotGeo, dotMat);
+  dot.position.set(lm.pos[0], 16, lm.pos[1]);
+  cityScene.add(dot);
   marker.userData.landmark = lm;
   landmarkMeshes.push(marker);
   cityScene.add(marker);
@@ -6793,11 +6789,9 @@ function onCityPointerMove(e) {
   if (hits.length > 0) {
     const park = cityParkDataMap.get(hits[0].object);
     // Reset landmark highlights when hovering parks
-    landmarkMeshes.forEach(m => { m.material.emissiveIntensity = 0.3; });
+    landmarkMeshes.forEach(m => { m.material.emissiveIntensity = 0.3; m.material.opacity = 0.5; });
     if (hoveredCityPark !== hits[0].object) {
-      if (hoveredCityPark) hoveredCityPark.material.emissiveIntensity = 0.4;
       hoveredCityPark = hits[0].object;
-      hoveredCityPark.material.emissiveIntensity = 0.9;
       renderer.domElement.style.cursor = 'pointer';
     }
     const dist = Math.sqrt(park.position.x**2 + park.position.z**2) * 12 / 1000;
@@ -6814,16 +6808,16 @@ function onCityPointerMove(e) {
     cityTooltip.style.top = (e.clientY - 10) + 'px';
   } else {
     if (hoveredCityPark) {
-      hoveredCityPark.material.emissiveIntensity = 0.4;
       hoveredCityPark = null;
     }
     // Check landmarks
     const lmHits = cityRaycaster.intersectObjects(landmarkMeshes);
     // Reset all landmark emissive first
-    landmarkMeshes.forEach(m => { m.material.emissiveIntensity = 0.3; });
+    landmarkMeshes.forEach(m => { m.material.emissiveIntensity = 0.3; m.material.opacity = 0.5; });
     if (lmHits.length > 0) {
       const lm = lmHits[0].object.userData.landmark;
-      lmHits[0].object.material.emissiveIntensity = 0.6;
+      lmHits[0].object.material.emissiveIntensity = 0.8;
+      lmHits[0].object.material.opacity = 0.9;
       const distFromPTP = Math.sqrt(lm.pos[0]**2 + lm.pos[1]**2) * 12 / 1000;
       cityTooltip.innerHTML = `
         <div style="font-weight:800;font-size:15px;color:#fff;margin-bottom:2px">${lm.icon || ''} ${lm.name}</div>
@@ -6926,6 +6920,15 @@ function transitionToView(targetView) {
     cityTooltip.style.display = 'none';
     tooltip.style.display = 'none';
 
+    // Re-sync city toggle state on re-entry
+    if (targetView === 'city') {
+      const is3d = cityViewMode === '3d';
+      cityScene.traverse(obj => {
+        if (obj.userData.isCityCard) obj.visible = !is3d;
+        if (obj.userData.isCityBldg) obj.visible = is3d;
+      });
+    }
+
     // Fade out
     setTimeout(() => { viewFade.classList.remove('active'); }, 50);
 
@@ -6980,6 +6983,21 @@ document.getElementById('cb-cityview').addEventListener('click', (e) => {
 // Breadcrumb click
 document.getElementById('breadcrumb-city').addEventListener('click', () => {
   if (currentView === 'park') transitionToView('city');
+});
+
+// City view toggle: Cards ↔ 3D Buildings
+let cityViewMode = 'cards';
+
+document.getElementById('cb-city-toggle').addEventListener('click', (e) => {
+  e.stopPropagation();
+  cityViewMode = cityViewMode === 'cards' ? '3d' : 'cards';
+  const is3d = cityViewMode === '3d';
+  // Simple tag-based toggle
+  cityScene.traverse(obj => {
+    if (obj.userData.isCityCard) obj.visible = !is3d;
+    if (obj.userData.isCityBldg) obj.visible = is3d;
+  });
+  document.getElementById('cb-city-toggle').innerHTML = is3d ? '&#128196;' : '&#127970;';
 });
 
 // SHORTLIST + COMPARE
