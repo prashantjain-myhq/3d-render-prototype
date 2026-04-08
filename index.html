@@ -1836,6 +1836,21 @@
 </head>
 <body>
 
+<!-- Mobile Notice -->
+<div id="mobile-notice" style="display:none;position:fixed;inset:0;z-index:9999;background:#0f172a;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;font-family:system-ui">
+  <div style="font-size:40px;margin-bottom:16px">🏢</div>
+  <div style="font-size:11px;font-weight:700;color:#818cf8;text-transform:uppercase;letter-spacing:3px;margin-bottom:8px">myHQ × Prestige</div>
+  <div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:8px">Prestige Tech Park</div>
+  <div style="font-size:14px;color:#94a3b8;margin-bottom:24px;line-height:1.6">3D Interactive Explorer</div>
+  <div style="padding:16px 24px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:12px;max-width:320px">
+    <div style="font-size:13px;color:#e2e8f0;font-weight:600;margin-bottom:4px">Best experienced on desktop</div>
+    <div style="font-size:12px;color:#94a3b8;line-height:1.5">This 3D prototype uses advanced graphics that work best on a laptop or desktop browser.</div>
+  </div>
+  <button onclick="document.getElementById('mobile-notice').style.display='none'" style="margin-top:20px;padding:10px 24px;background:#4f46e5;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Continue Anyway →</button>
+  <div style="margin-top:16px;font-size:11px;color:#475569">Or visit on desktop: <span style="color:#818cf8;font-weight:600">3d-render-prototype.vercel.app</span></div>
+</div>
+<script>if(window.innerWidth<768)document.getElementById('mobile-notice').style.display='flex';</script>
+
 <!-- Loading Screen -->
 <div id="loading-screen" style="position:fixed;inset:0;z-index:999;background:#0f172a;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.6s">
   <div style="font-size:12px;font-weight:700;color:#818cf8;text-transform:uppercase;letter-spacing:3px;margin-bottom:8px">myHQ × Prestige</div>
