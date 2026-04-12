@@ -1899,7 +1899,7 @@
 <div id="intro-overlay" style="position:fixed;inset:0;z-index:1001;background:#050810;display:none;overflow:hidden">
   <canvas id="intro-canvas" style="position:absolute;inset:0;z-index:0"></canvas>
   <audio id="intro-music" loop preload="auto"><source src="intro-music.mp3" type="audio/mpeg"></audio>
-  <button id="intro-mute" onclick="const a=document.getElementById('intro-music');a.muted=!a.muted;this.textContent=a.muted?'🔇':'🔊'" style="position:fixed;top:20px;right:20px;z-index:1010;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#fff;font-size:18px;cursor:pointer;display:none">🔊</button>
+  <button id="intro-sound-btn" style="position:fixed;top:20px;right:20px;z-index:1010;padding:8px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:system-ui;backdrop-filter:blur(8px);display:flex;align-items:center;gap:6px;transition:all 0.3s" onmouseover="this.style.borderColor='#818cf8';this.style.background='rgba(99,102,241,0.15)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)';this.style.background='rgba(255,255,255,0.06)'"><span id="intro-sound-icon">&#9654;</span> <span id="intro-sound-label">Play Music</span></button>
   <button id="intro-skip" style="position:fixed;bottom:24px;right:24px;z-index:1010;padding:8px 20px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:#64748b;font-size:11px;font-weight:600;cursor:pointer;font-family:system-ui;backdrop-filter:blur(4px);transition:all 0.3s" onmouseover="this.style.borderColor='#818cf8';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='#64748b'">Skip Intro →</button>
 
   <!-- Scene 1: The Problem — Spreadsheets falling apart -->
@@ -2193,85 +2193,87 @@
     // Final city selection
     setTimeout(function() { document.getElementById('intro-final').style.opacity='1'; }, 28000);
 
-    // Music — starts on first user interaction (browser autoplay policy)
-    var introAudioStarted = false;
+    // Music — Play/Pause button (always visible)
+    var introPlaying = false;
     var introActx = null;
     var introMasterGain = null;
+    var introMp3 = document.getElementById('intro-music');
 
-    function startIntroMusic() {
-      if (introAudioStarted) return;
-      introAudioStarted = true;
-
-      // Try MP3 first
-      var audio = document.getElementById('intro-music');
-      audio.volume = 0.3;
-      audio.play().then(function() {
-        document.getElementById('intro-mute').style.display = 'block';
-      }).catch(function() {
-        // Fallback: Web Audio cinematic beat
-        try {
-          introActx = new (window.AudioContext || window.webkitAudioContext)();
-          introMasterGain = introActx.createGain();
-          introMasterGain.gain.value = 0.18;
-          introMasterGain.connect(introActx.destination);
-
-          function boom(time) {
-            var osc = introActx.createOscillator(), g = introActx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(50, time);
-            osc.frequency.exponentialRampToValueAtTime(25, time + 0.4);
-            g.gain.setValueAtTime(1, time);
-            g.gain.exponentialRampToValueAtTime(0.01, time + 0.6);
-            osc.connect(g); g.connect(introMasterGain);
-            osc.start(time); osc.stop(time + 0.6);
-          }
-          function snare(time) {
-            var buf = introActx.createBuffer(1, introActx.sampleRate * 0.1, introActx.sampleRate);
-            var data = buf.getChannelData(0);
-            for (var i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (introActx.sampleRate * 0.02));
-            var src = introActx.createBufferSource(), g = introActx.createGain();
-            src.buffer = buf;
-            g.gain.setValueAtTime(0.3, time);
-            g.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
-            src.connect(g); g.connect(introMasterGain);
-            src.start(time);
-          }
-          function pad(time) {
-            [55, 82.5, 110].forEach(function(freq) {
-              var osc = introActx.createOscillator(), g = introActx.createGain();
-              osc.type = 'sine';
-              osc.frequency.value = freq;
-              g.gain.setValueAtTime(0.06, time);
-              g.gain.linearRampToValueAtTime(0.08, time + 1);
-              g.gain.linearRampToValueAtTime(0.01, time + 2.4);
-              osc.connect(g); g.connect(introMasterGain);
-              osc.start(time); osc.stop(time + 2.4);
-            });
-          }
-
-          var bpm = 72, beat = 60 / bpm;
-          for (var bar = 0; bar < 14; bar++) {
-            var t = introActx.currentTime + bar * beat * 4;
-            boom(t);
-            snare(t + beat * 2);
-            boom(t + beat * 3);
-            snare(t + beat * 3.5);
-            if (bar % 2 === 0) pad(t);
-          }
-
-          document.getElementById('intro-mute').style.display = 'block';
-          document.getElementById('intro-mute').onclick = function() {
-            if (introMasterGain.gain.value > 0) { introMasterGain.gain.value = 0; this.textContent = '\uD83D\uDD07'; }
-            else { introMasterGain.gain.value = 0.18; this.textContent = '\uD83D\uDD0A'; }
-          };
-        } catch(e) {}
-      });
+    function scheduleBeats() {
+      if (!introActx) return;
+      function boom(time) {
+        var osc = introActx.createOscillator(), g = introActx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(50, time);
+        osc.frequency.exponentialRampToValueAtTime(25, time + 0.4);
+        g.gain.setValueAtTime(1, time);
+        g.gain.exponentialRampToValueAtTime(0.01, time + 0.6);
+        osc.connect(g); g.connect(introMasterGain);
+        osc.start(time); osc.stop(time + 0.6);
+      }
+      function snare(time) {
+        var buf = introActx.createBuffer(1, introActx.sampleRate * 0.1, introActx.sampleRate);
+        var data = buf.getChannelData(0);
+        for (var i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (introActx.sampleRate * 0.02));
+        var src = introActx.createBufferSource(), g = introActx.createGain();
+        src.buffer = buf;
+        g.gain.setValueAtTime(0.3, time);
+        g.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
+        src.connect(g); g.connect(introMasterGain);
+        src.start(time);
+      }
+      function pad(time) {
+        [55, 82.5, 110].forEach(function(freq) {
+          var osc = introActx.createOscillator(), g = introActx.createGain();
+          osc.type = 'sine'; osc.frequency.value = freq;
+          g.gain.setValueAtTime(0.06, time);
+          g.gain.linearRampToValueAtTime(0.08, time + 1);
+          g.gain.linearRampToValueAtTime(0.01, time + 2.4);
+          osc.connect(g); g.connect(introMasterGain);
+          osc.start(time); osc.stop(time + 2.4);
+        });
+      }
+      var bpm = 72, beat = 60 / bpm;
+      for (var bar = 0; bar < 14; bar++) {
+        var t = introActx.currentTime + bar * beat * 4;
+        boom(t); snare(t + beat * 2); boom(t + beat * 3); snare(t + beat * 3.5);
+        if (bar % 2 === 0) pad(t);
+      }
     }
 
-    // Start music on any user interaction
-    document.addEventListener('click', startIntroMusic, { once: true });
-    document.addEventListener('keydown', startIntroMusic, { once: true });
-    document.addEventListener('touchstart', startIntroMusic, { once: true });
+    document.getElementById('intro-sound-btn').addEventListener('click', function() {
+      if (!introPlaying) {
+        // Try MP3 first
+        introMp3.volume = 0.3;
+        introMp3.play().then(function() {
+          introPlaying = true;
+          document.getElementById('intro-sound-icon').innerHTML = '&#9646;&#9646;';
+          document.getElementById('intro-sound-label').textContent = 'Pause';
+        }).catch(function() {
+          // Fallback: Web Audio beat
+          try {
+            if (!introActx) {
+              introActx = new (window.AudioContext || window.webkitAudioContext)();
+              introMasterGain = introActx.createGain();
+              introMasterGain.gain.value = 0.18;
+              introMasterGain.connect(introActx.destination);
+            }
+            if (introActx.state === 'suspended') introActx.resume();
+            scheduleBeats();
+            introPlaying = true;
+            document.getElementById('intro-sound-icon').innerHTML = '&#9646;&#9646;';
+            document.getElementById('intro-sound-label').textContent = 'Pause';
+          } catch(e) { console.error('Audio failed:', e); }
+        });
+      } else {
+        // Pause
+        introMp3.pause();
+        if (introActx) introActx.suspend();
+        introPlaying = false;
+        document.getElementById('intro-sound-icon').innerHTML = '&#9654;';
+        document.getElementById('intro-sound-label').textContent = 'Play Music';
+      }
+    });
 
     // Skip
     document.getElementById('intro-skip').addEventListener('click', function() {
