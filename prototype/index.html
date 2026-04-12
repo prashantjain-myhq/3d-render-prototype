@@ -1900,7 +1900,7 @@
 
 <div id="intro-overlay" style="position:fixed;inset:0;z-index:1001;background:#050810;display:none;overflow:hidden">
   <canvas id="intro-canvas" style="position:absolute;inset:0;z-index:0"></canvas>
-  <audio id="intro-music" loop preload="auto"><source src="intro-music.mp3" type="audio/mpeg"></audio>
+  <audio id="intro-music" loop preload="auto"><source src="intro-music.mp3" type="audio/mpeg"><source src="intro-music.wav" type="audio/wav"></audio>
   <div style="position:fixed;top:20px;right:20px;z-index:1010;display:flex;gap:8px">
     <button id="intro-pause-btn" style="padding:8px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:system-ui;backdrop-filter:blur(8px);display:flex;align-items:center;gap:6px;transition:all 0.3s" onmouseover="this.style.borderColor='#818cf8'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)'"><span id="intro-pause-icon">&#9646;&#9646;</span> <span id="intro-pause-label">Pause</span></button>
     <button id="intro-sound-btn" style="padding:8px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:system-ui;backdrop-filter:blur(8px);display:flex;align-items:center;gap:6px;transition:all 0.3s" onmouseover="this.style.borderColor='#f59e0b'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)'"><span id="intro-sound-icon">&#9835;</span> <span id="intro-sound-label">Play Music</span></button>
@@ -2148,34 +2148,7 @@
       }
     }, 12000);
 
-    // === SCENE 4: Feature cards slide in ONE BY ONE ===
-    setTimeout(function() {
-      document.querySelectorAll('.feat-card').forEach(function(c,i) {
-        setTimeout(function() {
-          c.style.opacity = '1';
-          c.style.animation = (i%2===0?'introSlide':'introSlideR') + ' 0.8s ease forwards';
-        }, i*400);
-      });
-    }, 17500);
-
-    // === SCENE 5: Word slam ===
-    setTimeout(function() {
-      var words = ['The','Future','of','<br>','<span style="background:linear-gradient(135deg,#818cf8,#6366f1,#4f46e5);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Office</span>','<span style="background:linear-gradient(135deg,#818cf8,#6366f1,#4f46e5);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Leasing</span>'];
-      var container = document.getElementById('slam-text');
-      words.forEach(function(w,i) {
-        setTimeout(function() {
-          if (w === '<br>') { container.innerHTML += '<br>'; return; }
-          container.innerHTML += '<span class="intro-word" style="animation-delay:0s">' + w + ' </span>';
-        }, i*400);
-      });
-      setTimeout(function() { document.getElementById('slam-sub').style.opacity = '1'; }, 3000);
-      // Lens flare
-      setTimeout(function() {
-        var flare = document.getElementById('intro-flare');
-        flare.style.transition = 'left 1.5s ease';
-        flare.style.left = '200%';
-      }, 3200);
-    }, 23500);
+    // Scene 4 + 5 triggers moved to introTimeline — no duplicate setTimeouts here
 
     // === PAUSABLE SCENE SEQUENCER ===
     var introTimeline = [
