@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>myHQ × Prestige Tech Park | 3D Office Space Explorer</title>
+  <title>myHQ | 3D Commercial Intelligence Platform</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%234f46e5'/><text x='16' y='22' text-anchor='middle' font-size='18' font-weight='900' fill='white' font-family='system-ui'>m</text></svg>">
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
   <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
@@ -1876,6 +1876,330 @@
   <div style="margin-top:16px;font-size:11px;color:#475569">Or visit on desktop: <span style="color:#818cf8;font-weight:600">3d-render-prototype.vercel.app</span></div>
 </div>
 <script>if(window.innerWidth<768)document.getElementById('mobile-notice').style.display='flex';</script>
+
+<!-- Cinematic Intro — shown when no ?city= param -->
+<style>
+@keyframes introGlow { 0%,100%{text-shadow:0 0 20px rgba(99,102,241,0.3)} 50%{text-shadow:0 0 60px rgba(99,102,241,0.8),0 0 120px rgba(99,102,241,0.3)} }
+@keyframes introSlam { 0%{opacity:0;transform:scale(1.8) translateY(-20px);filter:blur(8px)} 100%{opacity:1;transform:scale(1) translateY(0);filter:blur(0)} }
+@keyframes introSlide { 0%{opacity:0;transform:translateX(-60px)} 100%{opacity:1;transform:translateX(0)} }
+@keyframes introSlideR { 0%{opacity:0;transform:translateX(60px)} 100%{opacity:1;transform:translateX(0)} }
+@keyframes introFadeUp { 0%{opacity:0;transform:translateY(40px)} 100%{opacity:1;transform:translateY(0)} }
+@keyframes introFlare { 0%{left:-100%} 100%{left:200%} }
+@keyframes counterPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+@keyframes dataRain { 0%{transform:translateY(-100%);opacity:0} 10%{opacity:0.6} 90%{opacity:0.6} 100%{transform:translateY(100vh);opacity:0} }
+@keyframes gridPulse { 0%,100%{opacity:0.04} 50%{opacity:0.12} }
+@keyframes sheetFall { 0%{transform:translateY(0) rotate(0deg);opacity:1} 100%{transform:translateY(100vh) rotate(45deg);opacity:0} }
+.intro-word{display:inline-block;opacity:0;animation:introSlam 0.6s ease forwards}
+.data-stream{position:absolute;font-family:monospace;font-size:11px;color:#818cf8;opacity:0;animation:dataRain 4s linear infinite;white-space:nowrap}
+.sheet-cell{position:absolute;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:2px;font-size:9px;color:rgba(255,255,255,0.3);padding:4px 8px;font-family:monospace;animation:sheetFall 3s ease-in forwards}
+</style>
+
+<div id="intro-overlay" style="position:fixed;inset:0;z-index:1001;background:#050810;display:none;overflow:hidden">
+  <canvas id="intro-canvas" style="position:absolute;inset:0;z-index:0"></canvas>
+  <audio id="intro-music" loop preload="auto"><source src="intro-music.mp3" type="audio/mpeg"></audio>
+  <button id="intro-mute" onclick="const a=document.getElementById('intro-music');a.muted=!a.muted;this.textContent=a.muted?'🔇':'🔊'" style="position:fixed;top:20px;right:20px;z-index:1010;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#fff;font-size:18px;cursor:pointer;display:none">🔊</button>
+  <button id="intro-skip" style="position:fixed;bottom:24px;right:24px;z-index:1010;padding:8px 20px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:#64748b;font-size:11px;font-weight:600;cursor:pointer;font-family:system-ui;backdrop-filter:blur(4px);transition:all 0.3s" onmouseover="this.style.borderColor='#818cf8';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='#64748b'">Skip Intro →</button>
+
+  <!-- Scene 1: The Problem — Spreadsheets falling apart -->
+  <div class="intro-scene" id="scene-1" style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 1.2s">
+    <div id="sheet-rain" style="position:absolute;inset:0;overflow:hidden;z-index:0"></div>
+    <div style="text-align:center;max-width:750px;padding:0 20px;position:relative;z-index:1">
+      <div style="font-size:13px;color:#ef4444;font-weight:800;letter-spacing:8px;text-transform:uppercase;margin-bottom:24px">The Problem</div>
+      <div style="font-size:48px;font-weight:900;color:#fff;line-height:1.15;margin-bottom:20px;font-family:system-ui">Office leasing is still done on<br><span style="color:#ef4444;text-decoration:line-through;text-decoration-thickness:3px">spreadsheets</span> and <span style="color:#ef4444;text-decoration:line-through;text-decoration-thickness:3px">broker calls</span></div>
+      <div style="font-size:17px;color:#475569;line-height:1.6">No verified data. No visual context.<br>No way to compare floors without visiting 10 sites.</div>
+    </div>
+  </div>
+
+  <!-- Scene 2: The Vision — Wireframe city rising -->
+  <div class="intro-scene" id="scene-2" style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 1.2s">
+    <div style="text-align:center;max-width:750px;padding:0 20px">
+      <div style="font-size:13px;color:#818cf8;font-weight:800;letter-spacing:8px;text-transform:uppercase;margin-bottom:24px">What If</div>
+      <div style="font-size:48px;font-weight:900;color:#fff;line-height:1.15;margin-bottom:20px;font-family:system-ui">You could <span style="color:#818cf8;animation:introGlow 2s ease infinite">explore</span> any tech park<br>from your browser?</div>
+      <div style="font-size:17px;color:#475569;line-height:1.6">Every floor. Every tenant. Every deal.<br>Verified. Visualized. Interactive.</div>
+      <!-- Animated wireframe skyline -->
+      <svg viewBox="0 0 800 120" style="width:100%;max-width:700px;margin-top:24px;opacity:0.6" id="skyline-svg">
+        <g stroke="#818cf8" fill="none" stroke-width="1">
+          <rect x="50" y="60" width="40" height="60" class="sky-bldg" style="stroke-dasharray:200;stroke-dashoffset:200"/>
+          <rect x="100" y="30" width="50" height="90" class="sky-bldg" style="stroke-dasharray:280;stroke-dashoffset:280"/>
+          <rect x="160" y="45" width="35" height="75" class="sky-bldg" style="stroke-dasharray:220;stroke-dashoffset:220"/>
+          <rect x="205" y="20" width="60" height="100" class="sky-bldg" style="stroke-dasharray:320;stroke-dashoffset:320"/>
+          <rect x="275" y="50" width="45" height="70" class="sky-bldg" style="stroke-dasharray:230;stroke-dashoffset:230"/>
+          <rect x="330" y="10" width="55" height="110" class="sky-bldg" style="stroke-dasharray:330;stroke-dashoffset:330"/>
+          <rect x="395" y="35" width="40" height="85" class="sky-bldg" style="stroke-dasharray:250;stroke-dashoffset:250"/>
+          <rect x="445" y="25" width="65" height="95" class="sky-bldg" style="stroke-dasharray:320;stroke-dashoffset:320"/>
+          <rect x="520" y="55" width="35" height="65" class="sky-bldg" style="stroke-dasharray:200;stroke-dashoffset:200"/>
+          <rect x="565" y="15" width="50" height="105" class="sky-bldg" style="stroke-dasharray:310;stroke-dashoffset:310"/>
+          <rect x="625" y="40" width="45" height="80" class="sky-bldg" style="stroke-dasharray:250;stroke-dashoffset:250"/>
+          <rect x="680" y="55" width="55" height="65" class="sky-bldg" style="stroke-dasharray:240;stroke-dashoffset:240"/>
+          <line x1="30" y1="120" x2="770" y2="120" stroke-width="2" style="stroke-dasharray:740;stroke-dashoffset:740" class="sky-bldg"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Scene 3: Data Power — Streaming numbers + counters -->
+  <div class="intro-scene" id="scene-3" style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 1.2s">
+    <div id="data-streams" style="position:absolute;inset:0;overflow:hidden;z-index:0"></div>
+    <div style="text-align:center;max-width:800px;padding:0 20px;position:relative;z-index:1">
+      <div style="font-size:13px;color:#22c55e;font-weight:800;letter-spacing:8px;text-transform:uppercase;margin-bottom:32px">Real Data. Real Intelligence.</div>
+      <div style="display:flex;gap:48px;justify-content:center;flex-wrap:wrap;margin-bottom:28px">
+        <div><div class="counter" data-target="341" style="font-size:72px;font-weight:900;color:#818cf8;font-family:system-ui;animation:counterPulse 2s ease infinite">0</div><div style="font-size:12px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:3px">Verified Deals</div></div>
+        <div><div class="counter" data-target="80" style="font-size:72px;font-weight:900;color:#22c55e;font-family:system-ui;animation:counterPulse 2s ease 0.3s infinite">0</div><div style="font-size:12px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:3px">Floors Mapped</div></div>
+        <div><div class="counter" data-target="23" style="font-size:72px;font-weight:900;color:#f59e0b;font-family:system-ui;animation:counterPulse 2s ease 0.6s infinite">0</div><div style="font-size:12px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:3px">Buildings</div></div>
+        <div><div class="counter" data-target="2" style="font-size:72px;font-weight:900;color:#ef4444;font-family:system-ui;animation:counterPulse 2s ease 0.9s infinite">0</div><div style="font-size:12px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:3px">Cities Live</div></div>
+      </div>
+      <div style="font-size:13px;color:#334155;letter-spacing:3px;text-transform:uppercase">CRE Matrix Verified · myHQ Built</div>
+    </div>
+  </div>
+
+  <!-- Scene 4: Features — Sliding cards -->
+  <div class="intro-scene" id="scene-4" style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 1.2s">
+    <div style="text-align:center;max-width:950px;padding:0 20px">
+      <div style="font-size:13px;color:#818cf8;font-weight:800;letter-spacing:6px;text-transform:uppercase;margin-bottom:28px">Capabilities</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+        <div class="feat-card" style="opacity:0;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.2);border-radius:16px;padding:28px 16px;text-align:left">
+          <div style="font-size:28px;margin-bottom:10px">🏢</div>
+          <div style="font-size:16px;font-weight:800;color:#fff;margin-bottom:6px">3D Tech Parks</div>
+          <div style="font-size:11px;color:#64748b;line-height:1.6">L-shaped buildings on satellite imagery. Floor-by-floor interaction. 6 heatmap modes.</div>
+        </div>
+        <div class="feat-card" style="opacity:0;background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:16px;padding:28px 16px;text-align:left">
+          <div style="font-size:28px;margin-bottom:10px">📊</div>
+          <div style="font-size:16px;font-weight:800;color:#fff;margin-bottom:6px">CRE Matrix Intel</div>
+          <div style="font-size:11px;color:#64748b;line-height:1.6">Rent tiers, escalation, landlord contacts, deal memos. Every data point sourced.</div>
+        </div>
+        <div class="feat-card" style="opacity:0;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);border-radius:16px;padding:28px 16px;text-align:left">
+          <div style="font-size:28px;margin-bottom:10px">⚡</div>
+          <div style="font-size:16px;font-weight:800;color:#fff;margin-bottom:6px">Floor Comparison</div>
+          <div style="font-size:11px;color:#64748b;line-height:1.6">Shortlist across buildings. Cost of occupancy side-by-side. Zero assumptions.</div>
+        </div>
+        <div class="feat-card" style="opacity:0;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:16px;padding:28px 16px;text-align:left">
+          <div style="font-size:28px;margin-bottom:10px">🛰️</div>
+          <div style="font-size:16px;font-weight:800;color:#fff;margin-bottom:6px">Satellite + 3D Map</div>
+          <div style="font-size:11px;color:#64748b;line-height:1.6">Mapbox GL city view with 3D OSM buildings, distance analysis, landmark context.</div>
+        </div>
+        <div class="feat-card" style="opacity:0;background:rgba(168,85,247,0.06);border:1px solid rgba(168,85,247,0.2);border-radius:16px;padding:28px 16px;text-align:left">
+          <div style="font-size:28px;margin-bottom:10px">🎯</div>
+          <div style="font-size:16px;font-weight:800;color:#fff;margin-bottom:6px">Tenant Analysis</div>
+          <div style="font-size:11px;color:#64748b;line-height:1.6">Sector diversity, lease portfolio, landlord concentration, deal flow trends.</div>
+        </div>
+        <div class="feat-card" style="opacity:0;background:rgba(236,72,153,0.06);border:1px solid rgba(236,72,153,0.2);border-radius:16px;padding:28px 16px;text-align:left">
+          <div style="font-size:28px;margin-bottom:10px">🔮</div>
+          <div style="font-size:16px;font-weight:800;color:#fff;margin-bottom:6px">Visual Builder</div>
+          <div style="font-size:11px;color:#64748b;line-height:1.6">In-browser editor to add buildings, gates, roads. No code. Instant 3D preview.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 5: Tagline — Word slam -->
+  <div class="intro-scene" id="scene-5" style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 1.2s">
+    <div style="text-align:center;padding:0 20px;position:relative">
+      <div id="slam-text" style="font-size:64px;font-weight:900;color:#fff;line-height:1.15;font-family:system-ui;margin-bottom:20px"></div>
+      <div id="slam-sub" style="font-size:20px;color:#64748b;font-weight:500;opacity:0;transition:opacity 1s">is already here.</div>
+      <!-- Lens flare -->
+      <div style="position:absolute;top:50%;left:0;width:100%;height:4px;overflow:hidden;pointer-events:none"><div id="intro-flare" style="position:absolute;top:0;width:100px;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.6),transparent);left:-100%;filter:blur(2px)"></div></div>
+    </div>
+  </div>
+
+  <!-- Final: City Selection -->
+  <div id="intro-final" style="position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity 1s;padding:20px">
+    <div style="font-size:52px;font-weight:900;color:#fff;letter-spacing:-2px;font-family:system-ui;margin-bottom:4px">my<span style="color:#818cf8">HQ</span></div>
+    <div style="font-size:12px;color:#475569;letter-spacing:5px;text-transform:uppercase;margin-bottom:48px">3D Commercial Intelligence</div>
+    <div style="font-size:14px;color:#818cf8;font-weight:700;text-transform:uppercase;letter-spacing:4px;margin-bottom:24px">Select Your City</div>
+    <div style="display:flex;gap:28px;flex-wrap:wrap;justify-content:center">
+      <div onclick="window.location.href='?city=gurgaon'" style="cursor:pointer;width:300px;background:linear-gradient(135deg,rgba(30,41,59,0.95),rgba(15,23,42,0.98));border:1px solid rgba(99,102,241,0.2);border-radius:24px;padding:36px 28px;text-align:center;transition:all 0.4s;backdrop-filter:blur(12px)" onmouseover="this.style.borderColor='#6366f1';this.style.transform='translateY(-8px) scale(1.02)';this.style.boxShadow='0 20px 60px rgba(99,102,241,0.3)'" onmouseout="this.style.borderColor='rgba(99,102,241,0.2)';this.style.transform='';this.style.boxShadow=''">
+        <div style="font-size:28px;font-weight:900;color:#fff;margin-bottom:6px">Gurgaon</div>
+        <div style="font-size:12px;color:#64748b;margin-bottom:16px">Unitech Cyber Park · Sector 39</div>
+        <div style="display:flex;gap:6px;justify-content:center;margin-bottom:16px">
+          <span style="padding:4px 12px;background:rgba(99,102,241,0.1);border-radius:8px;font-size:10px;font-weight:600;color:#818cf8">4 Towers</span>
+          <span style="padding:4px 12px;background:rgba(99,102,241,0.1);border-radius:8px;font-size:10px;font-weight:600;color:#818cf8">15.5L sqft</span>
+          <span style="padding:4px 12px;background:rgba(34,197,94,0.1);border-radius:8px;font-size:10px;font-weight:700;color:#22c55e">CRE Verified</span>
+        </div>
+        <div style="padding:12px 28px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;border-radius:14px;font-size:15px;font-weight:800;display:inline-block;box-shadow:0 6px 20px rgba(99,102,241,0.4)">Explore Gurgaon →</div>
+      </div>
+      <div onclick="window.location.href='?city=bangalore'" style="cursor:pointer;width:300px;background:linear-gradient(135deg,rgba(30,41,59,0.95),rgba(15,23,42,0.98));border:1px solid rgba(99,102,241,0.2);border-radius:24px;padding:36px 28px;text-align:center;transition:all 0.4s;backdrop-filter:blur(12px)" onmouseover="this.style.borderColor='#6366f1';this.style.transform='translateY(-8px) scale(1.02)';this.style.boxShadow='0 20px 60px rgba(99,102,241,0.3)'" onmouseout="this.style.borderColor='rgba(99,102,241,0.2)';this.style.transform='';this.style.boxShadow=''">
+        <div style="font-size:28px;font-weight:900;color:#fff;margin-bottom:6px">Bangalore</div>
+        <div style="font-size:12px;color:#64748b;margin-bottom:16px">Prestige Tech Park · Outer Ring Road</div>
+        <div style="display:flex;gap:6px;justify-content:center;margin-bottom:16px">
+          <span style="padding:4px 12px;background:rgba(99,102,241,0.1);border-radius:8px;font-size:10px;font-weight:600;color:#818cf8">19 Buildings</span>
+          <span style="padding:4px 12px;background:rgba(99,102,241,0.1);border-radius:8px;font-size:10px;font-weight:600;color:#818cf8">6M+ sqft</span>
+          <span style="padding:4px 12px;background:rgba(245,158,11,0.1);border-radius:8px;font-size:10px;font-weight:700;color:#f59e0b">Demo</span>
+        </div>
+        <div style="padding:12px 28px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;border-radius:14px;font-size:15px;font-weight:800;display:inline-block;box-shadow:0 6px 20px rgba(99,102,241,0.4)">Explore Bangalore →</div>
+      </div>
+    </div>
+    <div style="margin-top:32px;font-size:10px;color:#1e293b">Best on desktop · Three.js + Mapbox GL + CRE Matrix</div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var hasCity = new URLSearchParams(window.location.search).get('city');
+  if (!hasCity) {
+    var intro = document.getElementById('intro-overlay');
+    intro.style.display = 'block';
+    document.getElementById('loading-screen').style.display = 'none';
+
+    // === BACKGROUND CANVAS: Tron grid + data fragments + glow bursts ===
+    var cv = document.getElementById('intro-canvas');
+    var ctx = cv.getContext('2d');
+    cv.width = window.innerWidth; cv.height = window.innerHeight;
+    var t = 0;
+    var bursts = [];
+    function addBurst() { bursts.push({ x: Math.random()*cv.width, y: Math.random()*cv.height, r: 0, maxR: 100+Math.random()*200, speed: 2+Math.random()*3 }); }
+    setInterval(addBurst, 2000);
+
+    function drawBg() {
+      t += 0.004;
+      ctx.fillStyle = 'rgba(5,8,16,0.12)';
+      ctx.fillRect(0,0,cv.width,cv.height);
+
+      var cx = cv.width/2, cy = cv.height*0.55;
+      // Perspective grid floor (Tron-style)
+      var gridPulse = 0.06 + Math.sin(t*2)*0.03;
+      for (var i = -25; i <= 25; i++) {
+        ctx.strokeStyle = 'rgba(99,102,241,' + (gridPulse * (1-Math.abs(i)/25)) + ')';
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(cx + i*50, cy - 180);
+        ctx.lineTo(cx + i*180, cv.height);
+        ctx.stroke();
+      }
+      for (var j = 0; j < 15; j++) {
+        var gy = cy - 50 + j*40 + Math.sin(t*1.5+j*0.5)*3;
+        ctx.strokeStyle = 'rgba(99,102,241,' + (gridPulse * (1-j/15)) + ')';
+        ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(cv.width,gy); ctx.stroke();
+      }
+      // Floating data fragments
+      var frags = ['₹85/sqft','Tower B','BFSI','16 floors','Renewal','₹4.2Cr','IT/ITeS','Fitted Out','92%','CRE Matrix','Sector 39','₹19 CAM','Keysight','15% esc'];
+      for (var f = 0; f < 20; f++) {
+        var fx = (Math.sin(t*0.3+f*4.1)*0.5+0.5)*cv.width;
+        var fy = (Math.cos(t*0.2+f*3.3)*0.5+0.5)*cv.height;
+        ctx.font = '9px system-ui';
+        ctx.fillStyle = 'rgba(99,102,241,' + (0.12+Math.sin(t+f)*0.06) + ')';
+        ctx.fillText(frags[f%frags.length], fx, fy);
+      }
+      // Glow bursts
+      bursts.forEach(function(b,i) {
+        b.r += b.speed;
+        if (b.r > b.maxR) { bursts.splice(i,1); return; }
+        var alpha = 0.15*(1-b.r/b.maxR);
+        ctx.beginPath(); ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
+        ctx.strokeStyle = 'rgba(99,102,241,'+alpha+')';
+        ctx.lineWidth = 1; ctx.stroke();
+      });
+      // Center glow
+      var grd = ctx.createRadialGradient(cx,cy-30,0,cx,cy-30,350);
+      grd.addColorStop(0,'rgba(99,102,241,0.05)'); grd.addColorStop(1,'rgba(99,102,241,0)');
+      ctx.fillStyle = grd; ctx.fillRect(0,0,cv.width,cv.height);
+      requestAnimationFrame(drawBg);
+    }
+    drawBg();
+
+    // === SCENE 1: Spreadsheet rain ===
+    setTimeout(function() {
+      var rain = document.getElementById('sheet-rain');
+      var cells = ['₹80/sqft','Vacant','Tower A','F12','BFSI','Renewal','₹19 CAM','2024','Fitted','Lock-in 36mo','₹4.5Cr ARR','Sector 39','Grade B','15% esc'];
+      for (var i = 0; i < 30; i++) {
+        var cell = document.createElement('div');
+        cell.className = 'sheet-cell';
+        cell.textContent = cells[i%cells.length];
+        cell.style.left = (Math.random()*90+5)+'%';
+        cell.style.top = '-30px';
+        cell.style.animationDelay = (Math.random()*2)+'s';
+        cell.style.animationDuration = (2+Math.random()*2)+'s';
+        rain.appendChild(cell);
+      }
+    }, 600);
+
+    // === SCENE 2: Skyline draw ===
+    setTimeout(function() {
+      document.querySelectorAll('.sky-bldg').forEach(function(el,i) {
+        setTimeout(function() { el.style.transition='stroke-dashoffset 1.2s ease'; el.style.strokeDashoffset='0'; }, i*120);
+      });
+    }, 4200);
+
+    // === SCENE 3: Data streams ===
+    setTimeout(function() {
+      var container = document.getElementById('data-streams');
+      var terms = ['₹85.4/sqft','₹102.2/sqft','₹66.4/sqft','Keysight Technologies','HDFC Bank','Gunnebo India','Renewal 2024','New Lease','₹3.8Cr','₹12.4L/mo','Sector 39','IT/ITeS','BFSI','15% escalation','36 months','Fitted Out','Tower B F14','Tower C F8','Grade B'];
+      for (var s = 0; s < 15; s++) {
+        var el = document.createElement('div');
+        el.className = 'data-stream';
+        el.textContent = terms[s%terms.length];
+        el.style.left = (5+s*6.5)+'%';
+        el.style.animationDelay = (Math.random()*3)+'s';
+        el.style.animationDuration = (3+Math.random()*2)+'s';
+        container.appendChild(el);
+      }
+    }, 7800);
+
+    // === SCENE 4: Feature cards slide in ===
+    setTimeout(function() {
+      document.querySelectorAll('.feat-card').forEach(function(c,i) {
+        setTimeout(function() {
+          c.style.opacity = '1';
+          c.style.animation = (i%2===0?'introSlide':'introSlideR') + ' 0.7s ease forwards';
+        }, i*200);
+      });
+    }, 11500);
+
+    // === SCENE 5: Word slam ===
+    setTimeout(function() {
+      var words = ['The','Future','of','<br>','<span style="background:linear-gradient(135deg,#818cf8,#6366f1,#4f46e5);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Office</span>','<span style="background:linear-gradient(135deg,#818cf8,#6366f1,#4f46e5);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Leasing</span>'];
+      var container = document.getElementById('slam-text');
+      words.forEach(function(w,i) {
+        setTimeout(function() {
+          if (w === '<br>') { container.innerHTML += '<br>'; return; }
+          container.innerHTML += '<span class="intro-word" style="animation-delay:0s">' + w + ' </span>';
+        }, i*400);
+      });
+      setTimeout(function() { document.getElementById('slam-sub').style.opacity = '1'; }, 3000);
+      // Lens flare
+      setTimeout(function() {
+        var flare = document.getElementById('intro-flare');
+        flare.style.transition = 'left 1.5s ease';
+        flare.style.left = '200%';
+      }, 3200);
+    }, 15200);
+
+    // === SCENE SEQUENCING ===
+    var scenes = ['scene-1','scene-2','scene-3','scene-4','scene-5'];
+    var showAt = [400, 4000, 7600, 11200, 15000];
+    var hideAt = [3600, 7200, 10800, 14600, 18500];
+    scenes.forEach(function(id,i) {
+      setTimeout(function() { document.getElementById(id).style.opacity='1'; }, showAt[i]);
+      setTimeout(function() { document.getElementById(id).style.opacity='0'; }, hideAt[i]);
+    });
+
+    // Counter animation
+    setTimeout(function() {
+      document.querySelectorAll('.counter').forEach(function(el) {
+        var target = parseInt(el.dataset.target), current = 0;
+        var step = Math.max(1, Math.floor(target/50));
+        var iv = setInterval(function() { current+=step; if(current>=target){current=target;clearInterval(iv);} el.textContent=current; },40);
+      });
+    }, 7800);
+
+    // Final city selection
+    setTimeout(function() { document.getElementById('intro-final').style.opacity='1'; }, 19000);
+
+    // Music
+    setTimeout(function() {
+      var audio = document.getElementById('intro-music');
+      audio.volume = 0.25;
+      audio.play().then(function() { document.getElementById('intro-mute').style.display='block'; }).catch(function(){});
+    }, 200);
+
+    // Skip
+    document.getElementById('intro-skip').addEventListener('click', function() {
+      scenes.forEach(function(id) { var el=document.getElementById(id); el.style.opacity='0'; el.style.display='none'; });
+      document.getElementById('intro-final').style.opacity='1';
+      this.style.display='none';
+    });
+  }
+})();
+</script>
 
 <!-- Loading Screen -->
 <div id="loading-screen" style="position:fixed;inset:0;z-index:999;background:#0f172a;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.6s">
@@ -3911,10 +4235,10 @@ function updateEditorPanel() {
   if (!editorMode) { editorPanel.style.display = 'none'; return; }
   editorPanel.style.display = 'block';
 
-  const modeColors = { builder:'#ef4444', buildings:'#6366f1', gates:'#f59e0b', roads:'#22c55e', amenities:'#ec4899' };
-  const modeKeys = { builder:'0', buildings:'9', gates:'8', roads:'7', amenities:'6' };
+  const modeColors = { buildings:'#6366f1', gates:'#f59e0b', roads:'#22c55e', amenities:'#ec4899' };
+  const modeKeys = { buildings:'9', gates:'8', roads:'7', amenities:'6' };
   let html = '<div style="display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap">';
-  ['builder','buildings','gates','roads','amenities'].forEach(m => {
+  ['buildings','gates','roads','amenities'].forEach(m => {
     const active = editorMode === m;
     html += '<div style="padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;' + (active ? 'background:'+modeColors[m]+';color:#fff' : 'background:#1e293b;color:#64748b') + '">' + modeKeys[m] + ' ' + m.charAt(0).toUpperCase() + m.slice(1) + '</div>';
   });
@@ -3925,15 +4249,15 @@ function updateEditorPanel() {
     if (bg) {
       const g = bg.group, b = bg.building;
       html += '<div style="font-size:14px;font-weight:800;color:'+b.color+';margin-bottom:6px">' + b.name + '</div>';
-      html += '<div style="font-size:9px;color:#64748b;margin-bottom:8px">Arrows=move | Q/E=rotate | Shift=fine | Tab=next</div>';
-      html += '<pre style="font-size:11px;line-height:1.7;color:#e2e8f0;margin:0">x:     ' + g.position.x.toFixed(1) + '\nz:     ' + g.position.z.toFixed(1) + '\nrot:   ' + g.rotation.y.toFixed(2) + ' (' + (g.rotation.y*180/Math.PI).toFixed(0) + '°)\nwidth: ' + b.width.toFixed(1) + '\ndepth: ' + b.depth.toFixed(1) + '</pre>';
+      html += '<div style="font-size:9px;color:#64748b;margin-bottom:8px">Arrows=move | Q/E=rotate | W/S=width | A/D=depth | H/J=height | +/-=floors | C=color | G=shape | N=new | Del=remove | Tab=next</div>';
+      html += '<pre style="font-size:11px;line-height:1.7;color:#e2e8f0;margin:0">x:      ' + g.position.x.toFixed(1) + '\nz:      ' + g.position.z.toFixed(1) + '\nrot:    ' + g.rotation.y.toFixed(2) + ' (' + (g.rotation.y*180/Math.PI).toFixed(0) + '°)\nwidth:  ' + b.width.toFixed(1) + '\ndepth:  ' + b.depth.toFixed(1) + '\nheight: ' + b.height.toFixed(1) + '\nfloors: ' + b.totalFloors + '\nshape:  ' + (b.buildingShape||'box') + '\ncolor:  ' + b.color + '</pre>';
       html += '<div style="margin-top:8px;padding-top:6px;border-top:1px solid #334155;font-size:10px;color:#94a3b8">';
       buildingGroups.forEach((bg2, i) => {
         const sel = i === selectedIdx ? 'color:#818cf8;font-weight:700' : '';
-        html += '<div style="'+sel+'">' + bg2.building.name + ': x=' + bg2.group.position.x.toFixed(1) + ' z=' + bg2.group.position.z.toFixed(1) + ' rot=' + bg2.group.rotation.y.toFixed(2) + ' w=' + bg2.building.width.toFixed(1) + ' d=' + bg2.building.depth.toFixed(1) + '</div>';
+        html += '<div style="'+sel+'">' + bg2.building.name + ': x=' + bg2.group.position.x.toFixed(1) + ' z=' + bg2.group.position.z.toFixed(1) + ' rot=' + bg2.group.rotation.y.toFixed(2) + ' w=' + bg2.building.width.toFixed(1) + ' d=' + bg2.building.depth.toFixed(1) + ' h=' + bg2.building.height.toFixed(1) + '</div>';
       });
       html += '</div>';
-      html += editorJsonBlock('// Building positions:\n' + buildingGroups.map(bg2 => bg2.building.name + ': { x: ' + bg2.group.position.x.toFixed(1) + ', z: ' + bg2.group.position.z.toFixed(1) + ' }, rot: ' + bg2.group.rotation.y.toFixed(2) + ', w: ' + bg2.building.width.toFixed(1) + ', d: ' + bg2.building.depth.toFixed(1)).join('\n'));
+      html += editorJsonBlock('// Building configs:\n' + buildingGroups.map(bg2 => bg2.building.name + ': { x: ' + bg2.group.position.x.toFixed(1) + ', z: ' + bg2.group.position.z.toFixed(1) + ', rot: ' + bg2.group.rotation.y.toFixed(2) + ', w: ' + bg2.building.width.toFixed(1) + ', d: ' + bg2.building.depth.toFixed(1) + ', h: ' + bg2.building.height.toFixed(1) + ', shape: "' + (bg2.building.buildingShape||'box') + '", floors: ' + bg2.building.totalFloors + ' }').join('\n'));
     }
   }
 
@@ -4006,8 +4330,7 @@ function updateEditorPanel() {
 document.addEventListener('keydown', (e) => {
   if (currentView !== 'park') return;
   // Mode switching
-  if (e.key === '0') { editorMode = editorMode === 'builder' ? null : 'builder'; selectedIdx = 0; updateEditorPanel(); return; }
-  if (e.key === '9') { editorMode = editorMode === 'buildings' ? null : 'buildings'; selectedIdx = 0; updateEditorPanel(); return; }
+  if (e.key === '0' || e.key === '9') { editorMode = editorMode === 'buildings' ? null : 'buildings'; selectedIdx = 0; updateEditorPanel(); return; }
   if (e.key === '8') { editorMode = editorMode === 'gates' ? null : 'gates'; selectedIdx = 0; updateEditorPanel(); return; }
   if (e.key === '7') { editorMode = editorMode === 'roads' ? null : 'roads'; selectedIdx = 0; roadDrawing = false; updateEditorPanel(); return; }
   if (e.key === '6') { editorMode = editorMode === 'amenities' ? null : 'amenities'; selectedIdx = 0; updateEditorPanel(); return; }
@@ -4019,14 +4342,61 @@ document.addEventListener('keydown', (e) => {
   // === BUILDINGS MODE ===
   if (editorMode === 'buildings') {
     const bg = buildingGroups[selectedIdx];
-    if (!bg) return;
+    const b = bg ? bg.building : null;
+    function rebuildSelected() {
+      if (!bg || !b) return;
+      const pos = { x: bg.group.position.x, z: bg.group.position.z };
+      const rot = bg.group.rotation.y;
+      b.position = pos; b.rotation = rot;
+      b.floors = b.floors || generateDummyFloors(b.totalFloors, (b.width * b.depth * 1000) / b.totalFloors);
+      if (b.floors.length !== b.totalFloors) b.floors = generateDummyFloors(b.totalFloors, (b.width * b.depth * 1000) / b.totalFloors);
+      // Clean up old meshes from tracking arrays + CSS2D labels
+      bg.group.traverse(child => {
+        if (child.isCSS2DObject && child.element && child.element.parentNode) child.element.parentNode.removeChild(child.element);
+        if (floorDataMap.has(child)) floorDataMap.delete(child);
+        const fIdx = floorMeshes.indexOf(child);
+        if (fIdx >= 0) floorMeshes.splice(fIdx, 1);
+        if (originalMaterialColors.has(child)) originalMaterialColors.delete(child);
+      });
+      scene.remove(bg.group);
+      const newBg = createBuilding3D(b);
+      buildingGroups[selectedIdx] = newBg;
+    }
     switch(e.key) {
-      case 'ArrowLeft':  bg.group.position.x -= step; e.preventDefault(); break;
-      case 'ArrowRight': bg.group.position.x += step; e.preventDefault(); break;
-      case 'ArrowUp':    bg.group.position.z -= step; e.preventDefault(); break;
-      case 'ArrowDown':  bg.group.position.z += step; e.preventDefault(); break;
-      case 'q': case 'Q': bg.group.rotation.y -= rotStep; break;
-      case 'e': case 'E': bg.group.rotation.y += rotStep; break;
+      case 'ArrowLeft':  if(bg) bg.group.position.x -= step; e.preventDefault(); break;
+      case 'ArrowRight': if(bg) bg.group.position.x += step; e.preventDefault(); break;
+      case 'ArrowUp':    if(bg) bg.group.position.z -= step; e.preventDefault(); break;
+      case 'ArrowDown':  if(bg) bg.group.position.z += step; e.preventDefault(); break;
+      case 'q': case 'Q': if(bg) bg.group.rotation.y -= rotStep; break;
+      case 'e': case 'E': if(bg) bg.group.rotation.y += rotStep; break;
+      case 'w': case 'W': if(b) { b.width += 0.3; rebuildSelected(); } break;
+      case 's': case 'S': if(b) { b.width = Math.max(2, b.width - 0.3); rebuildSelected(); } break;
+      case 'a': case 'A': if(b) { b.depth += 0.3; rebuildSelected(); } break;
+      case 'd': case 'D': if(b) { b.depth = Math.max(1, b.depth - 0.3); rebuildSelected(); } break;
+      case 'h': case 'H': if(b) { b.height += 0.3; rebuildSelected(); } break;
+      case 'j': case 'J': if(b) { b.height = Math.max(1, b.height - 0.3); rebuildSelected(); } break;
+      case '+': case '=': if(b) { b.totalFloors += 1; rebuildSelected(); } break;
+      case '-': case '_': if(b) { b.totalFloors = Math.max(1, b.totalFloors - 1); rebuildSelected(); } break;
+      case 'c': case 'C': if(b) { const ci = buildingColors.indexOf(b.color); b.color = buildingColors[(ci+1)%buildingColors.length]; rebuildSelected(); } break;
+      case 'g': case 'G': if(b) { const si = buildingShapes.indexOf(b.buildingShape||'box'); b.buildingShape = buildingShapes[(si+1)%buildingShapes.length]; rebuildSelected(); } break;
+      case 'n': case 'N': {
+        const name = prompt('Building name:', 'Building ' + (buildingGroups.length + 1));
+        if (!name) break;
+        const config = {
+          id: name.toLowerCase().replace(/\s+/g,'-'), name, phase: null, totalFloors: 10, totalArea: 100000,
+          yearBuilt: 2020, color: buildingColors[buildingGroups.length % buildingColors.length],
+          position: { x: 0, z: 0 }, width: 8, depth: 4, height: 6,
+          rotation: 0, buildingShape: 'box', grade: 'B', certification: null,
+          camCharges: 20, escalation: '15% every 3 years', powerBackup: '100% DG + Dual Feed',
+          parkingRatio: 1.0, floorPlateSize: 25000, efficiencyRatio: 70,
+          amenities: ['Cafeteria','Parking','Lift','Security'],
+          microMarket: '', capitalValuePerSqft: 0, capitalValueTrend: [],
+          floors: generateDummyFloors(10, 25000)
+        };
+        buildingGroups.push(createBuilding3D(config));
+        selectedIdx = buildingGroups.length - 1;
+        break;
+      }
       case 'Tab': e.preventDefault(); selectedIdx = (selectedIdx + (e.shiftKey ? -1 : 1) + buildingGroups.length) % buildingGroups.length; break;
     }
   }
@@ -7780,14 +8150,24 @@ mapboxMap.addControl(new mapboxgl.NavigationControl({ showCompass: true, visuali
 mapboxMap.dragRotate.enable();
 mapboxMap.touchZoomRotate.enableRotation();
 mapboxMap.keyboard.enable();
-// Keyboard rotation: Arrow keys rotate/tilt when in city view
+// City view controls: Arrow keys rotate/tilt, R = auto-rotate toggle
+let cityAutoRotate = false;
+function cityRotateLoop() {
+  if (cityAutoRotate && currentView === 'city') {
+    mapboxMap.setBearing(mapboxMap.getBearing() + 0.3);
+  }
+  requestAnimationFrame(cityRotateLoop);
+}
+cityRotateLoop();
+
 document.addEventListener('keydown', (e) => {
   if (currentView !== 'city') return;
+  if (e.key === 'r' || e.key === 'R') { cityAutoRotate = !cityAutoRotate; return; }
   const step = 10;
-  if (e.key === 'ArrowLeft') mapboxMap.easeTo({ bearing: mapboxMap.getBearing() - step, duration: 200 });
-  if (e.key === 'ArrowRight') mapboxMap.easeTo({ bearing: mapboxMap.getBearing() + step, duration: 200 });
-  if (e.key === 'ArrowUp') mapboxMap.easeTo({ pitch: Math.min(mapboxMap.getPitch() + step, 85), duration: 200 });
-  if (e.key === 'ArrowDown') mapboxMap.easeTo({ pitch: Math.max(mapboxMap.getPitch() - step, 0), duration: 200 });
+  if (e.key === 'ArrowLeft') { mapboxMap.easeTo({ bearing: mapboxMap.getBearing() - step, duration: 200 }); e.preventDefault(); }
+  if (e.key === 'ArrowRight') { mapboxMap.easeTo({ bearing: mapboxMap.getBearing() + step, duration: 200 }); e.preventDefault(); }
+  if (e.key === 'ArrowUp') { mapboxMap.easeTo({ pitch: Math.min(mapboxMap.getPitch() + step, 85), duration: 200 }); e.preventDefault(); }
+  if (e.key === 'ArrowDown') { mapboxMap.easeTo({ pitch: Math.max(mapboxMap.getPitch() - step, 0), duration: 200 }); e.preventDefault(); }
 });
 
 // ---- Park markers on Mapbox GL ----
