@@ -1000,8 +1000,8 @@ def generate_floor_js(floor):
 UNITECH_CONFIGS = {
     "Unitech Cyber Park Tower A": {
         "id": "tower-a", "color": "#e97320",
-        "position": {"x": 3.6, "z": 16.3}, "width": 13.1, "depth": 4.8, "height": 5.0,
-        "rotation": 0.35, "buildingShape": "L", "totalFloors": 8,
+        "position": {"x": 1.6, "z": 11.8}, "width": 29.9, "depth": 5.7, "height": 5.0,
+        "rotation": 0.25, "buildingShape": "box", "totalFloors": 8,
         "grade": "B", "camCharges": 19, "escalation": "15% every 3 years",
         "powerBackup": "100% DG + Dual Feed", "parkingRatio": 1.0,
         "floorPlateSize": 53000, "amenities": ["Cafeteria", "ATM", "Parking", "Power Backup", "Lift", "Security"],
@@ -1010,8 +1010,8 @@ UNITECH_CONFIGS = {
     },
     "Unitech Cyber Park Tower B": {
         "id": "tower-b", "color": "#3b82f6",
-        "position": {"x": -21.0, "z": 3.5}, "width": 8.3, "depth": 3.8, "height": 9.0,
-        "rotation": 0.70, "buildingShape": "L", "totalFloors": 16,
+        "position": {"x": -21.5, "z": 1.5}, "width": 13.1, "depth": 5.6, "height": 9.0,
+        "rotation": 0.55, "buildingShape": "box", "totalFloors": 16,
         "grade": "B", "camCharges": 19, "escalation": "15% every 3 years",
         "powerBackup": "100% DG + Dual Feed", "parkingRatio": 1.0,
         "floorPlateSize": 25777, "amenities": ["Cafeteria", "ATM", "Parking", "Power Backup", "Lift", "Security"],
@@ -1020,8 +1020,8 @@ UNITECH_CONFIGS = {
     },
     "Unitech Cyber Park Tower C": {
         "id": "tower-c", "color": "#10b981",
-        "position": {"x": -2.5, "z": -4.2}, "width": 8.3, "depth": 3.8, "height": 9.0,
-        "rotation": 0.30, "buildingShape": "L", "totalFloors": 16,
+        "position": {"x": -3.5, "z": -5.2}, "width": 13.7, "depth": 5.9, "height": 9.0,
+        "rotation": 0.30, "buildingShape": "podium", "totalFloors": 16,
         "grade": "B", "camCharges": 19, "escalation": "15% every 3 years",
         "powerBackup": "100% DG + Dual Feed", "parkingRatio": 1.0,
         "floorPlateSize": 27286, "amenities": ["Cafeteria", "ATM", "Parking", "Power Backup", "Lift", "Security"],
@@ -1030,7 +1030,7 @@ UNITECH_CONFIGS = {
     },
     "Unitech Cyber Park Tower D": {
         "id": "tower-d", "color": "#8b5cf6",
-        "position": {"x": 14.5, "z": -8.0}, "width": 6.9, "depth": 3.2, "height": 6.0,
+        "position": {"x": 15.5, "z": -8.5}, "width": 14.4, "depth": 6.5, "height": 6.0,
         "rotation": 0.00, "buildingShape": "box", "totalFloors": 10,
         "grade": "B", "camCharges": 19, "escalation": "15% every 3 years",
         "powerBackup": "100% DG + Dual Feed", "parkingRatio": 1.0,
