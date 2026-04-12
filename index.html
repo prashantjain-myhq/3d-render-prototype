@@ -637,33 +637,33 @@
 
     /* Left panel sections */
     #panel-left .ph-section {
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
     #panel-middle .ph-section {
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
 
     .ph-title-row {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 6px;
+      gap: 10px;
+      margin-bottom: 4px;
     }
 
     .ph-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      font-size: 16px;
       color: #fff;
       flex-shrink: 0;
     }
 
     .ph-name {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 700;
       color: #0f172a;
     }
@@ -684,11 +684,11 @@
     .ph-sparkline-row {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
-      padding: 8px 12px;
+      gap: 8px;
+      margin-bottom: 0;
+      padding: 6px 10px;
       background: #f8fafc;
-      border-radius: 8px;
+      border-radius: 6px;
     }
 
     .ph-sparkline-label {
@@ -703,14 +703,17 @@
     .ph-stats {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 4px;
+      gap: 3px;
     }
 
     .ph-stat {
       background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 6px;
+      border: 1px solid #f1f5f9;
+      border-radius: 5px;
       padding: 4px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .ph-stat.full-width {
@@ -718,36 +721,44 @@
     }
 
     .ph-stat-label {
-      font-size: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
+      font-size: 9px;
+      color: #64748b;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .ph-stat-label[data-tip]::after {
+      content: '\2139';
+      font-size: 9px;
       color: #94a3b8;
-      font-weight: 600;
+      cursor: help;
     }
 
     .ph-stat-value {
       font-size: 11px;
       font-weight: 700;
       color: #1e293b;
-      margin-top: 0;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      text-align: right;
     }
 
     .ph-amenities {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 12px;
+      gap: 4px;
+      margin-top: 6px;
     }
 
     .ph-amenity-tag {
-      padding: 3px 10px;
-      background: #f1f5f9;
+      padding: 2px 8px;
+      background: #f8fafc;
       border: 1px solid #e2e8f0;
       border-radius: 999px;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 500;
       color: #475569;
     }
@@ -5337,16 +5348,16 @@ function openPanel(building, highlightFloorIndex) {
     </div>
 
     ${building.amenities && building.amenities.length > 0 ? `<div class="ph-section">
-      <div style="font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Amenities</div>
+      <div style="font-size:9px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Amenities</div>
       <div class="ph-amenities">
         ${building.amenities.map(a => '<span class="ph-amenity-tag">' + a + '</span>').join('')}
       </div>
     </div>` : ''}
 
-    ${building.microMarketAvgRent ? `<div class="ph-section" style="margin-top:12px;padding:12px;background:#fff;border:1px solid #e2e8f0;border-radius:10px">
-      <div style="font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Market Context</div>
-      <div style="font-size:12px;color:#475569;line-height:1.7">
-        Micro-market avg rent: <b>\u20B9${building.microMarketAvgRent}/sqft</b> <span style="font-size:10px;color:#94a3b8">(Sales team data)</span>
+    ${building.microMarketAvgRent ? `<div class="ph-section" style="padding:8px 10px;background:#f8fafc;border:1px solid #f1f5f9;border-radius:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:9px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px">Market Avg Rent</span>
+        <span style="font-size:12px;font-weight:700;color:#1e293b">\u20B9${building.microMarketAvgRent}/sqft</span>
       </div>
     </div>` : ''}
   `;
