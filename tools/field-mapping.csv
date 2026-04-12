@@ -1,0 +1,69 @@
+Level,Our Field,Source,CRE Matrix Column,Format,Required,Notes
+building,name,Sales Team,,Text,YES,e.g. Tower A
+building,phase,Sales Team,,Text,no,e.g. Phase I
+building,totalFloors,Sales Team,,Number,YES,
+building,totalArea,Sales Team,,Number (sqft),YES,Super built-up area
+building,yearBuilt,Sales Team,,YYYY,YES,
+building,grade,Sales Team,,A+ / A / B+ / B,YES,Building classification
+building,certification,Sales Team,,Text or blank,no,"IGBC Gold, LEED, etc."
+building,camCharges,Sales Team,,Number (₹/sqft/mo),YES,Common Area Maintenance
+building,escalation,Sales Team,,Text,no,"e.g. 15% every 3 years"
+building,powerBackup,Sales Team,,Text,YES,"e.g. 100% DG + Dual Feed"
+building,parkingRatio,Sales Team,,Number,YES,Cars per 1000 sqft
+building,floorPlateSize,Sales Team,,Number (sqft),no,Typical floor plate size
+building,efficiencyRatio,Sales Team,,Number (%),YES,Carpet / super built-up ratio
+building,capitalValuePerSqft,Sales Team,,Number (₹) or 0,no,Market purchase price per sqft
+building,amenities,Sales Team,,Comma-separated,YES,"Cafeteria, Gym, ATM, EV Charging, etc."
+building,microMarket,Sales Team,,Text,YES,"e.g. Sector 39, Gurugram"
+building,microMarketAvgRent,Sales Team,,Number (₹/sqft),no,Micro-market average rent
+building,address,Sales Team,,Full address,YES,For display
+floor,tenant,CRE Matrix,dt-tenant-parent-entity--brand,Text,YES,Primary tenant name
+floor,occupancy,Derived,,0-100%,YES,0 if no active lease
+floor,rentPerSqft,CRE Matrix,dt-current-rent-chargeable,Number (₹),YES,Current asking rent
+floor,effectiveRent,CRE Matrix,dt-effective-rent,Number (₹),YES,Post-adjustment rent
+floor,startingRent,CRE Matrix,dt-starting-rent-chargeable,Number (₹),no,Rent at lease signing
+floor,leaseExpiryRent,CRE Matrix,dt-lease-expiry-rent-chargeable,Number (₹),no,Projected rent at expiry
+floor,area,CRE Matrix,dt-chargeable-area,Number (sqft),YES,Chargeable/super area
+floor,carpetArea,CRE Matrix,dt-carpet-area,Number (sqft),YES,Usable area
+floor,leaseStart,CRE Matrix,dt-commencement-date,YYYY-MM,no,Lease commencement
+floor,leaseExpiryDate,CRE Matrix,dt-lease-expiry-date,YYYY-MM,no,Lease end date
+floor,lockInPeriod,CRE Matrix,dt-lockin-period,Text,no,"e.g. 36 months"
+floor,lockInEnd,CRE Matrix,dt-lockin-expiry-date,YYYY-MM,no,Lock-in expiry date
+floor,securityDeposit,CRE Matrix,dt-security-deposit,Number (months),no,Refundable deposit
+floor,rentEscalation,CRE Matrix,dt-rent-escalation,Number (%),no,e.g. 15
+floor,escalationPeriod,CRE Matrix,dt-first-rent-escalation-period,Number (months),no,e.g. 36
+floor,propertyCondition,CRE Matrix,dt-property-condition,Text,no,Bare Shell / Warm Shell / Fitted Out
+floor,dealType,CRE Matrix,dt-newrenewal,Text,no,New / Renewal
+floor,agreementType,CRE Matrix,dt-agreement-type,Text,no,Lease / License / Sub-lease
+floor,sector,CRE Matrix,dt-sector,Text,YES,"IT/ITeS, BFSI, Co-Working, etc."
+floor,landlord,CRE Matrix,dt-landlord,Text,no,Property owner name
+floor,landlordContact,CRE Matrix,dt-landlord-profile,URL,no,LinkedIn or contact
+floor,dealMemo,CRE Matrix,dt-deal-memo,Text,no,Free-text deal notes
+floor,rentFreeMonths,CRE Matrix,dt-rent-free-period,Number (months),no,
+floor,freeCarParks,CRE Matrix,dt-free-car-parks,Number,no,Included parking spots
+floor,paidCarParks,CRE Matrix,dt-paid-car-parks,Number,no,Additional paid spots
+floor,absorptionDate,CRE Matrix,dt-absorption-date,YYYY-MM,no,When tenant physically moved in (vs lease signing)
+floor,startingRentCarpet,CRE Matrix,dt-starting-rent-carpet,Number (₹),no,Starting rent per carpet sqft
+floor,currentRentCarpet,CRE Matrix,dt-current-rent-carpet,Number (₹),no,Current rent per carpet sqft
+floor,propertyTaxPayer,CRE Matrix,dt-property-tax-payer,Text,no,Who pays property tax (Tenant/Landlord) — affects cost
+building,developer,CRE Matrix,dt-developer,Text,no,Building developer/constructor
+building,buildingCategory,CRE Matrix,dt-building-category,Text,no,"SEZ / IT Park — impacts tax benefits"
+building,microMarketCRE,CRE Matrix,dt-micro-market,Text,no,CRE-standardized micro-market name
+building,market,CRE Matrix,dt-market,Text,no,"Broader market area (e.g. Gurgaon)"
+building,macroMarket,CRE Matrix,dt-macro-market,Text,no,"Macro-market (e.g. NCR, Bangalore Urban)"
+building,pincode,CRE Matrix,dt-pincode,Text,no,Postal code for the building
+building,complexDetails,CRE Matrix,class_complex_details,Text,no,Park/complex name from CRE — used for building matching
+derived,status,Script,,Text,auto,"Vacant / Fully Occupied / Multi-tenant"
+derived,monthlyRevenue,Script,,Number (₹),auto,effectiveRent × carpetArea
+derived,annualRevenue,Script,,Number (₹),auto,monthlyRevenue × 12
+derived,rentalYield,Script,,Number (%),auto,(annualRevenue / capitalValue) × 100
+derived,dataConflict,Script,,Text,auto,Flags CSV vs CRE mismatches
+derived,tenants[],Script,,Array,auto,Grouped from all CRE transactions per floor
+derived,allLandlords[],Script,,Array,auto,Unique landlords from transaction history
+derived,floorDealHistory[],Script,,Array,auto,All transactions for that floor
+derived,building.dealHistory,Script,,Array,auto,Yearly aggregated deal counts
+derived,building.sectorMix,Script,,Array,auto,Sector distribution from tenants
+cityview,park lat/lng,Google Maps,,Decimal degrees,YES,Right-click → copy coordinates
+cityview,landmark lat/lng,Google Maps,,Decimal degrees,YES,
+cityview,landmark category,PM,,Text,YES,"Metro, Mall, Hospital, etc."
+cityview,landmark info,PM,,Text,YES,One-line description

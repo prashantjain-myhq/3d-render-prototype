@@ -4102,6 +4102,7 @@ function renderFloorCards(building, highlightFloorIndex) {
               <div class="fd-item"><div class="fd-label" data-tip="Bare Shell (empty), Warm Shell (basic), Fully Fitted (ready)">Fit-out</div><div class="fd-value">${f.fitOut || f.propertyCondition || '\u2014'}</div></div>
               ${f.lockInPeriod && f.lockInPeriod !== '-' ? '<div class="fd-item"><div class="fd-label" data-tip="Minimum lease period \u2014 tenant cannot exit before this">Lock-in</div><div class="fd-value">' + f.lockInPeriod + (f.lockInEnd ? ' (ends ' + fmtDate(f.lockInEnd) + ')' : '') + '</div></div>' : ''}
               ${f.leaseStart || f.leaseEnd ? '<div class="fd-item"><div class="fd-label">Lease Period</div><div class="fd-value">' + (f.leaseStart ? fmtDate(f.leaseStart) : '') + (f.leaseStart && f.leaseEnd ? ' to ' : '') + (f.leaseEnd ? fmtDate(f.leaseEnd) : '') + '</div></div>' : ''}
+              ${f.absorptionDate && f.occupancy > 0 ? '<div class="fd-item"><div class="fd-label" data-tip="Date when tenant physically occupied the space (vs lease signing date)">Move-in Date</div><div class="fd-value">' + fmtDate(f.absorptionDate) + ' <span style="font-size:9px;color:#6366f1">CRE</span></div></div>' : ''}
             </div>
           </div>
 
@@ -4168,6 +4169,8 @@ function renderFloorCards(building, highlightFloorIndex) {
               ${f.securityDeposit && f.occupancy > 0 ? '<div class="fd-item"><div class="fd-label" data-tip="Refundable deposit, typically 6-12 months rent">Security Deposit</div><div class="fd-value">' + f.securityDeposit + ' months</div></div>' : ''}
               <div class="fd-item"><div class="fd-label" data-tip="Common Area Maintenance \u2014 monthly charge for shared facilities">CAM Charges</div><div class="fd-value">\u20B9${building.camCharges}/sqft</div></div>
               ${f.rentEscalation && f.occupancy > 0 ? '<div class="fd-item"><div class="fd-label" data-tip="Periodic rent increase as per lease agreement">Escalation</div><div class="fd-value">' + f.rentEscalation + '% every ' + (f.escalationPeriod ? f.escalationPeriod + ' months' : '\u2014') + ' <span style="font-size:9px;color:#6366f1">CRE</span></div></div>' : ''}
+              ${f.propertyTaxPayer ? '<div class="fd-item"><div class="fd-label" data-tip="Who bears the property tax — affects total occupancy cost">Property Tax</div><div class="fd-value">' + f.propertyTaxPayer + ' pays <span style="font-size:9px;color:#6366f1">CRE</span></div></div>' : ''}
+              ${f.currentRentCarpet && f.occupancy > 0 ? '<div class="fd-item"><div class="fd-label" data-tip="Rent calculated on carpet (usable) area instead of chargeable area">Rent/Carpet sqft</div><div class="fd-value">\u20B9' + f.currentRentCarpet + '/sqft <span style="font-size:9px;color:#6366f1">CRE</span></div></div>' : ''}
               ${f.startingRent && f.leaseExpiryRent && f.occupancy > 0 ? '<div class="fd-item" style="grid-column:1/-1"><div class="fd-label" data-tip="Rent journey: signing \u2192 current \u2192 at expiry">Rent Progression</div><div class="fd-value" style="display:flex;align-items:center;gap:6px;font-size:11px"><span>\u20B9' + f.startingRent + '</span><span style="color:#94a3b8">\u2192</span><span style="color:#4f46e5;font-weight:700">\u20B9' + (f.effectiveRent || f.rentPerSqft) + '</span><span style="color:#94a3b8">\u2192</span><span style="color:#16a34a;font-weight:700">\u20B9' + f.leaseExpiryRent + '</span><span style="font-size:9px;color:#94a3b8">(start \u2192 now \u2192 expiry)</span></div></div>' : ''}
             </div>`}
             ${defaultPurchasePrice > 0 ? `<div class="roi-calculator">
@@ -4370,8 +4373,10 @@ function openPanel(building, highlightFloorIndex) {
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
         <span class="ph-badge" data-tip="Building classification — A+ (premium), A (institutional), B+ (good), B (standard)">${'Grade ' + building.grade}</span>
+        ${building.buildingCategory ? '<span class="ph-badge" style="background:' + (building.buildingCategory === 'SEZ' ? '#fef3c7;color:#92400e;border-color:#fde68a' : '#eff6ff;color:#1d4ed8;border-color:#bfdbfe') + '" data-tip="' + (building.buildingCategory === 'SEZ' ? 'Special Economic Zone — tax benefits for eligible tenants' : 'IT Park classification under state IT policy') + '">' + building.buildingCategory + '</span>' : ''}
         ${building.certification ? '<span class="ph-badge" style="background:#f0fdf4;color:#16a34a;border-color:#bbf7d0" data-tip="Green building certification">' + building.certification + '</span>' : ''}
-        ${building.microMarket ? '<span class="ph-badge" style="background:#f0f4ff;color:#4338ca;border-color:#c7d2fe" data-tip="Micro-market location">' + building.microMarket + '</span>' : ''}
+        ${building.developer ? '<span class="ph-badge" style="background:#faf5ff;color:#7c3aed;border-color:#ddd6fe" data-tip="Building developer/constructor">' + building.developer + '</span>' : ''}
+        ${building.microMarketCRE || building.microMarket ? '<span class="ph-badge" style="background:#f0f4ff;color:#4338ca;border-color:#c7d2fe" data-tip="Micro-market location from CRE Matrix">' + (building.microMarketCRE || building.microMarket) + '</span>' : ''}
       </div>
     </div>
 
@@ -7638,6 +7643,7 @@ function openShortlistCompare() {
       ${f.rentalYield && hasCapitalValue ? '<div class="cc-row"><span class="cc-label">Yield'+ti('Annual rental return as % of capital value')+'</span><span class="cc-val'+((f.rentalYield||0)===maxYield?' best':'')+'">'+f.rentalYield+'%</span></div>' : ''}
       ${f.lockInPeriod && f.lockInPeriod !== '-' ? '<div class="cc-row"><span class="cc-label">Lock-in'+ti('Minimum lease commitment \u2014 tenant cannot exit before this')+'</span><span class="cc-val">'+f.lockInPeriod+'</span></div>' : ''}
       ${f.securityDeposit && f.occupancy > 0 ? '<div class="cc-row"><span class="cc-label">Deposit'+ti('Refundable security deposit in months of rent')+'</span><span class="cc-val">'+f.securityDeposit+' mo</span></div>' : ''}
+      ${f.propertyTaxPayer ? '<div class="cc-row"><span class="cc-label">Property Tax'+ti('Who bears the property tax — impacts total occupancy cost')+'</span><span class="cc-val">'+f.propertyTaxPayer+'</span></div>' : ''}
       ${f.rentEscalation ? '<div class="cc-row"><span class="cc-label">Escalation'+ti('Rent increase % and frequency from CRE Matrix deal terms')+'</span><span class="cc-val">' + f.rentEscalation + '%' + (f.escalationPeriod ? ' / ' + f.escalationPeriod + 'mo' : '') + '</span></div>' : ''}
       ${f.leaseExpiryDate ? '<div class="cc-row"><span class="cc-label">Lease Expiry'+ti('Date when current lease ends \u2014 tenant must renew or vacate')+'</span><span class="cc-val">' + fmtDate(f.leaseExpiryDate) + '</span></div>' : ''}
       ${f.dealType ? '<div class="cc-row"><span class="cc-label">Deal Type'+ti('New = first lease on this floor, Renewal = existing tenant extended')+'</span><span class="cc-val"><span style="padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600;background:' + (f.dealType==='New'?'#dcfce7;color:#16a34a':'#dbeafe;color:#2563eb') + '">' + f.dealType + '</span></span></div>' : ''}

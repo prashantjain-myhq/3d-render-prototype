@@ -45,6 +45,12 @@ const GURGAON_TECH_PARK_DATA = {
       capitalValueTrend: [],
       dealHistory: [{"year": 2010, "deals": 3, "totalArea": 22633, "avgRent": 52.5, "newDeals": 3, "renewals": 0}, {"year": 2014, "deals": 7, "totalArea": 86056, "avgRent": 83.5, "newDeals": 2, "renewals": 4}, {"year": 2015, "deals": 12, "totalArea": 200763, "avgRent": 81.2, "newDeals": 12, "renewals": 0}, {"year": 2016, "deals": 4, "totalArea": 47423, "avgRent": 87.5, "newDeals": 1, "renewals": 2}, {"year": 2017, "deals": 6, "totalArea": 55935, "avgRent": 77.7, "newDeals": 1, "renewals": 0}, {"year": 2018, "deals": 2, "totalArea": 14146, "avgRent": 80.3, "newDeals": 0, "renewals": 2}, {"year": 2019, "deals": 17, "totalArea": 116281, "avgRent": 89.9, "newDeals": 15, "renewals": 1}, {"year": 2020, "deals": 3, "totalArea": 15342, "avgRent": 84.8, "newDeals": 0, "renewals": 0}, {"year": 2021, "deals": 5, "totalArea": 29809, "avgRent": 65.7, "newDeals": 4, "renewals": 0}, {"year": 2022, "deals": 22, "totalArea": 148333, "avgRent": 73.2, "newDeals": 22, "renewals": 0}, {"year": 2023, "deals": 7, "totalArea": 60624, "avgRent": 84.5, "newDeals": 6, "renewals": 1}, {"year": 2024, "deals": 11, "totalArea": 117914, "avgRent": 75.4, "newDeals": 6, "renewals": 4}, {"year": 2025, "deals": 2, "totalArea": 7242, "avgRent": 84.0, "newDeals": 0, "renewals": 0}],
       sectorMix: [{"sector": "Commercial & Professional Services", "area": 438547, "percentage": 47.5}, {"sector": "BFSI", "area": 87849, "percentage": 9.5}, {"sector": "Consumer Discretionary", "area": 87741, "percentage": 9.5}, {"sector": "Co-Working", "area": 80610, "percentage": 8.7}, {"sector": "Health Care", "area": 71778, "percentage": 7.8}, {"sector": "IT/ITeS", "area": 60733, "percentage": 6.6}, {"sector": "Others", "area": 53551, "percentage": 5.8}, {"sector": "Media", "area": 11782, "percentage": 1.3}, {"sector": "Consumer Durables & Apparel", "area": 10484, "percentage": 1.1}, {"sector": "Industrials", "area": 8924, "percentage": 1.0}, {"sector": "Unclassified", "area": 7073, "percentage": 0.8}, {"sector": "Real Estate", "area": 3429, "percentage": 0.4}],
+      developer: "Unitech",
+      buildingCategory: "IT Park",
+      microMarketCRE: "Gurgaon Sector 39",
+      market: "Gurgaon",
+      macroMarket: "NH-48 Prime",
+      pincode: "122001",
       floors: [
         {
           floor: 0,
@@ -416,6 +422,12 @@ const GURGAON_TECH_PARK_DATA = {
       capitalValueTrend: [],
       dealHistory: [{"year": 2011, "deals": 2, "totalArea": 7210, "avgRent": 55.0, "newDeals": 0, "renewals": 0}, {"year": 2013, "deals": 3, "totalArea": 18502, "avgRent": 65.1, "newDeals": 0, "renewals": 1}, {"year": 2014, "deals": 4, "totalArea": 17829, "avgRent": 96.1, "newDeals": 0, "renewals": 0}, {"year": 2015, "deals": 17, "totalArea": 93919, "avgRent": 76.2, "newDeals": 1, "renewals": 3}, {"year": 2016, "deals": 8, "totalArea": 40118, "avgRent": 82.5, "newDeals": 0, "renewals": 5}, {"year": 2018, "deals": 5, "totalArea": 17344, "avgRent": 75.4, "newDeals": 4, "renewals": 1}, {"year": 2019, "deals": 16, "totalArea": 93514, "avgRent": 84.5, "newDeals": 15, "renewals": 0}, {"year": 2020, "deals": 3, "totalArea": 11518, "avgRent": 86.5, "newDeals": 0, "renewals": 1}, {"year": 2021, "deals": 2, "totalArea": 15883, "avgRent": 60.0, "newDeals": 2, "renewals": 0}, {"year": 2022, "deals": 14, "totalArea": 72357, "avgRent": 69.0, "newDeals": 12, "renewals": 0}, {"year": 2023, "deals": 15, "totalArea": 88286, "avgRent": 81.6, "newDeals": 12, "renewals": 1}, {"year": 2024, "deals": 11, "totalArea": 43579, "avgRent": 100.0, "newDeals": 6, "renewals": 0}, {"year": 2025, "deals": 4, "totalArea": 15658, "avgRent": 86.7, "newDeals": 1, "renewals": 1}],
       sectorMix: [{"sector": "IT/ITeS", "area": 186167, "percentage": 34.8}, {"sector": "Co-Working", "area": 120328, "percentage": 22.5}, {"sector": "BFSI", "area": 37426, "percentage": 7.0}, {"sector": "Unclassified", "area": 33394, "percentage": 6.2}, {"sector": "Health Care", "area": 31581, "percentage": 5.9}, {"sector": "Commercial & Professional Services", "area": 30306, "percentage": 5.7}, {"sector": "Consumer Discretionary", "area": 30061, "percentage": 5.6}, {"sector": "Automobiles", "area": 27081, "percentage": 5.1}, {"sector": "E-Commerce", "area": 11528, "percentage": 2.2}, {"sector": "Industrials", "area": 10245, "percentage": 1.9}, {"sector": "Consumer Durables & Apparel", "area": 5116, "percentage": 1.0}, {"sector": "Media", "area": 4124, "percentage": 0.8}, {"sector": "Others", "area": 4124, "percentage": 0.8}, {"sector": "Consumer Staples", "area": 2408, "percentage": 0.4}, {"sector": "Fast foods", "area": 1828, "percentage": 0.3}],
+      developer: "Unitech",
+      buildingCategory: "IT Park",
+      microMarketCRE: "Gurgaon Sector 39",
+      market: "Gurgaon",
+      macroMarket: "NH-48 Prime",
+      pincode: "122001",
       floors: [
         {
           floor: 1,
@@ -1087,6 +1099,12 @@ const GURGAON_TECH_PARK_DATA = {
       capitalValueTrend: [],
       dealHistory: [{"year": 2008, "deals": 2, "totalArea": 44040, "avgRent": 52.0, "newDeals": 2, "renewals": 0}, {"year": 2010, "deals": 2, "totalArea": 9167, "avgRent": 81.0, "newDeals": 0, "renewals": 0}, {"year": 2011, "deals": 2, "totalArea": 6571, "avgRent": 48.3, "newDeals": 0, "renewals": 0}, {"year": 2012, "deals": 2, "totalArea": 33137, "avgRent": 67.4, "newDeals": 0, "renewals": 1}, {"year": 2013, "deals": 2, "totalArea": 54572, "avgRent": 59.8, "newDeals": 0, "renewals": 2}, {"year": 2014, "deals": 1, "totalArea": 6000, "avgRent": 100.0, "newDeals": 1, "renewals": 0}, {"year": 2015, "deals": 13, "totalArea": 88040, "avgRent": 68.2, "newDeals": 1, "renewals": 2}, {"year": 2016, "deals": 6, "totalArea": 13301, "avgRent": 78.7, "newDeals": 0, "renewals": 1}, {"year": 2017, "deals": 13, "totalArea": 57139, "avgRent": 75.7, "newDeals": 12, "renewals": 0}, {"year": 2018, "deals": 1, "totalArea": 3455, "avgRent": 90.0, "newDeals": 0, "renewals": 0}, {"year": 2019, "deals": 9, "totalArea": 41152, "avgRent": 90.8, "newDeals": 5, "renewals": 0}, {"year": 2020, "deals": 5, "totalArea": 19419, "avgRent": 65.0, "newDeals": 0, "renewals": 5}, {"year": 2021, "deals": 4, "totalArea": 21437, "avgRent": 64.6, "newDeals": 1, "renewals": 0}, {"year": 2022, "deals": 23, "totalArea": 103847, "avgRent": 79.4, "newDeals": 16, "renewals": 0}, {"year": 2023, "deals": 23, "totalArea": 95903, "avgRent": 81.3, "newDeals": 13, "renewals": 5}, {"year": 2024, "deals": 7, "totalArea": 33807, "avgRent": 82.7, "newDeals": 6, "renewals": 0}, {"year": 2025, "deals": 3, "totalArea": 19890, "avgRent": 86.0, "newDeals": 1, "renewals": 1}],
       sectorMix: [{"sector": "IT/ITeS", "area": 198947, "percentage": 30.6}, {"sector": "Health Care", "area": 151132, "percentage": 23.2}, {"sector": "Consumer Durables & Apparel", "area": 71109, "percentage": 10.9}, {"sector": "Commercial & Professional Services", "area": 66930, "percentage": 10.3}, {"sector": "BFSI", "area": 52646, "percentage": 8.1}, {"sector": "Unclassified", "area": 28876, "percentage": 4.4}, {"sector": "Others", "area": 23004, "percentage": 3.5}, {"sector": "Energy & Utilities", "area": 11371, "percentage": 1.7}, {"sector": "Telecommunication Services", "area": 9167, "percentage": 1.4}, {"sector": "Co-Working", "area": 8388, "percentage": 1.3}, {"sector": "Industrials", "area": 8047, "percentage": 1.2}, {"sector": "Media", "area": 7870, "percentage": 1.2}, {"sector": "Fast foods", "area": 4564, "percentage": 0.7}, {"sector": "Consumer Staples", "area": 4413, "percentage": 0.7}, {"sector": "Consumer Discretionary", "area": 4413, "percentage": 0.7}],
+      developer: "Unitech",
+      buildingCategory: "IT Park",
+      microMarketCRE: "Gurgaon Sector 39",
+      market: "Gurgaon",
+      macroMarket: "NH-48 Prime",
+      pincode: "122001",
       floors: [
         {
           floor: 1,
@@ -1763,6 +1781,12 @@ const GURGAON_TECH_PARK_DATA = {
       capitalValueTrend: [],
       dealHistory: [{"year": 2013, "deals": 2, "totalArea": 38189, "avgRent": 84.8, "newDeals": 0, "renewals": 0}, {"year": 2014, "deals": 1, "totalArea": 11015, "avgRent": 89.0, "newDeals": 1, "renewals": 0}, {"year": 2015, "deals": 1, "totalArea": 158234, "avgRent": 84.5, "newDeals": 0, "renewals": 0}, {"year": 2016, "deals": 2, "totalArea": 52834, "avgRent": 86.3, "newDeals": 0, "renewals": 2}, {"year": 2017, "deals": 2, "totalArea": 27115, "avgRent": 77.5, "newDeals": 0, "renewals": 1}, {"year": 2019, "deals": 1, "totalArea": 158234, "avgRent": 75.0, "newDeals": 1, "renewals": 0}, {"year": 2023, "deals": 2, "totalArea": 39310, "avgRent": 81.0, "newDeals": 1, "renewals": 1}, {"year": 2024, "deals": 7, "totalArea": 216564, "avgRent": 82.1, "newDeals": 5, "renewals": 1}],
       sectorMix: [{"sector": "IT/ITeS", "area": 343583, "percentage": 49.0}, {"sector": "BFSI", "area": 236787, "percentage": 33.8}, {"sector": "Consumer Discretionary", "area": 38500, "percentage": 5.5}, {"sector": "Co-Working", "area": 25719, "percentage": 3.7}, {"sector": "Commercial & Professional Services", "area": 17253, "percentage": 2.5}, {"sector": "Telecommunication Services", "area": 16100, "percentage": 2.3}, {"sector": "Consumer Durables & Apparel", "area": 12195, "percentage": 1.7}, {"sector": "Materials", "area": 7690, "percentage": 1.1}, {"sector": "Energy & Utilities", "area": 3668, "percentage": 0.5}],
+      developer: "Unitech",
+      buildingCategory: "IT Park",
+      microMarketCRE: "Gurgaon Sector 39",
+      market: "Gurgaon",
+      macroMarket: "NH-48 Prime",
+      pincode: "122001",
       floors: [
         {
           floor: 0,
@@ -2218,6 +2242,12 @@ const VATIKA_TECH_PARK_DATA = {
       capitalValueTrend: [],
       dealHistory: [{"year": 2009, "deals": 1, "totalArea": 5251, "avgRent": 50.0, "newDeals": 1, "renewals": 0}, {"year": 2012, "deals": 1, "totalArea": 4341, "avgRent": 52.0, "newDeals": 1, "renewals": 0}, {"year": 2013, "deals": 2, "totalArea": 18268, "avgRent": 79.0, "newDeals": 0, "renewals": 0}, {"year": 2014, "deals": 7, "totalArea": 83453, "avgRent": 57.1, "newDeals": 5, "renewals": 0}, {"year": 2015, "deals": 2, "totalArea": 18400, "avgRent": 54.9, "newDeals": 1, "renewals": 1}, {"year": 2016, "deals": 1, "totalArea": 15231, "avgRent": 67.5, "newDeals": 0, "renewals": 1}, {"year": 2017, "deals": 3, "totalArea": 23624, "avgRent": 83.0, "newDeals": 2, "renewals": 0}, {"year": 2018, "deals": 2, "totalArea": 50145, "avgRent": 60.8, "newDeals": 1, "renewals": 1}, {"year": 2021, "deals": 5, "totalArea": 84709, "avgRent": 59.3, "newDeals": 3, "renewals": 2}, {"year": 2022, "deals": 5, "totalArea": 48725, "avgRent": 73.9, "newDeals": 4, "renewals": 0}, {"year": 2023, "deals": 5, "totalArea": 31319, "avgRent": 92.5, "newDeals": 4, "renewals": 0}, {"year": 2024, "deals": 3, "totalArea": 15669, "avgRent": 68.0, "newDeals": 1, "renewals": 2}],
       sectorMix: [{"sector": "IT/ITeS", "area": 175738, "percentage": 44.0}, {"sector": "Commercial & Professional Services", "area": 76498, "percentage": 19.2}, {"sector": "Consumer Durables & Apparel", "area": 30462, "percentage": 7.6}, {"sector": "Others", "area": 22490, "percentage": 5.6}, {"sector": "BFSI", "area": 22112, "percentage": 5.5}, {"sector": "E-Commerce", "area": 14059, "percentage": 3.5}, {"sector": "Co-Working", "area": 13080, "percentage": 3.3}, {"sector": "Telecommunication Services", "area": 13017, "percentage": 3.3}, {"sector": "Bar & Brewery", "area": 7597, "percentage": 1.9}, {"sector": "Consumer Staples", "area": 4962, "percentage": 1.2}, {"sector": "Automobiles", "area": 4774, "percentage": 1.2}, {"sector": "Health Care", "area": 4000, "percentage": 1.0}, {"sector": "Cafes", "area": 3235, "percentage": 0.8}, {"sector": "Consumer Discretionary", "area": 2705, "percentage": 0.7}, {"sector": "Real Estate", "area": 2593, "percentage": 0.6}, {"sector": "Fast foods", "area": 1813, "percentage": 0.5}],
+      developer: "Vatika Group",
+      buildingCategory: "IT Park",
+      microMarketCRE: "Gurgaon Sector 49",
+      market: "Gurgaon",
+      macroMarket: "Sohna Road",
+      pincode: "122018",
       floors: [
         {
           floor: 1,
@@ -2585,6 +2615,12 @@ const VATIKA_TECH_PARK_DATA = {
       capitalValueTrend: [],
       dealHistory: [{"year": 2010, "deals": 1, "totalArea": 108209, "avgRent": 43.0, "newDeals": 1, "renewals": 0}, {"year": 2011, "deals": 1, "totalArea": 8435, "avgRent": 44.0, "newDeals": 1, "renewals": 0}, {"year": 2012, "deals": 3, "totalArea": 44532, "avgRent": 81.2, "newDeals": 3, "renewals": 0}, {"year": 2014, "deals": 2, "totalArea": 54485, "avgRent": 58.5, "newDeals": 1, "renewals": 1}, {"year": 2015, "deals": 4, "totalArea": 65099, "avgRent": 61.5, "newDeals": 3, "renewals": 0}, {"year": 2016, "deals": 4, "totalArea": 142819, "avgRent": 70.7, "newDeals": 2, "renewals": 2}, {"year": 2017, "deals": 1, "totalArea": 2806, "avgRent": 89.1, "newDeals": 0, "renewals": 0}, {"year": 2018, "deals": 1, "totalArea": 2082, "avgRent": 127.3, "newDeals": 1, "renewals": 0}, {"year": 2019, "deals": 6, "totalArea": 82182, "avgRent": 68.8, "newDeals": 2, "renewals": 2}, {"year": 2020, "deals": 1, "totalArea": 8877, "avgRent": 69.0, "newDeals": 0, "renewals": 1}, {"year": 2021, "deals": 3, "totalArea": 151097, "avgRent": 59.3, "newDeals": 1, "renewals": 2}, {"year": 2023, "deals": 4, "totalArea": 22776, "avgRent": 80.4, "newDeals": 0, "renewals": 2}, {"year": 2024, "deals": 6, "totalArea": 77123, "avgRent": 70.7, "newDeals": 3, "renewals": 2}, {"year": 2025, "deals": 2, "totalArea": 24997, "avgRent": 144.5, "newDeals": 2, "renewals": 0}],
       sectorMix: [{"sector": "Commercial & Professional Services", "area": 479933, "percentage": 60.3}, {"sector": "IT/ITeS", "area": 99276, "percentage": 12.5}, {"sector": "Industrials", "area": 66235, "percentage": 8.3}, {"sector": "Automobiles", "area": 45668, "percentage": 5.7}, {"sector": "Consumer Discretionary", "area": 29313, "percentage": 3.7}, {"sector": "Energy & Utilities", "area": 15823, "percentage": 2.0}, {"sector": "Consumer Staples", "area": 14527, "percentage": 1.8}, {"sector": "Media", "area": 11372, "percentage": 1.4}, {"sector": "Materials", "area": 10867, "percentage": 1.4}, {"sector": "Health Care", "area": 7884, "percentage": 1.0}, {"sector": "Capital Goods", "area": 6974, "percentage": 0.9}, {"sector": "Dining", "area": 3847, "percentage": 0.5}, {"sector": "Salon & Spas", "area": 2082, "percentage": 0.3}, {"sector": "BFSI", "area": 1718, "percentage": 0.2}],
+      developer: "Vatika Group",
+      buildingCategory: "IT Park",
+      microMarketCRE: "Gurgaon Sector 49",
+      market: "Gurgaon",
+      macroMarket: "Sohna Road",
+      pincode: "122018",
       floors: [
         {
           floor: 0,
@@ -3241,6 +3277,12 @@ const VATIKA_TECH_PARK_DATA = {
       capitalValueTrend: [],
       dealHistory: [{"year": 2012, "deals": 4, "totalArea": 188743, "avgRent": 54.8, "newDeals": 4, "renewals": 0}, {"year": 2014, "deals": 4, "totalArea": 33878, "avgRent": 67.5, "newDeals": 4, "renewals": 0}, {"year": 2015, "deals": 2, "totalArea": 188470, "avgRent": 90.0, "newDeals": 0, "renewals": 1}, {"year": 2016, "deals": 1, "totalArea": 26281, "avgRent": 62.0, "newDeals": 1, "renewals": 0}, {"year": 2018, "deals": 2, "totalArea": 186623, "avgRent": 99.2, "newDeals": 0, "renewals": 1}, {"year": 2021, "deals": 2, "totalArea": 225305, "avgRent": 61.8, "newDeals": 0, "renewals": 2}, {"year": 2024, "deals": 2, "totalArea": 225305, "avgRent": 66.4, "newDeals": 0, "renewals": 2}, {"year": 2025, "deals": 1, "totalArea": 625, "avgRent": 135.0, "newDeals": 1, "renewals": 0}],
       sectorMix: [{"sector": "Commercial & Professional Services", "area": 1057041, "percentage": 98.3}, {"sector": "Consumer Discretionary", "area": 10719, "percentage": 1.0}, {"sector": "IT/ITeS", "area": 2745, "percentage": 0.3}, {"sector": "Cafes", "area": 2100, "percentage": 0.2}, {"sector": "Breads & Bakery", "area": 2000, "percentage": 0.2}, {"sector": "Unclassified", "area": 625, "percentage": 0.1}],
+      developer: "Vatika Group",
+      buildingCategory: "IT Park",
+      microMarketCRE: "Gurgaon Sector 49",
+      market: "Gurgaon",
+      macroMarket: "Sohna Road",
+      pincode: "122018",
       floors: [
         {
           floor: 0,
