@@ -3668,17 +3668,61 @@ function createBuilding3D(b) {
   const winTexFB = createWindowTexture(b.phase, 256, 256, 6, b.totalFloors);
   const winTexLR = createWindowTexture(b.phase, 256, 256, 5, b.totalFloors);
 
-  function makeLShapeGeo(w, h, d, padding) {
+  function makeShapeGeo(shapeType, w, h, d, padding) {
     const pw = (w + padding) / 2, pd = (d + padding) / 2;
-    const cutW = pw * 0.45, cutD = pd * 0.45;
     const shape = new THREE.Shape();
-    shape.moveTo(-pw, -pd);
-    shape.lineTo(pw, -pd);
-    shape.lineTo(pw, pd - cutD);
-    shape.lineTo(pw - cutW, pd - cutD);
-    shape.lineTo(pw - cutW, pd);
-    shape.lineTo(-pw, pd);
-    shape.closePath();
+
+    if (shapeType === 'L') {
+      const cutW = pw * 0.45, cutD = pd * 0.45;
+      shape.moveTo(-pw, -pd);
+      shape.lineTo(pw, -pd);
+      shape.lineTo(pw, pd - cutD);
+      shape.lineTo(pw - cutW, pd - cutD);
+      shape.lineTo(pw - cutW, pd);
+      shape.lineTo(-pw, pd);
+      shape.closePath();
+    } else if (shapeType === 'T') {
+      const stemW = pw * 0.45;
+      shape.moveTo(-pw, -pd);
+      shape.lineTo(pw, -pd);
+      shape.lineTo(pw, -pd + pd * 0.45);
+      shape.lineTo(stemW, -pd + pd * 0.45);
+      shape.lineTo(stemW, pd);
+      shape.lineTo(-stemW, pd);
+      shape.lineTo(-stemW, -pd + pd * 0.45);
+      shape.lineTo(-pw, -pd + pd * 0.45);
+      shape.closePath();
+    } else if (shapeType === 'U') {
+      const wallW = pw * 0.3, gapD = pd * 0.55;
+      shape.moveTo(-pw, -pd);
+      shape.lineTo(pw, -pd);
+      shape.lineTo(pw, pd);
+      shape.lineTo(pw - wallW, pd);
+      shape.lineTo(pw - wallW, -pd + gapD);
+      shape.lineTo(-pw + wallW, -pd + gapD);
+      shape.lineTo(-pw + wallW, pd);
+      shape.lineTo(-pw, pd);
+      shape.closePath();
+    } else if (shapeType === 'C') {
+      const wallW = pw * 0.3, armD = pd * 0.3;
+      shape.moveTo(-pw, -pd);
+      shape.lineTo(pw, -pd);
+      shape.lineTo(pw, -pd + armD);
+      shape.lineTo(-pw + wallW, -pd + armD);
+      shape.lineTo(-pw + wallW, pd - armD);
+      shape.lineTo(pw, pd - armD);
+      shape.lineTo(pw, pd);
+      shape.lineTo(-pw, pd);
+      shape.closePath();
+    } else {
+      // fallback to rectangle
+      shape.moveTo(-pw, -pd);
+      shape.lineTo(pw, -pd);
+      shape.lineTo(pw, pd);
+      shape.lineTo(-pw, pd);
+      shape.closePath();
+    }
+
     const geo = new THREE.ExtrudeGeometry(shape, { depth: h, bevelEnabled: false });
     geo.rotateX(-Math.PI / 2);
     geo.translate(0, h / 2, 0);
@@ -3688,7 +3732,8 @@ function createBuilding3D(b) {
   const lobbyH = floorHeight * 0.9;
   const lobbyColor = new THREE.Color(phaseColors.lobby);
   const lobbyMat = new THREE.MeshStandardMaterial({ color: lobbyColor, roughness: 0.75, metalness: 0.1, emissive: lobbyColor.clone().multiplyScalar(0.05), emissiveIntensity: 0.3 });
-  const lobbyGeo = bShape === 'L' ? makeLShapeGeo(b.width, lobbyH, b.depth, 0.15) : new THREE.BoxGeometry(b.width + 0.15, lobbyH, b.depth + 0.15);
+  const isCustomShape = ['L','T','U','C'].includes(bShape);
+  const lobbyGeo = isCustomShape ? makeShapeGeo(bShape, b.width, lobbyH, b.depth, 0.15) : new THREE.BoxGeometry(b.width + 0.15, lobbyH, b.depth + 0.15);
   const lobby = new THREE.Mesh(lobbyGeo, lobbyMat);
   lobby.position.y = lobbyH / 2;
   lobby.castShadow = true;
@@ -3701,17 +3746,17 @@ function createBuilding3D(b) {
   b.floors.forEach((floorData, i) => {
     const h = floorHeight - gap;
     let geo;
-    if (bShape === 'L') geo = makeLShapeGeo(b.width, h, b.depth, 0);
+    if (isCustomShape) geo = makeShapeGeo(bShape, b.width, h, b.depth, 0);
     else if (bShape === 'podium' && i < 2) geo = new THREE.BoxGeometry(b.width * 1.15, h, b.depth * 1.15);
     else geo = new THREE.BoxGeometry(b.width, h, b.depth);
 
     const sideMat = (tex) => new THREE.MeshStandardMaterial({ map: tex, color: 0xffffff, roughness: 0.25, metalness: 0.2, emissive: glassColor.clone().multiplyScalar(0.12), emissiveIntensity: 0.6 });
     const topBotMat = new THREE.MeshStandardMaterial({ color: concreteColor.clone(), roughness: 0.8, metalness: 0.03 });
     let materials;
-    if (bShape === 'L') materials = [topBotMat, sideMat(winTexFB)];
+    if (isCustomShape) materials = [topBotMat, sideMat(winTexFB)];
     else materials = [sideMat(winTexLR), sideMat(winTexLR), topBotMat, topBotMat, sideMat(winTexFB), sideMat(winTexFB)];
     const mesh = new THREE.Mesh(geo, materials);
-    mesh.position.y = bShape === 'L' ? i * floorHeight + lobbyH * 0.3 : i * floorHeight + h / 2 + lobbyH * 0.3;
+    mesh.position.y = isCustomShape ? i * floorHeight + lobbyH * 0.3 : i * floorHeight + h / 2 + lobbyH * 0.3;
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     mesh.userData = { building: b, floor: floorData, floorIndex: i };
@@ -3722,7 +3767,7 @@ function createBuilding3D(b) {
   });
 
   const roofH = 0.12;
-  const roofGeo = bShape === 'L' ? makeLShapeGeo(b.width - 0.3, roofH, b.depth - 0.3, 0) : new THREE.BoxGeometry(b.width - 0.3, roofH, b.depth - 0.3);
+  const roofGeo = isCustomShape ? makeShapeGeo(bShape, b.width - 0.3, roofH, b.depth - 0.3, 0) : new THREE.BoxGeometry(b.width - 0.3, roofH, b.depth - 0.3);
   const roofMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(phaseColors.roof), roughness: 0.6, metalness: 0.2 });
   const roof = new THREE.Mesh(roofGeo, roofMat);
   const actualFloors = b.floors.length;
@@ -3774,7 +3819,7 @@ let selectedIdx = 0;
 // Editor element collections
 const editorNewBuildings = []; // {config, bgRef}
 const buildingColors = ['#6366f1','#3b82f6','#10b981','#e97320','#8b5cf6','#ec4899','#f59e0b','#ef4444'];
-const buildingShapes = ['box', 'L'];
+const buildingShapes = ['box', 'L', 'T', 'U', 'C', 'podium'];
 const editorGates = [];     // {mesh, name, x, z, facing, type}
 const editorRoads = [];     // {mesh, from, to, width, markings, name}
 const editorAmenities = []; // {mesh, type, x, z}
@@ -3927,7 +3972,7 @@ function updateEditorPanel() {
   }
 
   if (editorMode === 'builder') {
-    html += '<div style="font-size:9px;color:#64748b;margin-bottom:8px">N=new building | Arrows=move | Q/E=rotate | W/S=width | A/D=depth | +/-=floors | C=color | G=shape | Tab=next</div>';
+    html += '<div style="font-size:9px;color:#64748b;margin-bottom:8px">N=new | Arrows=move | Q/E=rotate | W/S=width | A/D=depth | H/J=height | +/-=floors | C=color | G=shape('+buildingShapes.join('/')+') | Tab=next | Del=remove</div>';
     if (editorNewBuildings.length === 0) {
       html += '<div style="color:#64748b;font-size:11px;padding:12px 0">No buildings created. Press N to build one.</div>';
     } else {
@@ -3941,6 +3986,7 @@ function updateEditorPanel() {
           'rot:    ' + bg.group.rotation.y.toFixed(2) + ' (' + (bg.group.rotation.y*180/Math.PI).toFixed(0) + '°)\n' +
           'width:  ' + nb.config.width.toFixed(1) + '\n' +
           'depth:  ' + nb.config.depth.toFixed(1) + '\n' +
+          'height: ' + nb.config.height.toFixed(1) + '\n' +
           'floors: ' + nb.config.totalFloors + '\n' +
           'shape:  ' + nb.config.buildingShape + '\n' +
           'color:  ' + nb.config.color + '</pre>';
@@ -4217,6 +4263,24 @@ document.addEventListener('keydown', (e) => {
         if (!nb) break;
         nb.config.totalFloors = Math.max(1, nb.config.totalFloors - 1);
         nb.config.floors = generateDummyFloors(nb.config.totalFloors, nb.config.totalArea / nb.config.totalFloors);
+        scene.remove(nb.bgRef.group);
+        nb.config.position = { x: nb.bgRef.group.position.x, z: nb.bgRef.group.position.z };
+        nb.config.rotation = nb.bgRef.group.rotation.y;
+        nb.bgRef = createBuilding3D(nb.config);
+        break;
+      }
+      case 'h': case 'H': {
+        if (!nb) break;
+        nb.config.height += 0.3;
+        scene.remove(nb.bgRef.group);
+        nb.config.position = { x: nb.bgRef.group.position.x, z: nb.bgRef.group.position.z };
+        nb.config.rotation = nb.bgRef.group.rotation.y;
+        nb.bgRef = createBuilding3D(nb.config);
+        break;
+      }
+      case 'j': case 'J': {
+        if (!nb) break;
+        nb.config.height = Math.max(1, nb.config.height - 0.3);
         scene.remove(nb.bgRef.group);
         nb.config.position = { x: nb.bgRef.group.position.x, z: nb.bgRef.group.position.z };
         nb.config.rotation = nb.bgRef.group.rotation.y;
