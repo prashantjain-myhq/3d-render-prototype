@@ -3810,6 +3810,75 @@ ACTIVE_DATA.buildings.forEach(b => {
 });
 
 // ============================================================
+// BUILDING POSITION EDITOR (debug mode — toggle with ` key)
+// ============================================================
+let buildingEditorActive = false;
+let selectedBuildingIdx = 0;
+
+const editorPanel = document.createElement('div');
+editorPanel.id = 'building-editor';
+editorPanel.style.cssText = 'display:none;position:fixed;top:80px;left:12px;z-index:200;background:rgba(0,0,0,0.92);color:#fff;padding:16px;border-radius:12px;font-family:monospace;font-size:12px;width:320px;border:1px solid #6366f1;backdrop-filter:blur(8px)';
+editorPanel.innerHTML = `
+  <div style="font-size:11px;font-weight:700;color:#818cf8;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Building Position Editor</div>
+  <div style="font-size:9px;color:#64748b;margin-bottom:12px">Arrow keys = move | Q/E = rotate | W/S = width | A/D = depth | Tab = next building | \` = close</div>
+  <div id="ed-name" style="font-size:16px;font-weight:800;margin-bottom:8px"></div>
+  <pre id="ed-values" style="font-size:12px;line-height:1.8;color:#e2e8f0;margin:0"></pre>
+  <div id="ed-all" style="margin-top:12px;padding-top:8px;border-top:1px solid #334155;font-size:10px;color:#94a3b8"></div>
+`;
+document.body.appendChild(editorPanel);
+
+function updateEditorDisplay() {
+  const bg = buildingGroups[selectedBuildingIdx];
+  if (!bg) return;
+  const g = bg.group, b = bg.building;
+  document.getElementById('ed-name').textContent = b.name;
+  document.getElementById('ed-name').style.color = b.color;
+  document.getElementById('ed-values').textContent =
+    'x:        ' + g.position.x.toFixed(1) + '\\n' +
+    'z:        ' + g.position.z.toFixed(1) + '\\n' +
+    'width:    ' + b.width.toFixed(1) + '\\n' +
+    'depth:    ' + b.depth.toFixed(1) + '\\n' +
+    'rotation: ' + g.rotation.y.toFixed(2) + ' rad (' + (g.rotation.y * 180 / Math.PI).toFixed(0) + '°)';
+
+  // Show all buildings summary
+  document.getElementById('ed-all').innerHTML = buildingGroups.map((bg2, i) => {
+    const sel = i === selectedBuildingIdx ? ' style="color:#818cf8;font-weight:700"' : '';
+    return '<div' + sel + '>' + bg2.building.name + ': x=' + bg2.group.position.x.toFixed(1) + ' z=' + bg2.group.position.z.toFixed(1) + ' rot=' + bg2.group.rotation.y.toFixed(2) + ' w=' + bg2.building.width.toFixed(1) + ' d=' + bg2.building.depth.toFixed(1) + '</div>';
+  }).join('');
+}
+
+document.addEventListener('keydown', (e) => {
+  // Toggle editor with backtick
+  if (e.key === '9') {
+    buildingEditorActive = !buildingEditorActive;
+    editorPanel.style.display = buildingEditorActive ? 'block' : 'none';
+    if (buildingEditorActive) updateEditorDisplay();
+    return;
+  }
+  if (!buildingEditorActive) return;
+
+  const bg = buildingGroups[selectedBuildingIdx];
+  if (!bg) return;
+  const step = e.shiftKey ? 0.1 : 0.5;
+  const rotStep = e.shiftKey ? 0.02 : 0.05;
+  const sizeStep = e.shiftKey ? 0.1 : 0.3;
+
+  switch(e.key) {
+    case 'ArrowLeft':  bg.group.position.x -= step; e.preventDefault(); break;
+    case 'ArrowRight': bg.group.position.x += step; e.preventDefault(); break;
+    case 'ArrowUp':    bg.group.position.z -= step; e.preventDefault(); break;
+    case 'ArrowDown':  bg.group.position.z += step; e.preventDefault(); break;
+    case 'q': case 'Q': bg.group.rotation.y -= rotStep; break;
+    case 'e': case 'E': bg.group.rotation.y += rotStep; break;
+    case 'Tab':
+      e.preventDefault();
+      selectedBuildingIdx = (selectedBuildingIdx + (e.shiftKey ? -1 : 1) + buildingGroups.length) % buildingGroups.length;
+      break;
+  }
+  updateEditorDisplay();
+});
+
+// ============================================================
 // SVG Sparkline Generator (Feature 3)
 // ============================================================
 function createSparklineSVG(dataPoints, width, height, strokeColor, fillColor) {
@@ -7423,6 +7492,29 @@ mapboxMap.on('load', () => {
     paint: { 'line-color': '#6366f1', 'line-width': 2, 'line-dasharray': [4, 3], 'line-opacity': 0.7 }
   });
   distanceLinesReady = true;
+
+  // 3D Buildings from Mapbox/OpenStreetMap — real footprints as context
+  const layers = mapboxMap.getStyle().layers;
+  const labelLayerId = layers.find(l => l.type === 'symbol' && l.layout['text-field'])?.id;
+  mapboxMap.addLayer({
+    id: '3d-buildings',
+    source: 'composite',
+    'source-layer': 'building',
+    filter: ['==', 'extrude', 'true'],
+    type: 'fill-extrusion',
+    minzoom: 13,
+    paint: {
+      'fill-extrusion-color': [
+        'interpolate', ['linear'], ['get', 'height'],
+        0, '#e2e8f0',
+        50, '#94a3b8',
+        100, '#64748b'
+      ],
+      'fill-extrusion-height': ['get', 'height'],
+      'fill-extrusion-base': ['get', 'min_height'],
+      'fill-extrusion-opacity': 0.6
+    }
+  }, labelLayerId);
 });
 
 buildDistanceLines(activeCenterParkId);
