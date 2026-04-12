@@ -702,59 +702,50 @@
 
     .ph-stats {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 3px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
     }
 
     .ph-stat {
-      background: #fff;
-      border: 1px solid #f1f5f9;
-      border-radius: 5px;
-      padding: 4px 6px;
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+
+    .ph-stat.full-width {
+      grid-column: 1 / -1;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .ph-stat.full-width {
-      grid-column: 1 / -1;
-    }
-
     .ph-stat-label {
       font-size: 9px;
-      color: #64748b;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 3px;
-    }
-
-    .ph-stat-label[data-tip]::after {
-      content: '\2139';
-      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
       color: #94a3b8;
-      cursor: help;
+      font-weight: 600;
+      margin-bottom: 2px;
     }
 
     .ph-stat-value {
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 700;
-      color: #1e293b;
+      color: #0f172a;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      text-align: right;
     }
 
     .ph-amenities {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px;
+      gap: 5px;
       margin-top: 6px;
     }
 
     .ph-amenity-tag {
-      padding: 2px 8px;
+      padding: 3px 10px;
       background: #f8fafc;
       border: 1px solid #e2e8f0;
       border-radius: 999px;
@@ -5363,14 +5354,14 @@ function openPanel(building, highlightFloorIndex) {
 
     <div class="ph-section">
       <div class="ph-stats">
-        <div class="ph-stat"><div class="ph-stat-label" data-tip="Average occupancy across all floors in this building">Avg Occupancy</div><div class="ph-stat-value">${avgOcc}%</div></div>
-        <div class="ph-stat"><div class="ph-stat-label" data-tip="Average asking rent across occupied floors">Avg Rent</div><div class="ph-stat-value">\u20B9${avgRent}/sqft</div></div>
-        ${building.capitalValuePerSqft ? '<div class="ph-stat"><div class="ph-stat-label" data-tip="Annual rental income as % of property value">Avg Yield</div><div class="ph-stat-value">' + avgYield + '%</div></div>' : ''}
-        <div class="ph-stat"><div class="ph-stat-label" data-tip="Common Area Maintenance — monthly charges for shared facilities">CAM</div><div class="ph-stat-value">\u20B9${building.camCharges}/sqft</div></div>
-        <div class="ph-stat"><div class="ph-stat-label" data-tip="Car parking spaces per 1000 sqft of office area">Parking</div><div class="ph-stat-value">${building.parkingRatio}/1K sqft</div></div>
-        <div class="ph-stat"><div class="ph-stat-label" data-tip="Carpet (usable) area as % of total built-up area">Efficiency</div><div class="ph-stat-value">${building.efficiencyRatio}%</div></div>
-        <div class="ph-stat"><div class="ph-stat-label" data-tip="Rent increase clause — typically applied every 3 years">Escalation</div><div class="ph-stat-value">${building.escalation}</div></div>
-        <div class="ph-stat full-width"><div class="ph-stat-label" data-tip="Power backup provision for the building">Power</div><div class="ph-stat-value" title="${building.powerBackup}">${building.powerBackup}</div></div>
+        <div class="ph-stat"><div class="ph-stat-label" data-tip="Average occupancy across all floors">Occupancy</div><div class="ph-stat-value">${avgOcc}%</div></div>
+        <div class="ph-stat"><div class="ph-stat-label" data-tip="Average asking rent across occupied floors">Avg Rent</div><div class="ph-stat-value">\u20B9${avgRent}</div></div>
+        ${building.capitalValuePerSqft ? '<div class="ph-stat"><div class="ph-stat-label" data-tip="Annual rental return on capital value">Yield</div><div class="ph-stat-value">' + avgYield + '%</div></div>' : '<div class="ph-stat"><div class="ph-stat-label" data-tip="Common Area Maintenance charges">CAM</div><div class="ph-stat-value">\u20B9' + building.camCharges + '</div></div>'}
+        ${building.capitalValuePerSqft ? '<div class="ph-stat"><div class="ph-stat-label" data-tip="Common Area Maintenance charges">CAM</div><div class="ph-stat-value">\u20B9' + building.camCharges + '</div></div>' : ''}
+        <div class="ph-stat"><div class="ph-stat-label" data-tip="Car parking per 1000 sqft">Parking</div><div class="ph-stat-value">${building.parkingRatio}/1K</div></div>
+        <div class="ph-stat"><div class="ph-stat-label" data-tip="Carpet area as % of super built-up">Efficiency</div><div class="ph-stat-value">${building.efficiencyRatio}%</div></div>
+        <div class="ph-stat full-width"><div class="ph-stat-label" data-tip="Rent escalation clause">Escalation</div><div class="ph-stat-value">${building.escalation}</div></div>
+        <div class="ph-stat full-width"><div class="ph-stat-label" data-tip="Power backup provision">Power</div><div class="ph-stat-value">${building.powerBackup}</div></div>
       </div>
     </div>
 
