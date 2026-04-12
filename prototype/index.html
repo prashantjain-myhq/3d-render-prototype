@@ -2038,7 +2038,8 @@
   if (!hasCity) {
     var intro = document.getElementById('intro-overlay');
     intro.style.display = 'block';
-    document.getElementById('loading-screen').style.display = 'none';
+    var ls = document.getElementById('loading-screen');
+    if (ls) ls.style.display = 'none';
 
     // === BACKGROUND CANVAS: Tron grid + data fragments + glow bursts ===
     var cv = document.getElementById('intro-canvas');
