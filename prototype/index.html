@@ -3657,7 +3657,8 @@ function createTShape(w, d) {
   return shape;
 }
 
-ACTIVE_DATA.buildings.forEach(b => {
+// Reusable building renderer — used by initial load AND building builder
+function createBuilding3D(b) {
   const group = new THREE.Group();
   const floorHeight = b.height / b.totalFloors;
   const gap = 0.025;
@@ -3667,18 +3668,6 @@ ACTIVE_DATA.buildings.forEach(b => {
   const winTexFB = createWindowTexture(b.phase, 256, 256, 6, b.totalFloors);
   const winTexLR = createWindowTexture(b.phase, 256, 256, 5, b.totalFloors);
 
-  // --- Lobby / base section ---
-  const lobbyH = floorHeight * 0.9;
-  const lobbyColor = new THREE.Color(phaseColors.lobby);
-  const lobbyMat = new THREE.MeshStandardMaterial({
-    color: lobbyColor,
-    roughness: 0.75,
-    metalness: 0.1,
-    emissive: lobbyColor.clone().multiplyScalar(0.05),
-    emissiveIntensity: 0.3,
-  });
-
-  // Lobby geometry — L-shaped for Unitech towers, box for others
   function makeLShapeGeo(w, h, d, padding) {
     const pw = (w + padding) / 2, pd = (d + padding) / 2;
     const cutW = pw * 0.45, cutD = pd * 0.45;
@@ -3690,112 +3679,63 @@ ACTIVE_DATA.buildings.forEach(b => {
     shape.lineTo(pw - cutW, pd);
     shape.lineTo(-pw, pd);
     shape.closePath();
-    const extSettings = { depth: h, bevelEnabled: false };
-    const geo = new THREE.ExtrudeGeometry(shape, extSettings);
+    const geo = new THREE.ExtrudeGeometry(shape, { depth: h, bevelEnabled: false });
     geo.rotateX(-Math.PI / 2);
     geo.translate(0, h / 2, 0);
     return geo;
   }
-  const lobbyGeo = bShape === 'L'
-    ? makeLShapeGeo(b.width, lobbyH, b.depth, 0.15)
-    : new THREE.BoxGeometry(b.width + 0.15, lobbyH, b.depth + 0.15);
 
+  const lobbyH = floorHeight * 0.9;
+  const lobbyColor = new THREE.Color(phaseColors.lobby);
+  const lobbyMat = new THREE.MeshStandardMaterial({ color: lobbyColor, roughness: 0.75, metalness: 0.1, emissive: lobbyColor.clone().multiplyScalar(0.05), emissiveIntensity: 0.3 });
+  const lobbyGeo = bShape === 'L' ? makeLShapeGeo(b.width, lobbyH, b.depth, 0.15) : new THREE.BoxGeometry(b.width + 0.15, lobbyH, b.depth + 0.15);
   const lobby = new THREE.Mesh(lobbyGeo, lobbyMat);
   lobby.position.y = lobbyH / 2;
   lobby.castShadow = true;
   lobby.receiveShadow = true;
   group.add(lobby);
 
-  // --- Individual floor meshes ---
   const glassColor = new THREE.Color(phaseColors.glass);
   const concreteColor = new THREE.Color(phaseColors.concrete);
 
   b.floors.forEach((floorData, i) => {
     const h = floorHeight - gap;
-
-    // Floor geometry — L-shape for Unitech, box for others
     let geo;
-    if (bShape === 'L') {
-      geo = makeLShapeGeo(b.width, h, b.depth, 0);
-    } else if (bShape === 'podium' && i < 2) {
-      geo = new THREE.BoxGeometry(b.width * 1.15, h, b.depth * 1.15);
-    } else {
-      geo = new THREE.BoxGeometry(b.width, h, b.depth);
-    }
+    if (bShape === 'L') geo = makeLShapeGeo(b.width, h, b.depth, 0);
+    else if (bShape === 'podium' && i < 2) geo = new THREE.BoxGeometry(b.width * 1.15, h, b.depth * 1.15);
+    else geo = new THREE.BoxGeometry(b.width, h, b.depth);
 
-    // All buildings use the same material structure for consistency
-    const sideMat = (tex) => new THREE.MeshStandardMaterial({
-      map: tex,
-      color: new THREE.Color(0xffffff),
-      roughness: 0.25,
-      metalness: 0.2,
-      emissive: glassColor.clone().multiplyScalar(0.12),
-      emissiveIntensity: 0.6,
-    });
-
-    const topBotMat = new THREE.MeshStandardMaterial({
-      color: concreteColor.clone(),
-      roughness: 0.8,
-      metalness: 0.03,
-    });
-
-    // ExtrudeGeometry (L-shape) has 2 material groups: 0=top/bottom, 1=sides
-    // BoxGeometry has 6 faces: +x,-x,+y,-y,+z,-z
+    const sideMat = (tex) => new THREE.MeshStandardMaterial({ map: tex, color: 0xffffff, roughness: 0.25, metalness: 0.2, emissive: glassColor.clone().multiplyScalar(0.12), emissiveIntensity: 0.6 });
+    const topBotMat = new THREE.MeshStandardMaterial({ color: concreteColor.clone(), roughness: 0.8, metalness: 0.03 });
     let materials;
-    if (bShape === 'L') {
-      materials = [topBotMat, sideMat(winTexFB)];
-    } else {
-      materials = [
-        sideMat(winTexLR), sideMat(winTexLR),
-        topBotMat, topBotMat,
-        sideMat(winTexFB), sideMat(winTexFB),
-      ];
-    }
+    if (bShape === 'L') materials = [topBotMat, sideMat(winTexFB)];
+    else materials = [sideMat(winTexLR), sideMat(winTexLR), topBotMat, topBotMat, sideMat(winTexFB), sideMat(winTexFB)];
     const mesh = new THREE.Mesh(geo, materials);
-
     mesh.position.y = bShape === 'L' ? i * floorHeight + lobbyH * 0.3 : i * floorHeight + h / 2 + lobbyH * 0.3;
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     mesh.userData = { building: b, floor: floorData, floorIndex: i };
     group.add(mesh);
-
     floorMeshes.push(mesh);
     floorDataMap.set(mesh, { building: b, floor: floorData, floorIndex: i });
-
-    originalMaterialColors.set(mesh, materials.map(m => ({
-      color: m.color.clone(),
-      emissive: m.emissive.clone(),
-      emissiveIntensity: m.emissiveIntensity,
-      map: m.map,
-    })));
+    originalMaterialColors.set(mesh, materials.map(m => ({ color: m.color.clone(), emissive: m.emissive.clone(), emissiveIntensity: m.emissiveIntensity, map: m.map })));
   });
 
-  // --- Rooftop element ---
   const roofH = 0.12;
-  const roofGeo = bShape === 'L'
-    ? makeLShapeGeo(b.width - 0.3, roofH, b.depth - 0.3, 0)
-    : new THREE.BoxGeometry(b.width - 0.3, roofH, b.depth - 0.3);
-  const roofMat = new THREE.MeshStandardMaterial({
-    color: new THREE.Color(phaseColors.roof),
-    roughness: 0.6,
-    metalness: 0.2,
-  });
+  const roofGeo = bShape === 'L' ? makeLShapeGeo(b.width - 0.3, roofH, b.depth - 0.3, 0) : new THREE.BoxGeometry(b.width - 0.3, roofH, b.depth - 0.3);
+  const roofMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(phaseColors.roof), roughness: 0.6, metalness: 0.2 });
   const roof = new THREE.Mesh(roofGeo, roofMat);
-  // Use actual floor count for roof positioning
   const actualFloors = b.floors.length;
   const lastFloorTop = (actualFloors - 1) * floorHeight + (floorHeight - gap) + lobbyH * 0.3;
   roof.position.y = lastFloorTop + roofH / 2 + 0.02;
   roof.castShadow = true;
   group.add(roof);
 
-  const acGeo = new THREE.BoxGeometry(0.4, 0.15, 0.4);
-  const acMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.7 });
-  const ac = new THREE.Mesh(acGeo, acMat);
-  ac.position.y = roof.position.y + roofH / 2 + 0.075;
+  const ac = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.15, 0.4), new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.7 }));
+  ac.position.y = roof.position.y + 0.075 + roofH / 2;
   ac.position.x = (b.width / 2 - 0.5) * (Math.random() > 0.5 ? 1 : -1) * 0.5;
   group.add(ac);
 
-  // --- Floating label ---
   const labelDiv = document.createElement('div');
   labelDiv.className = 'building-label';
   labelDiv.textContent = b.name;
@@ -3806,7 +3746,23 @@ ACTIVE_DATA.buildings.forEach(b => {
   group.position.set(b.position.x, 0, b.position.z);
   if (b.rotation) group.rotation.y = b.rotation;
   scene.add(group);
-  buildingGroups.push({ group, building: b });
+  return { group, building: b };
+}
+
+// Generate dummy vacant floors for new buildings
+function generateDummyFloors(count, area) {
+  return Array.from({length: count}, (_, i) => ({
+    floor: i + 1, tenant: 'Vacant', occupancy: 0, rentPerSqft: null,
+    area: area, status: 'Vacant', carpetArea: Math.round(area * 0.7),
+    superBuiltUp: area, lockInPeriod: null, securityDeposit: 0,
+    fitOut: 'Bare Shell', propertyCondition: 'Bare Shell',
+    rentalYield: 0, monthlyRevenue: 0, annualRevenue: 0,
+    sector: null, effectiveRent: null, dealType: null, leaseExpiryDate: null
+  }));
+}
+
+ACTIVE_DATA.buildings.forEach(b => {
+  buildingGroups.push(createBuilding3D(b));
 });
 
 // ============================================================
@@ -3816,6 +3772,9 @@ let editorMode = null; // null, 'buildings', 'gates', 'roads', 'amenities'
 let selectedIdx = 0;
 
 // Editor element collections
+const editorNewBuildings = []; // {config, bgRef}
+const buildingColors = ['#6366f1','#3b82f6','#10b981','#e97320','#8b5cf6','#ec4899','#f59e0b','#ef4444'];
+const buildingShapes = ['box', 'L'];
 const editorGates = [];     // {mesh, name, x, z, facing, type}
 const editorRoads = [];     // {mesh, from, to, width, markings, name}
 const editorAmenities = []; // {mesh, type, x, z}
@@ -3907,10 +3866,10 @@ function updateEditorPanel() {
   if (!editorMode) { editorPanel.style.display = 'none'; return; }
   editorPanel.style.display = 'block';
 
-  const modeColors = { buildings:'#6366f1', gates:'#f59e0b', roads:'#22c55e', amenities:'#ec4899' };
-  const modeKeys = { buildings:'9', gates:'8', roads:'7', amenities:'6' };
-  let html = '<div style="display:flex;gap:6px;margin-bottom:10px">';
-  ['buildings','gates','roads','amenities'].forEach(m => {
+  const modeColors = { builder:'#ef4444', buildings:'#6366f1', gates:'#f59e0b', roads:'#22c55e', amenities:'#ec4899' };
+  const modeKeys = { builder:'0', buildings:'9', gates:'8', roads:'7', amenities:'6' };
+  let html = '<div style="display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap">';
+  ['builder','buildings','gates','roads','amenities'].forEach(m => {
     const active = editorMode === m;
     html += '<div style="padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;' + (active ? 'background:'+modeColors[m]+';color:#fff' : 'background:#1e293b;color:#64748b') + '">' + modeKeys[m] + ' ' + m.charAt(0).toUpperCase() + m.slice(1) + '</div>';
   });
@@ -3929,6 +3888,7 @@ function updateEditorPanel() {
         html += '<div style="'+sel+'">' + bg2.building.name + ': x=' + bg2.group.position.x.toFixed(1) + ' z=' + bg2.group.position.z.toFixed(1) + ' rot=' + bg2.group.rotation.y.toFixed(2) + ' w=' + bg2.building.width.toFixed(1) + ' d=' + bg2.building.depth.toFixed(1) + '</div>';
       });
       html += '</div>';
+      html += editorJsonBlock('// Building positions:\n' + buildingGroups.map(bg2 => bg2.building.name + ': { x: ' + bg2.group.position.x.toFixed(1) + ', z: ' + bg2.group.position.z.toFixed(1) + ' }, rot: ' + bg2.group.rotation.y.toFixed(2) + ', w: ' + bg2.building.width.toFixed(1) + ', d: ' + bg2.building.depth.toFixed(1)).join('\n'));
     }
   }
 
@@ -3966,12 +3926,41 @@ function updateEditorPanel() {
     html += editorJsonBlock('amenities: [\n' + editorAmenities.map(a => '  { type: "'+a.type+'", x: '+a.x.toFixed(1)+', z: '+a.z.toFixed(1)+', rotation: '+(a.rot||0).toFixed(2)+' }').join(',\n') + '\n]');
   }
 
+  if (editorMode === 'builder') {
+    html += '<div style="font-size:9px;color:#64748b;margin-bottom:8px">N=new building | Arrows=move | Q/E=rotate | W/S=width | A/D=depth | +/-=floors | C=color | G=shape | Tab=next</div>';
+    if (editorNewBuildings.length === 0) {
+      html += '<div style="color:#64748b;font-size:11px;padding:12px 0">No buildings created. Press N to build one.</div>';
+    } else {
+      const nb = editorNewBuildings[selectedIdx % editorNewBuildings.length];
+      if (nb) {
+        const bg = nb.bgRef;
+        html += '<div style="font-size:14px;font-weight:800;color:'+nb.config.color+';margin-bottom:4px">' + nb.config.name + '</div>';
+        html += '<pre style="font-size:11px;line-height:1.7;color:#e2e8f0;margin:0">' +
+          'x:      ' + bg.group.position.x.toFixed(1) + '\n' +
+          'z:      ' + bg.group.position.z.toFixed(1) + '\n' +
+          'rot:    ' + bg.group.rotation.y.toFixed(2) + ' (' + (bg.group.rotation.y*180/Math.PI).toFixed(0) + '°)\n' +
+          'width:  ' + nb.config.width.toFixed(1) + '\n' +
+          'depth:  ' + nb.config.depth.toFixed(1) + '\n' +
+          'floors: ' + nb.config.totalFloors + '\n' +
+          'shape:  ' + nb.config.buildingShape + '\n' +
+          'color:  ' + nb.config.color + '</pre>';
+      }
+    }
+    const allBldgs = editorNewBuildings.map(nb => {
+      const g = nb.bgRef.group;
+      const c = nb.config;
+      return '  {\n    id: "'+c.id+'", name: "'+c.name+'",\n    position: {x: '+g.position.x.toFixed(1)+', z: '+g.position.z.toFixed(1)+'}, width: '+c.width.toFixed(1)+', depth: '+c.depth.toFixed(1)+', height: '+c.height.toFixed(1)+',\n    rotation: '+g.rotation.y.toFixed(2)+', buildingShape: "'+c.buildingShape+'", totalFloors: '+c.totalFloors+',\n    color: "'+c.color+'", grade: "B"\n  }';
+    });
+    html += editorJsonBlock('// New buildings:\n[\n' + allBldgs.join(',\n') + '\n]');
+  }
+
   editorPanel.innerHTML = html;
 }
 
 document.addEventListener('keydown', (e) => {
   if (currentView !== 'park') return;
   // Mode switching
+  if (e.key === '0') { editorMode = editorMode === 'builder' ? null : 'builder'; selectedIdx = 0; updateEditorPanel(); return; }
   if (e.key === '9') { editorMode = editorMode === 'buildings' ? null : 'buildings'; selectedIdx = 0; updateEditorPanel(); return; }
   if (e.key === '8') { editorMode = editorMode === 'gates' ? null : 'gates'; selectedIdx = 0; updateEditorPanel(); return; }
   if (e.key === '7') { editorMode = editorMode === 'roads' ? null : 'roads'; selectedIdx = 0; roadDrawing = false; updateEditorPanel(); return; }
@@ -4137,6 +4126,131 @@ document.addEventListener('keydown', (e) => {
         break;
       }
       case 'Tab': e.preventDefault(); if (editorAmenities.length) selectedIdx = (selectedIdx + (e.shiftKey ? -1 : 1) + editorAmenities.length) % editorAmenities.length; break;
+    }
+  }
+
+  // === BUILDER MODE ===
+  if (editorMode === 'builder') {
+    const nb = editorNewBuildings[selectedIdx];
+    switch(e.key) {
+      case 'n': case 'N': {
+        const name = prompt('Building name:', 'Building ' + (editorNewBuildings.length + 1));
+        if (!name) break;
+        const id = name.toLowerCase().replace(/\s+/g, '-');
+        const config = {
+          id, name, phase: null, totalFloors: 10, totalArea: 100000,
+          yearBuilt: 2020, color: buildingColors[editorNewBuildings.length % buildingColors.length],
+          position: { x: 0, z: 0 }, width: 8, depth: 4, height: 6,
+          rotation: 0, buildingShape: 'box', grade: 'B', certification: null,
+          camCharges: 20, escalation: '15% every 3 years', powerBackup: '100% DG + Dual Feed',
+          parkingRatio: 1.0, floorPlateSize: 25000, efficiencyRatio: 70,
+          amenities: ['Cafeteria','Parking','Lift','Security'],
+          microMarket: '', capitalValuePerSqft: 0, capitalValueTrend: [],
+          floors: generateDummyFloors(10, 25000)
+        };
+        const bgRef = createBuilding3D(config);
+        buildingGroups.push(bgRef);
+        editorNewBuildings.push({ config, bgRef });
+        selectedIdx = editorNewBuildings.length - 1;
+        break;
+      }
+      case 'ArrowLeft': case 'ArrowRight': case 'ArrowUp': case 'ArrowDown': {
+        if (!nb) break;
+        const bg = nb.bgRef;
+        if (e.key === 'ArrowLeft') bg.group.position.x -= step;
+        if (e.key === 'ArrowRight') bg.group.position.x += step;
+        if (e.key === 'ArrowUp') bg.group.position.z -= step;
+        if (e.key === 'ArrowDown') bg.group.position.z += step;
+        e.preventDefault();
+        break;
+      }
+      case 'q': case 'Q': { if (nb) nb.bgRef.group.rotation.y -= rotStep; break; }
+      case 'e': case 'E': { if (nb) nb.bgRef.group.rotation.y += rotStep; break; }
+      case 'w': case 'W': {
+        if (!nb) break;
+        nb.config.width += 0.3;
+        // Rebuild building with new dimensions
+        scene.remove(nb.bgRef.group);
+        nb.config.position = { x: nb.bgRef.group.position.x, z: nb.bgRef.group.position.z };
+        nb.config.rotation = nb.bgRef.group.rotation.y;
+        nb.bgRef = createBuilding3D(nb.config);
+        break;
+      }
+      case 's': case 'S': {
+        if (!nb) break;
+        nb.config.width = Math.max(2, nb.config.width - 0.3);
+        scene.remove(nb.bgRef.group);
+        nb.config.position = { x: nb.bgRef.group.position.x, z: nb.bgRef.group.position.z };
+        nb.config.rotation = nb.bgRef.group.rotation.y;
+        nb.bgRef = createBuilding3D(nb.config);
+        break;
+      }
+      case 'a': case 'A': {
+        if (!nb) break;
+        nb.config.depth += 0.3;
+        scene.remove(nb.bgRef.group);
+        nb.config.position = { x: nb.bgRef.group.position.x, z: nb.bgRef.group.position.z };
+        nb.config.rotation = nb.bgRef.group.rotation.y;
+        nb.bgRef = createBuilding3D(nb.config);
+        break;
+      }
+      case 'd': case 'D': {
+        if (!nb) break;
+        nb.config.depth = Math.max(1, nb.config.depth - 0.3);
+        scene.remove(nb.bgRef.group);
+        nb.config.position = { x: nb.bgRef.group.position.x, z: nb.bgRef.group.position.z };
+        nb.config.rotation = nb.bgRef.group.rotation.y;
+        nb.bgRef = createBuilding3D(nb.config);
+        break;
+      }
+      case '+': case '=': {
+        if (!nb) break;
+        nb.config.totalFloors += 1;
+        nb.config.floors = generateDummyFloors(nb.config.totalFloors, nb.config.totalArea / nb.config.totalFloors);
+        scene.remove(nb.bgRef.group);
+        nb.config.position = { x: nb.bgRef.group.position.x, z: nb.bgRef.group.position.z };
+        nb.config.rotation = nb.bgRef.group.rotation.y;
+        nb.bgRef = createBuilding3D(nb.config);
+        break;
+      }
+      case '-': case '_': {
+        if (!nb) break;
+        nb.config.totalFloors = Math.max(1, nb.config.totalFloors - 1);
+        nb.config.floors = generateDummyFloors(nb.config.totalFloors, nb.config.totalArea / nb.config.totalFloors);
+        scene.remove(nb.bgRef.group);
+        nb.config.position = { x: nb.bgRef.group.position.x, z: nb.bgRef.group.position.z };
+        nb.config.rotation = nb.bgRef.group.rotation.y;
+        nb.bgRef = createBuilding3D(nb.config);
+        break;
+      }
+      case 'c': case 'C': {
+        if (!nb) break;
+        const ci = buildingColors.indexOf(nb.config.color);
+        nb.config.color = buildingColors[(ci + 1) % buildingColors.length];
+        scene.remove(nb.bgRef.group);
+        nb.config.position = { x: nb.bgRef.group.position.x, z: nb.bgRef.group.position.z };
+        nb.config.rotation = nb.bgRef.group.rotation.y;
+        nb.bgRef = createBuilding3D(nb.config);
+        break;
+      }
+      case 'g': case 'G': {
+        if (!nb) break;
+        const si = buildingShapes.indexOf(nb.config.buildingShape);
+        nb.config.buildingShape = buildingShapes[(si + 1) % buildingShapes.length];
+        scene.remove(nb.bgRef.group);
+        nb.config.position = { x: nb.bgRef.group.position.x, z: nb.bgRef.group.position.z };
+        nb.config.rotation = nb.bgRef.group.rotation.y;
+        nb.bgRef = createBuilding3D(nb.config);
+        break;
+      }
+      case 'Tab': e.preventDefault(); if (editorNewBuildings.length) selectedIdx = (selectedIdx + (e.shiftKey ? -1 : 1) + editorNewBuildings.length) % editorNewBuildings.length; break;
+      case 'Delete': case 'Backspace': {
+        if (!nb) break;
+        scene.remove(nb.bgRef.group);
+        editorNewBuildings.splice(selectedIdx, 1);
+        if (selectedIdx >= editorNewBuildings.length) selectedIdx = Math.max(0, editorNewBuildings.length - 1);
+        break;
+      }
     }
   }
 
