@@ -3810,72 +3810,337 @@ ACTIVE_DATA.buildings.forEach(b => {
 });
 
 // ============================================================
-// BUILDING POSITION EDITOR (debug mode — toggle with ` key)
+// CAMPUS EDITOR — Buildings (9), Gates (8), Roads (7), Amenities (6)
 // ============================================================
-let buildingEditorActive = false;
-let selectedBuildingIdx = 0;
+let editorMode = null; // null, 'buildings', 'gates', 'roads', 'amenities'
+let selectedIdx = 0;
+
+// Editor element collections
+const editorGates = [];     // {mesh, name, x, z, facing, type}
+const editorRoads = [];     // {mesh, from, to, width, markings, name}
+const editorAmenities = []; // {mesh, type, x, z}
+let roadDrawing = false;    // true when placing road end point
+let roadStart = null;       // [x, z] of road start
 
 const editorPanel = document.createElement('div');
 editorPanel.id = 'building-editor';
-editorPanel.style.cssText = 'display:none;position:fixed;top:80px;left:12px;z-index:200;background:rgba(0,0,0,0.92);color:#fff;padding:16px;border-radius:12px;font-family:monospace;font-size:12px;width:320px;border:1px solid #6366f1;backdrop-filter:blur(8px)';
-editorPanel.innerHTML = `
-  <div style="font-size:11px;font-weight:700;color:#818cf8;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Building Position Editor</div>
-  <div style="font-size:9px;color:#64748b;margin-bottom:12px">Arrow keys = move | Q/E = rotate | W/S = width | A/D = depth | Tab = next building | \` = close</div>
-  <div id="ed-name" style="font-size:16px;font-weight:800;margin-bottom:8px"></div>
-  <pre id="ed-values" style="font-size:12px;line-height:1.8;color:#e2e8f0;margin:0"></pre>
-  <div id="ed-all" style="margin-top:12px;padding-top:8px;border-top:1px solid #334155;font-size:10px;color:#94a3b8"></div>
-`;
+editorPanel.style.cssText = 'display:none;position:fixed;top:80px;left:12px;z-index:200;background:rgba(0,0,0,0.92);color:#fff;padding:16px;border-radius:12px;font-family:monospace;font-size:12px;width:480px;border:1px solid #6366f1;backdrop-filter:blur(8px);max-height:80vh;overflow-y:auto';
 document.body.appendChild(editorPanel);
 
-function updateEditorDisplay() {
-  const bg = buildingGroups[selectedBuildingIdx];
-  if (!bg) return;
-  const g = bg.group, b = bg.building;
-  document.getElementById('ed-name').textContent = b.name;
-  document.getElementById('ed-name').style.color = b.color;
-  document.getElementById('ed-values').textContent =
-    'x:        ' + g.position.x.toFixed(1) + '\\n' +
-    'z:        ' + g.position.z.toFixed(1) + '\\n' +
-    'width:    ' + b.width.toFixed(1) + '\\n' +
-    'depth:    ' + b.depth.toFixed(1) + '\\n' +
-    'rotation: ' + g.rotation.y.toFixed(2) + ' rad (' + (g.rotation.y * 180 / Math.PI).toFixed(0) + '°)';
+const amenityTypes = ['ATM', 'security', 'bus-stop', 'cafeteria', 'parking', 'EV-charging'];
+const facingDirs = ['north', 'south', 'east', 'west'];
 
-  // Show all buildings summary
-  document.getElementById('ed-all').innerHTML = buildingGroups.map((bg2, i) => {
-    const sel = i === selectedBuildingIdx ? ' style="color:#818cf8;font-weight:700"' : '';
-    return '<div' + sel + '>' + bg2.building.name + ': x=' + bg2.group.position.x.toFixed(1) + ' z=' + bg2.group.position.z.toFixed(1) + ' rot=' + bg2.group.rotation.y.toFixed(2) + ' w=' + bg2.building.width.toFixed(1) + ' d=' + bg2.building.depth.toFixed(1) + '</div>';
-  }).join('');
+function createEditorMarker(color, label, isGate) {
+  const g = new THREE.Group();
+  if (isGate) {
+    // Two-pillar gate with barrier bar
+    const pillarGeo = new THREE.CylinderGeometry(0.2, 0.25, 2.0, 8);
+    const pillarMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.5, metalness: 0.3 });
+    const left = new THREE.Mesh(pillarGeo, pillarMat);
+    left.position.set(-1.2, 1.0, 0);
+    g.add(left);
+    const right = new THREE.Mesh(pillarGeo, pillarMat);
+    right.position.set(1.2, 1.0, 0);
+    g.add(right);
+    // Top cap on pillars
+    const capGeo = new THREE.CylinderGeometry(0.3, 0.2, 0.15, 8);
+    const capMat = new THREE.MeshStandardMaterial({ color, emissive: new THREE.Color(color), emissiveIntensity: 0.4 });
+    const capL = new THREE.Mesh(capGeo, capMat);
+    capL.position.set(-1.2, 2.05, 0);
+    g.add(capL);
+    const capR = new THREE.Mesh(capGeo, capMat);
+    capR.position.set(1.2, 2.05, 0);
+    g.add(capR);
+    // Barrier bar between pillars
+    const barGeo = new THREE.BoxGeometry(2.0, 0.08, 0.08);
+    const barMat = new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: new THREE.Color(0xef4444), emissiveIntensity: 0.2 });
+    const bar = new THREE.Mesh(barGeo, barMat);
+    bar.position.set(0, 1.4, 0);
+    g.add(bar);
+  } else {
+    // Simple cylinder marker for amenities
+    const geo = new THREE.CylinderGeometry(0.3, 0.3, 1.5, 8);
+    const mat = new THREE.MeshStandardMaterial({ color, emissive: new THREE.Color(color), emissiveIntensity: 0.3 });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.y = 0.75;
+    g.add(mesh);
+  }
+  if (label) {
+    const div = document.createElement('div');
+    div.style.cssText = 'font-size:10px;font-weight:700;color:#fff;background:rgba(0,0,0,0.7);padding:1px 6px;border-radius:3px;white-space:nowrap;font-family:system-ui';
+    div.textContent = label;
+    const lbl = new CSS2DObject(div);
+    lbl.position.set(0, isGate ? 2.5 : 1.8, 0);
+    g.add(lbl);
+  }
+  scene.add(g);
+  return g;
+}
+
+function createEditorRoad(from, to, width) {
+  const dx = to[0] - from[0], dz = to[1] - from[1];
+  const len = Math.sqrt(dx*dx + dz*dz);
+  const geo = new THREE.BoxGeometry(len, 0.06, width || 0.8);
+  const mat = new THREE.MeshStandardMaterial({ color: 0x444444, roughness: 0.9 });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set((from[0]+to[0])/2, 0.04, (from[1]+to[1])/2);
+  mesh.rotation.y = -Math.atan2(dz, dx);
+  scene.add(mesh);
+  return mesh;
+}
+
+window._editorCopyJSON = function() {
+  const pre = document.querySelector('#building-editor .ed-json');
+  if (pre) {
+    navigator.clipboard.writeText(pre.textContent).then(() => {
+      const btn = document.querySelector('#building-editor .ed-copy-btn');
+      if (btn) { btn.textContent = 'Copied!'; btn.style.background = '#16a34a'; setTimeout(() => { btn.textContent = 'Copy JSON'; btn.style.background = '#334155'; }, 1500); }
+    });
+  }
+};
+
+function editorJsonBlock(json) {
+  return '<div style="margin-top:8px;padding-top:6px;border-top:1px solid #334155;display:flex;justify-content:space-between;align-items:center"><span style="font-size:9px;color:#94a3b8;font-weight:700">JSON:</span><button class="ed-copy-btn" onclick="_editorCopyJSON()" style="font-size:9px;padding:2px 10px;background:#334155;color:#e2e8f0;border:1px solid #475569;border-radius:4px;cursor:pointer;font-family:monospace;font-weight:600">Copy JSON</button></div><pre class="ed-json" style="font-size:9px;color:#22c55e;margin:4px 0;max-height:120px;overflow:auto;white-space:pre-wrap;word-break:break-all">' + json + '</pre>';
+}
+
+function updateEditorPanel() {
+  if (!editorMode) { editorPanel.style.display = 'none'; return; }
+  editorPanel.style.display = 'block';
+
+  const modeColors = { buildings:'#6366f1', gates:'#f59e0b', roads:'#22c55e', amenities:'#ec4899' };
+  const modeKeys = { buildings:'9', gates:'8', roads:'7', amenities:'6' };
+  let html = '<div style="display:flex;gap:6px;margin-bottom:10px">';
+  ['buildings','gates','roads','amenities'].forEach(m => {
+    const active = editorMode === m;
+    html += '<div style="padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;' + (active ? 'background:'+modeColors[m]+';color:#fff' : 'background:#1e293b;color:#64748b') + '">' + modeKeys[m] + ' ' + m.charAt(0).toUpperCase() + m.slice(1) + '</div>';
+  });
+  html += '</div>';
+
+  if (editorMode === 'buildings') {
+    const bg = buildingGroups[selectedIdx];
+    if (bg) {
+      const g = bg.group, b = bg.building;
+      html += '<div style="font-size:14px;font-weight:800;color:'+b.color+';margin-bottom:6px">' + b.name + '</div>';
+      html += '<div style="font-size:9px;color:#64748b;margin-bottom:8px">Arrows=move | Q/E=rotate | Shift=fine | Tab=next</div>';
+      html += '<pre style="font-size:11px;line-height:1.7;color:#e2e8f0;margin:0">x:     ' + g.position.x.toFixed(1) + '\nz:     ' + g.position.z.toFixed(1) + '\nrot:   ' + g.rotation.y.toFixed(2) + ' (' + (g.rotation.y*180/Math.PI).toFixed(0) + '°)\nwidth: ' + b.width.toFixed(1) + '\ndepth: ' + b.depth.toFixed(1) + '</pre>';
+      html += '<div style="margin-top:8px;padding-top:6px;border-top:1px solid #334155;font-size:10px;color:#94a3b8">';
+      buildingGroups.forEach((bg2, i) => {
+        const sel = i === selectedIdx ? 'color:#818cf8;font-weight:700' : '';
+        html += '<div style="'+sel+'">' + bg2.building.name + ': x=' + bg2.group.position.x.toFixed(1) + ' z=' + bg2.group.position.z.toFixed(1) + ' rot=' + bg2.group.rotation.y.toFixed(2) + ' w=' + bg2.building.width.toFixed(1) + ' d=' + bg2.building.depth.toFixed(1) + '</div>';
+      });
+      html += '</div>';
+    }
+  }
+
+  if (editorMode === 'gates') {
+    html += '<div style="font-size:9px;color:#64748b;margin-bottom:8px">N=new gate | Arrows=move | F=facing | R=rename | D=delete | Tab=next</div>';
+    if (editorGates.length === 0) {
+      html += '<div style="color:#64748b;font-size:11px;padding:12px 0">No gates placed. Press N to add one.</div>';
+    } else {
+      const g = editorGates[selectedIdx % editorGates.length];
+      if (g) html += '<div style="font-size:14px;font-weight:800;color:#f59e0b;margin-bottom:4px">' + (g.name || 'Gate ' + (selectedIdx+1)) + '</div><pre style="font-size:11px;line-height:1.7;color:#e2e8f0;margin:0">x:      ' + g.x.toFixed(1) + '\nz:      ' + g.z.toFixed(1) + '\nrot:    ' + (g.rot||0).toFixed(2) + ' (' + ((g.rot||0)*180/Math.PI).toFixed(0) + '°)\nfacing: ' + g.facing + '\ntype:   ' + g.type + '</pre>';
+    }
+    html += editorJsonBlock('gates: [\n' + editorGates.map(g => '  { name: "'+g.name+'", x: '+g.x.toFixed(1)+', z: '+g.z.toFixed(1)+', rotation: '+(g.rot||0).toFixed(2)+', facing: "'+g.facing+'", type: "'+g.type+'" }').join(',\n') + '\n]');
+  }
+
+  if (editorMode === 'roads') {
+    html += '<div style="font-size:9px;color:#64748b;margin-bottom:8px">N=new road (place start, then arrows+Enter for end) | W/S=width | D=delete | Tab=next</div>';
+    if (roadDrawing) html += '<div style="color:#f59e0b;font-size:11px;font-weight:700;margin-bottom:6px">Drawing... Arrow keys to set end point, Enter to confirm</div>';
+    if (editorRoads.length === 0 && !roadDrawing) {
+      html += '<div style="color:#64748b;font-size:11px;padding:12px 0">No roads placed. Press N to draw one.</div>';
+    } else if (editorRoads.length > 0) {
+      const r = editorRoads[selectedIdx % editorRoads.length];
+      if (r) html += '<pre style="font-size:11px;line-height:1.7;color:#e2e8f0;margin:0">from:     [' + r.from[0].toFixed(1) + ', ' + r.from[1].toFixed(1) + ']\nto:       [' + r.to[0].toFixed(1) + ', ' + r.to[1].toFixed(1) + ']\nwidth:    ' + r.width.toFixed(1) + '\nmarkings: ' + r.markings + '</pre>';
+    }
+    html += editorJsonBlock('roads: [\n' + editorRoads.map(r => '  { from: ['+r.from[0].toFixed(1)+','+r.from[1].toFixed(1)+'], to: ['+r.to[0].toFixed(1)+','+r.to[1].toFixed(1)+'], width: '+r.width.toFixed(1)+', markings: '+r.markings+', name: "Road" }').join(',\n') + '\n]');
+  }
+
+  if (editorMode === 'amenities') {
+    html += '<div style="font-size:9px;color:#64748b;margin-bottom:8px">N=new | Arrows=move | T=cycle type | D=delete | Tab=next</div>';
+    if (editorAmenities.length === 0) {
+      html += '<div style="color:#64748b;font-size:11px;padding:12px 0">No amenities placed. Press N to add one.</div>';
+    } else {
+      const a = editorAmenities[selectedIdx % editorAmenities.length];
+      if (a) html += '<div style="font-size:14px;font-weight:800;color:#ec4899;margin-bottom:4px">' + a.type + '</div><pre style="font-size:11px;line-height:1.7;color:#e2e8f0;margin:0">x:    ' + a.x.toFixed(1) + '\nz:    ' + a.z.toFixed(1) + '\nrot:  ' + (a.rot||0).toFixed(2) + ' (' + ((a.rot||0)*180/Math.PI).toFixed(0) + '°)\ntype: ' + a.type + '</pre>';
+    }
+    html += editorJsonBlock('amenities: [\n' + editorAmenities.map(a => '  { type: "'+a.type+'", x: '+a.x.toFixed(1)+', z: '+a.z.toFixed(1)+', rotation: '+(a.rot||0).toFixed(2)+' }').join(',\n') + '\n]');
+  }
+
+  editorPanel.innerHTML = html;
 }
 
 document.addEventListener('keydown', (e) => {
-  // Toggle editor with backtick
-  if (e.key === '9') {
-    buildingEditorActive = !buildingEditorActive;
-    editorPanel.style.display = buildingEditorActive ? 'block' : 'none';
-    if (buildingEditorActive) updateEditorDisplay();
-    return;
-  }
-  if (!buildingEditorActive) return;
+  if (currentView !== 'park') return;
+  // Mode switching
+  if (e.key === '9') { editorMode = editorMode === 'buildings' ? null : 'buildings'; selectedIdx = 0; updateEditorPanel(); return; }
+  if (e.key === '8') { editorMode = editorMode === 'gates' ? null : 'gates'; selectedIdx = 0; updateEditorPanel(); return; }
+  if (e.key === '7') { editorMode = editorMode === 'roads' ? null : 'roads'; selectedIdx = 0; roadDrawing = false; updateEditorPanel(); return; }
+  if (e.key === '6') { editorMode = editorMode === 'amenities' ? null : 'amenities'; selectedIdx = 0; updateEditorPanel(); return; }
+  if (!editorMode) return;
 
-  const bg = buildingGroups[selectedBuildingIdx];
-  if (!bg) return;
   const step = e.shiftKey ? 0.1 : 0.5;
   const rotStep = e.shiftKey ? 0.02 : 0.05;
-  const sizeStep = e.shiftKey ? 0.1 : 0.3;
 
-  switch(e.key) {
-    case 'ArrowLeft':  bg.group.position.x -= step; e.preventDefault(); break;
-    case 'ArrowRight': bg.group.position.x += step; e.preventDefault(); break;
-    case 'ArrowUp':    bg.group.position.z -= step; e.preventDefault(); break;
-    case 'ArrowDown':  bg.group.position.z += step; e.preventDefault(); break;
-    case 'q': case 'Q': bg.group.rotation.y -= rotStep; break;
-    case 'e': case 'E': bg.group.rotation.y += rotStep; break;
-    case 'Tab':
-      e.preventDefault();
-      selectedBuildingIdx = (selectedBuildingIdx + (e.shiftKey ? -1 : 1) + buildingGroups.length) % buildingGroups.length;
-      break;
+  // === BUILDINGS MODE ===
+  if (editorMode === 'buildings') {
+    const bg = buildingGroups[selectedIdx];
+    if (!bg) return;
+    switch(e.key) {
+      case 'ArrowLeft':  bg.group.position.x -= step; e.preventDefault(); break;
+      case 'ArrowRight': bg.group.position.x += step; e.preventDefault(); break;
+      case 'ArrowUp':    bg.group.position.z -= step; e.preventDefault(); break;
+      case 'ArrowDown':  bg.group.position.z += step; e.preventDefault(); break;
+      case 'q': case 'Q': bg.group.rotation.y -= rotStep; break;
+      case 'e': case 'E': bg.group.rotation.y += rotStep; break;
+      case 'Tab': e.preventDefault(); selectedIdx = (selectedIdx + (e.shiftKey ? -1 : 1) + buildingGroups.length) % buildingGroups.length; break;
+    }
   }
-  updateEditorDisplay();
+
+  // === GATES MODE ===
+  if (editorMode === 'gates') {
+    switch(e.key) {
+      case 'n': case 'N': {
+        const name = prompt('Gate name:', 'Gate ' + (editorGates.length + 1)) || 'Gate ' + (editorGates.length + 1);
+        const x = 0, z = 0;
+        const mesh = createEditorMarker(0xf59e0b, name, true);
+        mesh.position.set(x, 0, z);
+        const gate = { mesh, name, x, z, facing: 'east', type: 'entry-exit' };
+        editorGates.push(gate);
+        selectedIdx = editorGates.length - 1;
+        break;
+      }
+      case 'ArrowLeft':  case 'ArrowRight': case 'ArrowUp': case 'ArrowDown': {
+        const g = editorGates[selectedIdx];
+        if (!g) break;
+        if (e.key === 'ArrowLeft') g.x -= step;
+        if (e.key === 'ArrowRight') g.x += step;
+        if (e.key === 'ArrowUp') g.z -= step;
+        if (e.key === 'ArrowDown') g.z += step;
+        g.mesh.position.set(g.x, 0, g.z);
+        e.preventDefault();
+        break;
+      }
+      case 'q': case 'Q': { const g = editorGates[selectedIdx]; if (g) { g.rot = (g.rot || 0) - rotStep; g.mesh.rotation.y = g.rot; } break; }
+      case 'e': case 'E': { const g = editorGates[selectedIdx]; if (g) { g.rot = (g.rot || 0) + rotStep; g.mesh.rotation.y = g.rot; } break; }
+      case 'f': case 'F': {
+        const g = editorGates[selectedIdx];
+        if (g) { const i = facingDirs.indexOf(g.facing); g.facing = facingDirs[(i+1) % facingDirs.length]; }
+        break;
+      }
+      case 'r': case 'R': {
+        const g = editorGates[selectedIdx];
+        if (g) { const n = prompt('Rename gate:', g.name); if (n) g.name = n; }
+        break;
+      }
+      case 'd': case 'D': {
+        const g = editorGates[selectedIdx];
+        if (g) { scene.remove(g.mesh); editorGates.splice(selectedIdx, 1); if (selectedIdx >= editorGates.length) selectedIdx = Math.max(0, editorGates.length - 1); }
+        break;
+      }
+      case 'Tab': e.preventDefault(); if (editorGates.length) selectedIdx = (selectedIdx + (e.shiftKey ? -1 : 1) + editorGates.length) % editorGates.length; break;
+    }
+  }
+
+  // === ROADS MODE ===
+  if (editorMode === 'roads') {
+    if (roadDrawing) {
+      // Placing end point
+      switch(e.key) {
+        case 'ArrowLeft':  roadStart[2] -= step; e.preventDefault(); break;
+        case 'ArrowRight': roadStart[2] += step; e.preventDefault(); break;
+        case 'ArrowUp':    roadStart[3] -= step; e.preventDefault(); break;
+        case 'ArrowDown':  roadStart[3] += step; e.preventDefault(); break;
+        case 'Enter': {
+          const from = [roadStart[0], roadStart[1]], to = [roadStart[2], roadStart[3]];
+          const mesh = createEditorRoad(from, to, 0.8);
+          editorRoads.push({ mesh, from, to, width: 0.8, markings: false });
+          selectedIdx = editorRoads.length - 1;
+          roadDrawing = false;
+          roadStart = null;
+          break;
+        }
+        case 'Escape': roadDrawing = false; roadStart = null; break;
+      }
+      // Update preview
+      if (roadDrawing && roadStart && roadStart._preview) {
+        scene.remove(roadStart._preview);
+      }
+      if (roadDrawing && roadStart) {
+        roadStart._preview = createEditorRoad([roadStart[0],roadStart[1]], [roadStart[2],roadStart[3]], 0.5);
+      }
+    } else {
+      switch(e.key) {
+        case 'n': case 'N': {
+          // Start drawing — use camera target as start point
+          const cx = controls.target.x, cz = controls.target.z;
+          roadStart = [cx, cz, cx + 5, cz]; // start, end (end = 5 units right initially)
+          roadDrawing = true;
+          break;
+        }
+        case 'ArrowLeft': case 'ArrowRight': case 'ArrowUp': case 'ArrowDown': {
+          const r = editorRoads[selectedIdx];
+          if (!r) break;
+          const dx = e.key === 'ArrowLeft' ? -step : e.key === 'ArrowRight' ? step : 0;
+          const dz = e.key === 'ArrowUp' ? -step : e.key === 'ArrowDown' ? step : 0;
+          r.from[0] += dx; r.from[1] += dz; r.to[0] += dx; r.to[1] += dz;
+          scene.remove(r.mesh);
+          r.mesh = createEditorRoad(r.from, r.to, r.width);
+          e.preventDefault();
+          break;
+        }
+        case 'q': case 'Q': { const r = editorRoads[selectedIdx]; if (r) { r.rot = (r.rot || 0) - rotStep; r.mesh.rotation.y = r.rot; } break; }
+        case 'e': case 'E': { const r = editorRoads[selectedIdx]; if (r) { r.rot = (r.rot || 0) + rotStep; r.mesh.rotation.y = r.rot; } break; }
+        case 'w': case 'W': { const r = editorRoads[selectedIdx]; if (r) { r.width = Math.min(3, r.width + 0.1); scene.remove(r.mesh); r.mesh = createEditorRoad(r.from, r.to, r.width); if (r.rot) r.mesh.rotation.y = r.rot; } break; }
+        case 's': case 'S': { const r = editorRoads[selectedIdx]; if (r) { r.width = Math.max(0.2, r.width - 0.1); scene.remove(r.mesh); r.mesh = createEditorRoad(r.from, r.to, r.width); } break; }
+        case 'd': case 'D': { const r = editorRoads[selectedIdx]; if (r) { scene.remove(r.mesh); editorRoads.splice(selectedIdx, 1); if (selectedIdx >= editorRoads.length) selectedIdx = Math.max(0, editorRoads.length - 1); } break; }
+        case 'Tab': e.preventDefault(); if (editorRoads.length) selectedIdx = (selectedIdx + (e.shiftKey ? -1 : 1) + editorRoads.length) % editorRoads.length; break;
+      }
+    }
+  }
+
+  // === AMENITIES MODE ===
+  if (editorMode === 'amenities') {
+    switch(e.key) {
+      case 'n': case 'N': {
+        const x = 0, z = 0;
+        const type = amenityTypes[0];
+        const mesh = createEditorMarker(0xec4899, type);
+        mesh.position.set(x, 0, z);
+        editorAmenities.push({ mesh, type, x, z });
+        selectedIdx = editorAmenities.length - 1;
+        break;
+      }
+      case 'ArrowLeft': case 'ArrowRight': case 'ArrowUp': case 'ArrowDown': {
+        const a = editorAmenities[selectedIdx];
+        if (!a) break;
+        if (e.key === 'ArrowLeft') a.x -= step;
+        if (e.key === 'ArrowRight') a.x += step;
+        if (e.key === 'ArrowUp') a.z -= step;
+        if (e.key === 'ArrowDown') a.z += step;
+        a.mesh.position.set(a.x, 0, a.z);
+        e.preventDefault();
+        break;
+      }
+      case 'q': case 'Q': { const a = editorAmenities[selectedIdx]; if (a) { a.rot = (a.rot || 0) - rotStep; a.mesh.rotation.y = a.rot; } break; }
+      case 'e': case 'E': { const a = editorAmenities[selectedIdx]; if (a) { a.rot = (a.rot || 0) + rotStep; a.mesh.rotation.y = a.rot; } break; }
+      case 't': case 'T': {
+        const a = editorAmenities[selectedIdx];
+        if (a) {
+          const i = amenityTypes.indexOf(a.type);
+          a.type = amenityTypes[(i+1) % amenityTypes.length];
+        }
+        break;
+      }
+      case 'd': case 'D': {
+        const a = editorAmenities[selectedIdx];
+        if (a) { scene.remove(a.mesh); editorAmenities.splice(selectedIdx, 1); if (selectedIdx >= editorAmenities.length) selectedIdx = Math.max(0, editorAmenities.length - 1); }
+        break;
+      }
+      case 'Tab': e.preventDefault(); if (editorAmenities.length) selectedIdx = (selectedIdx + (e.shiftKey ? -1 : 1) + editorAmenities.length) % editorAmenities.length; break;
+    }
+  }
+
+  updateEditorPanel();
 });
 
 // ============================================================
