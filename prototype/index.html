@@ -6833,7 +6833,7 @@ function miniSkyline(color, heights) {
 }
 
 const parks = activeCity === 'gurgaon' ? [
-  { name: 'Unitech Cyber Park', sub: 'Sector 39, Gurugram', color: '#e97320', active: !activePark.includes('vatika'), parkUrl: '?city=gurgaon', skyline: [14,24,24,16] },
+  { name: 'Unitech Cyber Park', sub: 'Sector 39, Gurugram', color: '#e97320', active: !activePark.includes('vatika'), parkUrl: '?city=gurgaon&park=unitech', skyline: [14,24,24,16] },
   { name: 'Vatika Business Park', sub: 'Sector 49, Sohna Road', color: '#2563eb', active: activePark.includes('vatika'), parkUrl: '?city=gurgaon&park=vatika', skyline: [14,22,14] },
   { name: 'DLF Cyber City', sub: 'DLF Phase III', color: '#16a34a', active: false, skyline: [26,22,18] },
   { name: 'Udyog Vihar', sub: 'Phase I-V', color: '#94a3b8', active: false, skyline: [12,12,14] },
@@ -7063,7 +7063,7 @@ const buildingThemes = {
   },
 };
 
-let currentTheme = (ACTIVE_DATA.name === 'Vatika Business Park') ? 'corporate' : 'default';
+let currentTheme = 'default';
 
 function createThemedWindowTexture(theme, widthPx, heightPx, cols, rows) {
   const t = buildingThemes[theme];
