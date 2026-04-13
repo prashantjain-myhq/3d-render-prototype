@@ -4356,6 +4356,25 @@ ACTIVE_DATA.buildings.forEach(b => {
   buildingGroups.push(createBuilding3D(b));
 });
 
+// Park name 3D label above the tallest building
+const parkNameBuilding = {
+  'Unitech Cyber Park': 'Tower A',
+  'Vatika Business Park': 'Block 2'
+};
+const parkLabelTarget = parkNameBuilding[ACTIVE_DATA.name];
+if (parkLabelTarget) {
+  const bg = buildingGroups.find(g => g.building.name === parkLabelTarget);
+  if (bg) {
+    const div = document.createElement('div');
+    div.style.cssText = 'font-size:14px;font-weight:900;color:#fff;text-transform:uppercase;letter-spacing:4px;text-shadow:0 2px 8px rgba(0,0,0,0.6);white-space:nowrap;font-family:system-ui;pointer-events:none';
+    div.textContent = ACTIVE_DATA.name;
+    const lbl = new CSS2DObject(div);
+    const topY = bg.building.height + 1.5;
+    lbl.position.set(0, topY, 0);
+    bg.group.add(lbl);
+  }
+}
+
 // Vatika theme applied after currentTheme is declared (see below)
 
 // ============================================================
