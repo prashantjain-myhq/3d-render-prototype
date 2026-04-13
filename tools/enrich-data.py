@@ -1093,7 +1093,7 @@ UNITECH_CONFIGS = {
 VATIKA_CONFIGS = {
     "Vatika Business Park Building 1": {
         "id": "vatika-bldg-1", "color": "#2563eb",
-        "position": {"x": -4, "z": -3}, "width": 6, "depth": 4, "height": 3.5,
+        "position": {"x": -3.5, "z": -9.0}, "width": 12.0, "depth": 7.9, "height": 4.7,
         "rotation": 0, "buildingShape": "box", "totalFloors": 8,
         "grade": "A", "camCharges": 18, "escalation": "15% every 3 years",
         "powerBackup": "100% DG + Dual Feed", "parkingRatio": 1.0,
@@ -1103,8 +1103,8 @@ VATIKA_CONFIGS = {
     },
     "Vatika Business Park Building 2": {
         "id": "vatika-bldg-2", "color": "#0891b2",
-        "position": {"x": 2, "z": -2}, "width": 5, "depth": 3.5, "height": 5,
-        "rotation": 0.1, "buildingShape": "box", "totalFloors": 14,
+        "position": {"x": 11.0, "z": 0.5}, "width": 14.3, "depth": 6.8, "height": 6.2,
+        "rotation": -1.55, "buildingShape": "box", "totalFloors": 14,
         "grade": "A", "camCharges": 18, "escalation": "15% every 3 years",
         "powerBackup": "100% DG + Dual Feed", "parkingRatio": 1.0,
         "floorPlateSize": 26900, "amenities": ["Cafeteria", "ATM", "Parking", "Power Backup", "Lift", "Security", "Green Certified"],
@@ -1113,8 +1113,8 @@ VATIKA_CONFIGS = {
     },
     "Vatika Business Park Building 3": {
         "id": "vatika-bldg-3", "color": "#7c3aed",
-        "position": {"x": 5, "z": 3}, "width": 5, "depth": 3.5, "height": 3.5,
-        "rotation": -0.15, "buildingShape": "box", "totalFloors": 9,
+        "position": {"x": -2.8, "z": 9.8}, "width": 11.3, "depth": 8.0, "height": 4.7,
+        "rotation": 0.0, "buildingShape": "L", "totalFloors": 9,
         "grade": "A", "camCharges": 18, "escalation": "15% every 3 years",
         "powerBackup": "100% DG + Dual Feed", "parkingRatio": 1.0,
         "floorPlateSize": 26000, "amenities": ["Cafeteria", "ATM", "Parking", "Power Backup", "Lift", "Security", "Green Certified"],
