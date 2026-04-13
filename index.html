@@ -4999,23 +4999,22 @@ function generateFloorPlanSVG(floor, building) {
     svg += '<text x="' + w/2 + '" y="' + (h/2-8) + '" text-anchor="middle" font-size="14" fill="#dc2626" font-weight="800">VACANT</text>';
     svg += '<text x="' + w/2 + '" y="' + (h/2+8) + '" text-anchor="middle" font-size="10" fill="#ef4444">' + (floor.area||0).toLocaleString() + ' sqft available</text>';
   } else if (isMulti) {
-    // Multi-tenant: proportional treemap blocks
+    // Multi-tenant: proportional treemap blocks + vacant area
     var tenants = floor.tenants.filter(function(t) { return t.name !== 'Vacant'; });
-    var totalOcc = tenants.reduce(function(s,t) { return s + (t.occupancy||0); }, 0) || 100;
+    var totalOcc = tenants.reduce(function(s,t) { return s + (t.occupancy||0); }, 0);
+    var vacantPct = Math.max(0, 100 - totalOcc);
     var pad = 4, gap = 3;
     var areaW = w - pad*2, areaH = h - 28;
-    // Simple horizontal layout
     var x = pad;
     tenants.forEach(function(t, idx) {
-      var pct = (t.occupancy||0) / totalOcc;
+      var pct = (t.occupancy||0) / 100;
       var bw = Math.max(20, Math.round(pct * areaW) - gap);
       var col = colors[idx % colors.length];
       svg += '<rect x="' + x + '" y="' + pad + '" width="' + bw + '" height="' + areaH + '" rx="4" fill="' + col + '22" stroke="' + col + '" stroke-width="1"/>';
-      // Tenant name if block is wide enough
       var name = t.name;
       if (name === name.toUpperCase() && name.length > 4) name = name.split(' ').map(function(w) { return w.charAt(0) + w.slice(1).toLowerCase(); }).join(' ');
       if (bw > 50) {
-        var displayName = name.length > Math.floor(bw/6) ? name.substring(0, Math.floor(bw/6)-1) + '…' : name;
+        var displayName = name.length > Math.floor(bw/6) ? name.substring(0, Math.floor(bw/6)-1) + '\u2026' : name;
         svg += '<text x="' + (x+bw/2) + '" y="' + (pad+areaH/2-4) + '" text-anchor="middle" font-size="8" fill="' + col + '" font-weight="700">' + displayName + '</text>';
         svg += '<text x="' + (x+bw/2) + '" y="' + (pad+areaH/2+8) + '" text-anchor="middle" font-size="7" fill="' + col + '">' + (t.occupancy||0) + '%</text>';
       } else if (bw > 30) {
@@ -5023,15 +5022,30 @@ function generateFloorPlanSVG(floor, building) {
       }
       x += bw + gap;
     });
+    // Show vacant portion if <100% occupied
+    if (vacantPct > 2) {
+      var vw = Math.max(20, Math.round((vacantPct/100) * areaW) - gap);
+      svg += '<defs><pattern id="vpm" patternUnits="userSpaceOnUse" width="6" height="6"><path d="M-1,1 l3,-3 M0,6 l6,-6 M5,7 l3,-3" stroke="#fca5a5" stroke-width="0.8"/></pattern></defs>';
+      svg += '<rect x="' + x + '" y="' + pad + '" width="' + vw + '" height="' + areaH + '" rx="4" fill="#fee2e2" stroke="#fca5a5" stroke-width="1" stroke-dasharray="3 2"/>';
+      svg += '<rect x="' + x + '" y="' + pad + '" width="' + vw + '" height="' + areaH + '" rx="4" fill="url(#vpm)"/>';
+      if (vw > 35) svg += '<text x="' + (x+vw/2) + '" y="' + (pad+areaH/2+3) + '" text-anchor="middle" font-size="7" fill="#dc2626" font-weight="700">Vacant ' + vacantPct + '%</text>';
+    }
   } else {
-    // Single tenant: full green block
+    // Single tenant: block + vacant portion if partially occupied
     var occColor = floor.occupancy >= 90 ? '#22c55e' : floor.occupancy >= 50 ? '#eab308' : '#ef4444';
-    svg += '<rect x="4" y="4" width="' + (w-8) + '" height="' + (h-28) + '" rx="6" fill="' + occColor + '18" stroke="' + occColor + '" stroke-width="1"/>';
+    var occW = Math.round((floor.occupancy / 100) * (w - 8));
+    var vacW = (w - 8) - occW;
+    svg += '<rect x="4" y="4" width="' + occW + '" height="' + (h-28) + '" rx="6" fill="' + occColor + '18" stroke="' + occColor + '" stroke-width="1"/>';
     var tName = floor.tenant;
     if (tName === tName.toUpperCase() && tName.length > 4) tName = tName.split(' ').map(function(w) { return w.charAt(0) + w.slice(1).toLowerCase(); }).join(' ');
-    if (tName.length > 28) tName = tName.substring(0, 27) + '…';
-    svg += '<text x="' + w/2 + '" y="' + (h/2-8) + '" text-anchor="middle" font-size="11" fill="' + occColor + '" font-weight="700">' + tName + '</text>';
-    svg += '<text x="' + w/2 + '" y="' + (h/2+6) + '" text-anchor="middle" font-size="9" fill="#64748b">' + floor.occupancy + '% occupied · ' + (floor.area||0).toLocaleString() + ' sqft</text>';
+    if (tName.length > 28) tName = tName.substring(0, 27) + '\u2026';
+    svg += '<text x="' + (4 + occW/2) + '" y="' + (h/2-8) + '" text-anchor="middle" font-size="11" fill="' + occColor + '" font-weight="700">' + tName + '</text>';
+    svg += '<text x="' + (4 + occW/2) + '" y="' + (h/2+6) + '" text-anchor="middle" font-size="9" fill="#64748b">' + floor.occupancy + '% occupied</text>';
+    // Vacant portion
+    if (floor.occupancy < 98 && vacW > 15) {
+      svg += '<rect x="' + (4 + occW + 2) + '" y="4" width="' + (vacW - 2) + '" height="' + (h-28) + '" rx="4" fill="#fee2e2" stroke="#fca5a5" stroke-width="1" stroke-dasharray="3 2"/>';
+      if (vacW > 30) svg += '<text x="' + (4 + occW + vacW/2) + '" y="' + (h/2+2) + '" text-anchor="middle" font-size="7" fill="#dc2626" font-weight="600">Vacant</text>';
+    }
   }
   // Footer: floor info
   svg += '<text x="' + w/2 + '" y="' + (h-6) + '" text-anchor="middle" font-size="8" fill="#94a3b8">F' + floor.floor + ' · ' + (floor.area||0).toLocaleString() + ' sqft' + (floor.effectiveRent ? ' · ₹' + floor.effectiveRent + '/sqft' : floor.rentPerSqft ? ' · ₹' + floor.rentPerSqft + '/sqft' : '') + '</text>';
