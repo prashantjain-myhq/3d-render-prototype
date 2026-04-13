@@ -5496,15 +5496,10 @@ function openParkPanel() {
     var bid = row.dataset.bid;
     var bldg = ACTIVE_DATA.buildings.find(function(b) { return b.id === bid; });
     if (bldg) {
-      // Remove this handler so it doesn't interfere with building panel
       panelMiddle.removeEventListener('click', _parkScoreHandler);
-      // Close park panel fully, then open building panel
-      panelContainer.classList.remove('open');
-      panelOverlay.classList.remove('open');
+      // Keep panel open — just call openPanel to replace all content
       panelOpen = false;
-      renderer.domElement.style.pointerEvents = '';
-      controls.enabled = true;
-      setTimeout(function() { openPanel(bldg, 0); }, 450);
+      openPanel(bldg, 0);
     }
   };
   panelMiddle.addEventListener('click', _parkScoreHandler);
