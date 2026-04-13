@@ -2277,7 +2277,7 @@ const VATIKA_TECH_PARK_DATA = {
   buildings: [
     {
       id: "vatika-bldg-1",
-      name: "Building 1",
+      name: "Block 1",
       totalFloors: 9,
       totalArea: 250000,
       yearBuilt: 2008,
@@ -2662,7 +2662,7 @@ const VATIKA_TECH_PARK_DATA = {
     },
     {
       id: "vatika-bldg-2",
-      name: "Building 2",
+      name: "Block 2",
       totalFloors: 14,
       totalArea: 395727,
       yearBuilt: 2008,
@@ -3350,7 +3350,7 @@ const VATIKA_TECH_PARK_DATA = {
     },
     {
       id: "vatika-bldg-3",
-      name: "Building 3",
+      name: "Block 3",
       totalFloors: 9,
       totalArea: 208000,
       yearBuilt: 2008,

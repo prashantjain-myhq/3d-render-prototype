@@ -866,7 +866,7 @@ def generate_building_js(building_info, floors, transactions, all_transactions, 
     """Generate JS object for a single building."""
     full_name = building_info['name']
     if 'Vatika' in full_name:
-        short_name = full_name.replace('Vatika Business Park ', '')
+        short_name = full_name.replace('Vatika Business Park Building ', 'Block ')
     elif 'Unitech' in full_name:
         short_name = full_name.replace('Unitech Cyber Park ', '')
     else:
