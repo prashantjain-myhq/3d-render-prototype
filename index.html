@@ -2821,6 +2821,26 @@
 </div>
 
 <!-- Feature 4: Time-of-Day Slider -->
+<div id="deal-timeline-wrap" style="position:fixed;bottom:100px;left:16px;z-index:15;background:rgba(10,14,26,0.92);backdrop-filter:blur(16px);border:1px solid rgba(99,102,241,0.25);border-radius:12px;padding:12px 16px;min-width:280px;box-shadow:0 8px 24px rgba(0,0,0,0.4);display:none">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+    <div style="font-size:9px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px">Deal Timeline</div>
+    <div id="dt-year" style="font-size:16px;font-weight:800;color:#818cf8;font-family:system-ui">2025</div>
+  </div>
+  <div id="dt-stats" style="display:flex;gap:12px;margin-bottom:8px;font-size:10px;color:#94a3b8">
+    <span>Deals: <b id="dt-deals" style="color:#fff">0</b></span>
+    <span>Avg Rent: <b id="dt-rent" style="color:#fff">—</b></span>
+    <span>New: <b id="dt-new" style="color:#22c55e">0</b></span>
+    <span>Renewed: <b id="dt-renew" style="color:#3b82f6">0</b></span>
+  </div>
+  <input type="range" id="deal-timeline-slider" min="2008" max="2025" value="2025" step="1" style="width:250px;-webkit-appearance:none;appearance:none;height:4px;background:linear-gradient(to right,#334155,#6366f1,#818cf8);border-radius:2px;outline:none;cursor:pointer">
+  <div style="display:flex;justify-content:space-between;margin-top:4px"><span style="font-size:9px;color:#64748b;font-weight:600">2008</span><span style="font-size:9px;color:#64748b;font-weight:600">2025</span></div>
+  <button id="dt-play" style="margin-top:6px;padding:4px 14px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);border-radius:6px;color:#818cf8;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit">▶ Play</button>
+</div>
+<style>
+  #deal-timeline-slider::-webkit-slider-thumb { -webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#818cf8;border:2px solid #fff;cursor:pointer;box-shadow:0 2px 8px rgba(99,102,241,0.5); }
+  .city-view-active #deal-timeline-wrap { display:none !important; }
+</style>
+
 <div id="time-slider-wrap">
   <div class="ts-top">
     <span class="ts-icon" id="ts-icon">&#9728;&#65039;</span>
@@ -7454,6 +7474,136 @@ document.getElementById('cb-park-overview').addEventListener('click', (e) => {
   e.stopPropagation();
   closeAllDropdowns();
   openParkPanel();
+});
+
+// Deal Flow Timeline Slider
+const dtWrap = document.getElementById('deal-timeline-wrap');
+const dtSlider = document.getElementById('deal-timeline-slider');
+const dtPlayBtn = document.getElementById('dt-play');
+let dtPlaying = false;
+let dtInterval = null;
+
+// Show timeline when in park view (not city view)
+if (currentView === 'park') dtWrap.style.display = 'block';
+
+// Keyboard shortcut T to toggle timeline
+document.addEventListener('keydown', (e) => {
+  if (e.key === 't' || e.key === 'T') {
+    if (currentView !== 'park' || editorMode) return;
+    dtWrap.style.display = dtWrap.style.display === 'none' ? 'block' : 'none';
+  }
+});
+
+function updateDealTimeline(year) {
+  document.getElementById('dt-year').textContent = year;
+
+  // Aggregate all buildings' deal history for this year
+  let totalDeals = 0, totalNew = 0, totalRenew = 0, rentSum = 0, rentCount = 0;
+  ACTIVE_DATA.buildings.forEach(b => {
+    if (!b.dealHistory) return;
+    const h = b.dealHistory.find(d => d.year === year);
+    if (h) {
+      totalDeals += h.deals || 0;
+      totalNew += h.newDeals || 0;
+      totalRenew += h.renewals || 0;
+      if (h.avgRent) { rentSum += h.avgRent * h.deals; rentCount += h.deals; }
+    }
+  });
+  document.getElementById('dt-deals').textContent = totalDeals;
+  document.getElementById('dt-new').textContent = totalNew;
+  document.getElementById('dt-renew').textContent = totalRenew;
+  document.getElementById('dt-rent').textContent = rentCount > 0 ? '\u20B9' + Math.round(rentSum / rentCount) : '\u2014';
+
+  // Color building floors based on deal activity in this year
+  floorMeshes.forEach(mesh => {
+    const fd = floorDataMap.get(mesh);
+    if (!fd) return;
+    const orig = originalMaterialColors.get(mesh);
+    if (!orig) return;
+
+    // Check if this floor had a deal in or before this year
+    const history = fd.floor.floorDealHistory || [];
+    const dealsUpToYear = history.filter(h => {
+      if (!h.date) return false;
+      const dealYear = parseInt(h.date.split('-')[0]);
+      return dealYear <= year;
+    });
+    const latestDeal = dealsUpToYear.sort((a, b) => (b.date || '').localeCompare(a.date || ''))[0];
+
+    // Also check if lease was active in this year
+    let color = null;
+    if (latestDeal) {
+      const expiryYear = latestDeal.expiry ? parseInt(latestDeal.expiry.split('-')[0]) : 9999;
+      const dealYear = parseInt(latestDeal.date.split('-')[0]);
+      if (year >= dealYear && year <= expiryYear) {
+        // Active lease — green tint
+        color = new THREE.Color(0x22c55e);
+      } else if (year > expiryYear) {
+        // Expired — red tint
+        color = new THREE.Color(0xef4444);
+      } else {
+        // Before this deal — grey
+        color = new THREE.Color(0x475569);
+      }
+    } else {
+      // No deal history — grey
+      color = new THREE.Color(0x475569);
+    }
+
+    if (mesh.material && Array.isArray(mesh.material)) {
+      mesh.material.forEach((m, i) => {
+        if (color && currentHeatmapMode === 'default') {
+          m.color.copy(color);
+          m.emissive.copy(color.clone().multiplyScalar(0.1));
+        } else if (currentHeatmapMode === 'default') {
+          m.color.copy(orig[i].color);
+          m.emissive.copy(orig[i].emissive);
+        }
+      });
+    }
+  });
+}
+
+dtSlider.addEventListener('input', () => updateDealTimeline(parseInt(dtSlider.value)));
+
+dtPlayBtn.addEventListener('click', () => {
+  if (dtPlaying) {
+    clearInterval(dtInterval);
+    dtPlaying = false;
+    dtPlayBtn.textContent = '\u25b6 Play';
+    // Reset colors
+    dtSlider.value = 2025;
+    updateDealTimeline(2025);
+    floorMeshes.forEach(mesh => {
+      const orig = originalMaterialColors.get(mesh);
+      if (orig && mesh.material && Array.isArray(mesh.material)) {
+        mesh.material.forEach((m, i) => { m.color.copy(orig[i].color); m.emissive.copy(orig[i].emissive); });
+      }
+    });
+  } else {
+    dtSlider.value = 2008;
+    dtPlaying = true;
+    dtPlayBtn.textContent = '\u25a0 Stop';
+    updateDealTimeline(2008);
+    dtInterval = setInterval(() => {
+      let yr = parseInt(dtSlider.value) + 1;
+      if (yr > 2025) {
+        clearInterval(dtInterval);
+        dtPlaying = false;
+        dtPlayBtn.textContent = '\u25b6 Play';
+        // Reset colors
+        floorMeshes.forEach(mesh => {
+          const orig = originalMaterialColors.get(mesh);
+          if (orig && mesh.material && Array.isArray(mesh.material)) {
+            mesh.material.forEach((m, i) => { m.color.copy(orig[i].color); m.emissive.copy(orig[i].emissive); });
+          }
+        });
+        return;
+      }
+      dtSlider.value = yr;
+      updateDealTimeline(yr);
+    }, 800);
+  }
 });
 
 document.getElementById('cb-search').addEventListener('click', (e) => {
