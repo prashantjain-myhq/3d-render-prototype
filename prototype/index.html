@@ -3003,43 +3003,107 @@ if (activeCity === 'gurgaon') {
     const _sh = document.getElementById('shortcut-hint');
     if (_sh) _sh.textContent = _sh.textContent.replace(' · 3 Yield', '');
   }
-  // Replace entire Location & Connectivity panel for Gurgaon
+  // Replace Location & Connectivity panel — park-aware
   const _mpBody = document.querySelector('#map-panel .mp-body');
   if (_mpBody) {
-    _mpBody.innerHTML = `
-      <div class="mp-address"><strong>Unitech Cyber Park</strong><br>Sector 39, Gurugram<br>Haryana 122003</div>` + `
-      <div class="mp-section-title">Quick Stats</div>
-      <div class="mp-stats-row">
-        <div class="mp-stat"><div class="mp-stat-label">Total Area</div><div class="mp-stat-value">15.5L sqft</div></div>
-        <div class="mp-stat"><div class="mp-stat-label">Campus</div><div class="mp-stat-value">7+ acres</div></div>
-        <div class="mp-stat"><div class="mp-stat-label">Towers</div><div class="mp-stat-value">4</div></div>
-        <div class="mp-stat"><div class="mp-stat-label">Grade</div><div class="mp-stat-value">B</div></div>
-      </div>
-      <div class="mp-section-title">Transit</div>
-      <div class="mp-landmark-card"><div class="mp-lm-icon" style="background:#ecfdf5">&#128647;</div><div class="mp-lm-info"><div class="mp-lm-name">HUDA City Centre Metro</div><div class="mp-lm-type">Yellow Line</div></div><div class="mp-lm-dist-badge">1.5 km</div></div>
-      <div class="mp-landmark-card"><div class="mp-lm-icon" style="background:#fef3c7">&#128647;</div><div class="mp-lm-info"><div class="mp-lm-name">IFFCO Chowk Metro</div><div class="mp-lm-type">Yellow Line</div></div><div class="mp-lm-dist-badge">3 km</div></div>
-      <div class="mp-landmark-card"><div class="mp-lm-icon" style="background:#ede9fe">&#9992;&#65039;</div><div class="mp-lm-info"><div class="mp-lm-name">IGI Airport (Delhi)</div><div class="mp-lm-type">International</div></div><div class="mp-lm-dist-badge">16 km</div></div>
-      <div class="mp-section-title">Nearby Tech Parks</div>
-      <div class="mp-landmark-card"><div class="mp-lm-icon" style="background:#ecfdf5">&#127970;</div><div class="mp-lm-info"><div class="mp-lm-name">Vatika Business Park</div><div class="mp-lm-type">Tech Park</div></div><div class="mp-lm-dist-badge">4.1 km</div></div>
-      <div class="mp-landmark-card"><div class="mp-lm-icon" style="background:#ecfdf5">&#127970;</div><div class="mp-lm-info"><div class="mp-lm-name">DLF Cyber City</div><div class="mp-lm-type">Tech Park</div></div><div class="mp-lm-dist-badge">6.5 km</div></div>
-      <div class="mp-landmark-card"><div class="mp-lm-icon" style="background:#ecfdf5">&#127970;</div><div class="mp-lm-info"><div class="mp-lm-name">Udyog Vihar</div><div class="mp-lm-type">Industrial Hub</div></div><div class="mp-lm-dist-badge">8 km</div></div>
-      <div class="mp-section-title">Shopping & Retail</div>
-      <div class="mp-landmark-card"><div class="mp-lm-icon" style="background:#fef2f2">&#128722;</div><div class="mp-lm-info"><div class="mp-lm-name">Ambience Mall</div><div class="mp-lm-type">Shopping Mall</div></div><div class="mp-lm-dist-badge">9 km</div></div>
-      <div class="mp-landmark-card"><div class="mp-lm-icon" style="background:#fef2f2">&#128722;</div><div class="mp-lm-info"><div class="mp-lm-name">Sahara Mall</div><div class="mp-lm-type">Shopping Mall</div></div><div class="mp-lm-dist-badge">3 km</div></div>
-      <div class="mp-landmark-card"><div class="mp-lm-icon" style="background:#fef2f2">&#128722;</div><div class="mp-lm-info"><div class="mp-lm-name">Good Earth City Centre</div><div class="mp-lm-type">Premium Retail</div></div><div class="mp-lm-dist-badge">2.5 km</div></div>
-      <div class="mp-section-title">Bars, Pubs & Restaurants</div>
-      <div class="mp-landmark-card"><div class="mp-lm-icon" style="background:#fdf4ff">&#127867;</div><div class="mp-lm-info"><div class="mp-lm-name">Cyber Hub</div><div class="mp-lm-type">F&B Hub (50+ restaurants)</div></div><div class="mp-lm-dist-badge">7 km</div></div>
-      <div class="mp-landmark-card"><div class="mp-lm-icon" style="background:#fff7ed">&#127869;</div><div class="mp-lm-info"><div class="mp-lm-name">Sector 29 Market</div><div class="mp-lm-type">Street Food & Bars</div></div><div class="mp-lm-dist-badge">4 km</div></div>
-      <div class="mp-landmark-card"><div class="mp-lm-icon" style="background:#fff7ed">&#127869;</div><div class="mp-lm-info"><div class="mp-lm-name">32nd Avenue</div><div class="mp-lm-type">Premium Dining</div></div><div class="mp-lm-dist-badge">5 km</div></div>
-      <div class="mp-section-title">Healthcare</div>
-      <div class="mp-landmark-card"><div class="mp-lm-icon" style="background:#fef2f2">&#127973;</div><div class="mp-lm-info"><div class="mp-lm-name">Artemis Hospital</div><div class="mp-lm-type">Multi-specialty</div></div><div class="mp-lm-dist-badge">2 km</div></div>
-      <div class="mp-landmark-card"><div class="mp-lm-icon" style="background:#fef2f2">&#127973;</div><div class="mp-lm-info"><div class="mp-lm-name">Medanta - The Medicity</div><div class="mp-lm-type">Super-specialty</div></div><div class="mp-lm-dist-badge">3 km</div></div>
-      <div class="mp-landmark-card"><div class="mp-lm-icon" style="background:#fef2f2">&#127973;</div><div class="mp-lm-info"><div class="mp-lm-name">Park Hospital</div><div class="mp-lm-type">Hospital</div></div><div class="mp-lm-dist-badge">1 km</div></div>
-      <div class="mp-section-title">Key Areas</div>
-      <div class="mp-landmark-card"><div class="mp-lm-icon" style="background:#f0fdf4">&#127961;&#65039;</div><div class="mp-lm-info"><div class="mp-lm-name">Golf Course Road</div><div class="mp-lm-type">Premium Corridor</div></div><div class="mp-lm-dist-badge">4 km</div></div>
-      <div class="mp-landmark-card"><div class="mp-lm-icon" style="background:#faf5ff">&#127961;&#65039;</div><div class="mp-lm-info"><div class="mp-lm-name">MG Road Gurgaon</div><div class="mp-lm-type">Commercial</div></div><div class="mp-lm-dist-badge">5 km</div></div>
-      <div class="mp-landmark-card"><div class="mp-lm-icon" style="background:#ecfdf5">&#127961;&#65039;</div><div class="mp-lm-info"><div class="mp-lm-name">Sohna Road</div><div class="mp-lm-type">Office Corridor</div></div><div class="mp-lm-dist-badge">1 km</div></div>
-    `;
+    const lm = (icon, bg, name, type, dist) => '<div class="mp-landmark-card"><div class="mp-lm-icon" style="background:'+bg+'">'+icon+'</div><div class="mp-lm-info"><div class="mp-lm-name">'+name+'</div><div class="mp-lm-type">'+type+'</div></div><div class="mp-lm-dist-badge">'+dist+'</div></div>';
+
+    const locationData = {
+      'Unitech Cyber Park': {
+        address: 'Sector 39, Gurugram<br>Haryana 122003',
+        stats: [['Total Area','15.5L sqft'],['Campus','7+ acres'],['Towers','4'],['Grade','A']],
+        sections: [
+          ['Transit', [
+            ['&#128647;','#ecfdf5','HUDA City Centre Metro','Yellow Line','1.5 km'],
+            ['&#128647;','#fef3c7','IFFCO Chowk Metro','Yellow Line','3 km'],
+            ['&#9992;&#65039;','#ede9fe','IGI Airport (Delhi)','International','16 km'],
+          ]],
+          ['Nearby Tech Parks', [
+            ['&#127970;','#ecfdf5','Vatika Business Park','Tech Park','4.1 km'],
+            ['&#127970;','#ecfdf5','DLF Cyber City','Tech Park','6.5 km'],
+            ['&#127970;','#ecfdf5','Udyog Vihar','Industrial Hub','8 km'],
+          ]],
+          ['Shopping & Retail', [
+            ['&#128722;','#fef2f2','Ambience Mall','Shopping Mall','9 km'],
+            ['&#128722;','#fef2f2','Sahara Mall','Shopping Mall','3 km'],
+            ['&#128722;','#fef2f2','Good Earth City Centre','Premium Retail','2.5 km'],
+          ]],
+          ['Food & Nightlife', [
+            ['&#127867;','#fdf4ff','Cyber Hub','F&B Hub (50+ restaurants)','7 km'],
+            ['&#127869;','#fff7ed','Sector 29 Market','Street Food & Bars','4 km'],
+            ['&#127869;','#fff7ed','32nd Avenue','Premium Dining','5 km'],
+          ]],
+          ['Healthcare', [
+            ['&#127973;','#fef2f2','Artemis Hospital','Multi-specialty','2 km'],
+            ['&#127973;','#fef2f2','Medanta - The Medicity','Super-specialty','3 km'],
+            ['&#127973;','#fef2f2','Park Hospital','Hospital','1 km'],
+          ]],
+          ['Key Areas', [
+            ['&#127961;&#65039;','#f0fdf4','Golf Course Road','Premium Corridor','4 km'],
+            ['&#127961;&#65039;','#faf5ff','MG Road Gurgaon','Commercial','5 km'],
+            ['&#127961;&#65039;','#ecfdf5','Sohna Road','Office Corridor','1 km'],
+          ]],
+        ]
+      },
+      'Vatika Business Park': {
+        address: 'Sector 49, Sohna Road<br>Gurugram, Haryana 122018',
+        stats: [['Total Area','8.5L sqft'],['Campus','4+ acres'],['Blocks','3'],['Grade','A']],
+        sections: [
+          ['Transit', [
+            ['&#128647;','#ecfdf5','HUDA City Centre Metro','Yellow Line','6 km'],
+            ['&#128647;','#fef3c7','Sikanderpur Metro','Yellow Line','8 km'],
+            ['&#128647;','#ecfdf5','Rapid Metro Sector 42','Rapid Metro','4 km'],
+            ['&#9992;&#65039;','#ede9fe','IGI Airport (Delhi)','International','22 km'],
+          ]],
+          ['Nearby Tech Parks', [
+            ['&#127970;','#ecfdf5','Unitech Cyber Park','Tech Park (Sector 39)','4.1 km'],
+            ['&#127970;','#ecfdf5','Spaze i-Tech Park','Tech Park (Sector 49)','0.8 km'],
+            ['&#127970;','#ecfdf5','JMD Megapolis','Commercial (Sector 48)','1.5 km'],
+            ['&#127970;','#ecfdf5','DLF Cyber City','Tech Park (Phase III)','10 km'],
+          ]],
+          ['Shopping & Retail', [
+            ['&#128722;','#fef2f2','South Point Mall','Shopping (Sector 53)','2.5 km'],
+            ['&#128722;','#fef2f2','Good Earth City Centre','Premium Retail','3 km'],
+            ['&#128722;','#fef2f2','Nirvana Courtyard','Boutique Retail (Sector 50)','1.5 km'],
+            ['&#128722;','#fef2f2','Omaxe Celebration Mall','Mall (Sohna Road)','2 km'],
+          ]],
+          ['Food & Nightlife', [
+            ['&#127869;','#fff7ed','Sector 29 Market','Street Food & Bars','6 km'],
+            ['&#127867;','#fdf4ff','Cyber Hub','F&B Hub','10 km'],
+            ['&#127869;','#fff7ed','Sector 49 Market','Local Dining','0.5 km'],
+            ['&#127869;','#fff7ed','Pirates of Grill','Restaurant (Sector 50)','1 km'],
+          ]],
+          ['Healthcare', [
+            ['&#127973;','#fef2f2','Artemis Hospital','Multi-specialty','5 km'],
+            ['&#127973;','#fef2f2','Paras Hospital','Multi-specialty (Sector 47)','2 km'],
+            ['&#127973;','#fef2f2','Signature Hospital','Hospital (Sector 37D)','4 km'],
+            ['&#127973;','#fef2f2','Max Hospital','Super-specialty (Sector 56)','6 km'],
+          ]],
+          ['Key Roads & Areas', [
+            ['&#127961;&#65039;','#ecfdf5','Sohna Road (NH-248A)','Main Arterial','0 km'],
+            ['&#127961;&#65039;','#f0fdf4','Golf Course Extension','Premium Corridor','3 km'],
+            ['&#127961;&#65039;','#faf5ff','Southern Peripheral Road','SPR Expressway','2 km'],
+            ['&#127961;&#65039;','#ecfdf5','NH-48 (Delhi-Jaipur)','National Highway','8 km'],
+          ]],
+          ['Residential Hubs', [
+            ['&#127968;','#fef3c7','Sector 49-50','Residential (walking distance)','0.5 km'],
+            ['&#127968;','#fef3c7','Sector 56-57','Premium Residential','4 km'],
+            ['&#127968;','#fef3c7','South City 2','Township','3 km'],
+          ]],
+        ]
+      }
+    };
+
+    const loc = locationData[ACTIVE_DATA.name] || locationData['Unitech Cyber Park'];
+    let mpHTML = '<div class="mp-address"><strong>' + ACTIVE_DATA.name + '</strong><br>' + loc.address + '</div>';
+    mpHTML += '<div class="mp-section-title">Quick Stats</div><div class="mp-stats-row">';
+    loc.stats.forEach(([label, val]) => { mpHTML += '<div class="mp-stat"><div class="mp-stat-label">' + label + '</div><div class="mp-stat-value">' + val + '</div></div>'; });
+    mpHTML += '</div>';
+    loc.sections.forEach(([title, items]) => {
+      mpHTML += '<div class="mp-section-title">' + title + '</div>';
+      items.forEach(([icon, bg, name, type, dist]) => { mpHTML += lm(icon, bg, name, type, dist); });
+    });
+    _mpBody.innerHTML = mpHTML;
   }
 }
 
@@ -6931,6 +6995,9 @@ window.addEventListener('keydown', (e) => {
   }
 
   if (currentView !== 'park') return;
+
+  // Don't trigger shortcuts when typing in an input field
+  if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT')) return;
 
   if (e.key === 'p' || e.key === 'P') { if (!panelOpen) openParkPanel(); else closePanel(); return; }
   if (e.key === '1') { setHeatmapMode(currentHeatmapMode === 'occupancy' ? 'default' : 'occupancy'); }
