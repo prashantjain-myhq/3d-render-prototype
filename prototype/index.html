@@ -2938,9 +2938,14 @@ function titleCase(s) {
 
 // Determine active city from URL
 const activeCity = new URLSearchParams(window.location.search).get('city') || 'bangalore';
-const ACTIVE_DATA = activeCity === 'gurgaon' && typeof GURGAON_TECH_PARK_DATA !== 'undefined'
-  ? GURGAON_TECH_PARK_DATA
-  : TECH_PARK_DATA;
+const activePark = new URLSearchParams(window.location.search).get('park') || '';
+const ACTIVE_DATA = (() => {
+  if (activeCity === 'gurgaon') {
+    if (activePark.includes('vatika') && typeof VATIKA_TECH_PARK_DATA !== 'undefined') return VATIKA_TECH_PARK_DATA;
+    if (typeof GURGAON_TECH_PARK_DATA !== 'undefined') return GURGAON_TECH_PARK_DATA;
+  }
+  return TECH_PARK_DATA;
+})();
 const ACTIVE_CITY_PARKS = activeCity === 'gurgaon' && typeof GURGAON_CITY_PARKS_DATA !== 'undefined'
   ? GURGAON_CITY_PARKS_DATA
   : CITY_PARKS_DATA;
@@ -3116,10 +3121,15 @@ if (activeCity !== 'gurgaon') scene.add(ground); // Gurgaon uses satellite overl
 
 // Satellite overlay for campus ground — loaded from Mapbox at high zoom
 if (ACTIVE_DATA.campus) {
-  const campusCenter = activeCity === 'gurgaon' ? [77.056159, 28.443089] : null;
+  const satCoords = {
+    'Unitech Cyber Park': { center: [77.056043, 28.443524], campus: [77.056159, 28.443089] },
+    'Vatika Business Park': { center: [77.044062, 28.406558], campus: [77.044062, 28.406558] }
+  };
+  const satConfig = satCoords[ACTIVE_DATA.name];
+  const campusCenter = satConfig ? satConfig.campus : (activeCity === 'gurgaon' ? [77.056159, 28.443089] : null);
   if (campusCenter) {
     const satZoom = 18;
-    const satCenter = activeCity === 'gurgaon' ? [77.056043, 28.443524] : campusCenter;
+    const satCenter = satConfig ? satConfig.center : campusCenter;
     const satUrl = `https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/${satCenter[0]},${satCenter[1]},${satZoom},0/1280x1280@2x?access_token=${MAPBOX_TOKEN}`;
     const satLoader = new THREE.TextureLoader();
     satLoader.crossOrigin = 'anonymous';
@@ -8648,6 +8658,11 @@ ACTIVE_CITY_PARKS.parks.forEach(park => {
   `;
   el.addEventListener('click', () => {
     if (park.hasDetailedView) {
+      // If clicking a different park than currently loaded, reload with park param
+      if (park.id !== 'unitech' && !activePark.includes(park.id)) {
+        window.location.href = '?city=' + activeCity + '&park=' + park.id;
+        return;
+      }
       transitionToView('park');
     } else {
       document.getElementById('pl-icon').style.background = park.color + '18';

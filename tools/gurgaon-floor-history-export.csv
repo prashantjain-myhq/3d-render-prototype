@@ -1,0 +1,353 @@
+Park,Building,Floor,Deal Date,Tenant,Deal Type,Starting Rent (₹/sqft),Effective Rent (₹/sqft),Lease Expiry,Area (sqft),Sector
+Unitech,Tower A,1,2023-07,Winspark Innovations Learning,New,67.5,77.2,2032-06,6642,Commercial & Professional Services
+Unitech,Tower A,1,2023-04,Blockcube Technology,New,81.0,92.5,2032-04,6642,IT/ITeS
+Unitech,Tower A,1,2022-11,Winspark Innovations Learning,New,80.0,88.7,2031-10,6399,Commercial & Professional Services
+Unitech,Tower A,1,2015-03,Ernst & Young,New,75.0,78.1,2018-03,52163,Commercial & Professional Services
+Unitech,Tower A,2,2023-07,Winspark Innovations Learning,New,67.5,77.2,2032-06,6642,Commercial & Professional Services
+Unitech,Tower A,2,2023-04,Blockcube Technology,New,81.0,92.5,2032-04,6642,IT/ITeS
+Unitech,Tower A,2,2022-11,Winspark Innovations Learning,New,80.0,88.7,2031-10,6399,Commercial & Professional Services
+Unitech,Tower A,2,2015-03,Ernst & Young,New,75.0,78.1,2018-03,52163,Commercial & Professional Services
+Unitech,Tower A,3,2024-03,DCSPLUS Travel Technologies (India),New,90.0,82.5,2027-02,3682,Industrials
+Unitech,Tower A,3,2022-12,Regus,New,70.0,82.0,2031-12,10637,Co-Working
+Unitech,Tower A,3,2022-09,Refpay Media,New,84.0,81.3,2027-08,4150,Media
+Unitech,Tower A,3,2022-01,SRL,New,55.0,59.6,2027-01,7771,Health Care
+Unitech,Tower A,3,2022-01,SRL,New,55.0,59.6,2027-01,7771,Health Care
+Unitech,Tower A,3,2022-01,Accor Advantage,New,55.0,57.7,2024-12,7632,Media
+Unitech,Tower A,3,2017-01,Ernst & Young,New,75.0,80.0,2022-01,29723,Commercial & Professional Services
+Unitech,Tower A,3,2016-10,Ernst & Young,New,75.0,80.1,2021-09,29724,Commercial & Professional Services
+Unitech,Tower A,3,2010-09,Hewitt Associates,New,52.5,52.1,2013-09,7091,Commercial & Professional Services
+Unitech,Tower A,3,2010-09,Hewitt Associates,New,52.5,52.2,2013-09,7771,Commercial & Professional Services
+Unitech,Tower A,3,2010-09,Hewitt Associates,New,52.5,52.2,2013-09,7771,Commercial & Professional Services
+Unitech,Tower A,4,2024-11,Gunnebo Entrance Control India,,90.0,89.0,2027-11,7073,
+Unitech,Tower A,4,2024-04,Nits Solutions,Renewal,65.0,66.8,2027-03,7361,Commercial & Professional Services
+Unitech,Tower A,4,2023-08,Star Health & Allied Insurance,New,90.0,95.2,2028-08,7073,BFSI
+Unitech,Tower A,4,2023-08,LogicLadder Technologies,Renewal,109.3,108.8,2026-02,4788,IT/ITeS
+Unitech,Tower A,4,2023-04,Preferred Square Analytics,New,80.0,83.3,2028-03,7361,Commercial & Professional Services
+Unitech,Tower A,4,2021-12,Nits Solutions,New,48.0,47.2,2024-12,7361,Commercial & Professional Services
+Unitech,Tower A,4,2021-04,Affordable Infrastructure and Housing Projects,,106.1,109.5,2026-03,3429,Real Estate
+Unitech,Tower A,4,2020-02,LogicLadder Technologies,,95.0,95.0,2023-02,4788,IT/ITeS
+Unitech,Tower A,4,2020-01,Spnn Business Services,,67.0,66.3,2023-01,7361,Commercial & Professional Services
+Unitech,Tower A,4,2019-09,Quess,New,70.5,72.2,2024-09,3536,Commercial & Professional Services
+Unitech,Tower A,4,2019-09,Quess,New,70.5,72.2,2024-09,7073,Commercial & Professional Services
+Unitech,Tower A,4,2019-06,Doon Consulting,Renewal,76.2,74.9,2022-06,7073,Commercial & Professional Services
+Unitech,Tower A,4,2016-06,Doon Consulting,,68.0,66.9,2019-06,7073,Commercial & Professional Services
+Unitech,Tower A,4,2014-09,Here Solutions India,Renewal,74.7,78.3,2017-09,7073,IT/ITeS
+Unitech,Tower A,5,2024-11,Gunnebo Entrance Control India,,90.0,89.0,2027-11,7073,
+Unitech,Tower A,5,2024-04,Nits Solutions,Renewal,65.0,66.8,2027-03,7361,Commercial & Professional Services
+Unitech,Tower A,5,2023-08,Star Health & Allied Insurance,New,90.0,95.2,2028-08,7073,BFSI
+Unitech,Tower A,5,2023-08,LogicLadder Technologies,Renewal,109.3,108.8,2026-02,4788,IT/ITeS
+Unitech,Tower A,5,2023-04,Preferred Square Analytics,New,80.0,83.3,2028-03,7361,Commercial & Professional Services
+Unitech,Tower A,5,2021-12,Nits Solutions,New,48.0,47.2,2024-12,7361,Commercial & Professional Services
+Unitech,Tower A,5,2021-04,Affordable Infrastructure and Housing Projects,,106.1,109.5,2026-03,3429,Real Estate
+Unitech,Tower A,5,2020-02,LogicLadder Technologies,,95.0,95.0,2023-02,4788,IT/ITeS
+Unitech,Tower A,5,2020-01,Spnn Business Services,,67.0,66.3,2023-01,7361,Commercial & Professional Services
+Unitech,Tower A,5,2019-09,Quess,New,70.5,72.2,2024-09,3536,Commercial & Professional Services
+Unitech,Tower A,5,2019-09,Quess,New,70.5,72.2,2024-09,7073,Commercial & Professional Services
+Unitech,Tower A,5,2019-06,Doon Consulting,Renewal,76.2,74.9,2022-06,7073,Commercial & Professional Services
+Unitech,Tower A,5,2016-06,Doon Consulting,,68.0,66.9,2019-06,7073,Commercial & Professional Services
+Unitech,Tower A,5,2014-09,Here Solutions India,Renewal,74.7,78.3,2017-09,7073,IT/ITeS
+Unitech,Tower A,6,2024-01,HDFC,New,69.0,81.3,2033-01,59447,BFSI
+Unitech,Tower A,6,2015-03,Ernst & Young,New,75.0,78.1,2018-03,59447,Commercial & Professional Services
+Unitech,Tower A,6,2014-01,Hewitt Associates,Renewal,65.0,70.7,2014-12,15590,Commercial & Professional Services
+Unitech,Tower A,7,2023-04,Studyiq Education,New,82.0,83.2,2028-04,14735,Others
+Unitech,Tower A,7,2023-04,Studyiq Education,New,82.0,83.2,2028-04,13383,Others
+Unitech,Tower A,7,2022-12,Studyiq Education,New,80.0,81.2,2027-12,11436,Others
+Unitech,Tower A,7,2022-12,Sequential Technology International India,New,75.0,77.8,2027-11,16682,Commercial & Professional Services
+Unitech,Tower A,7,2015-03,United Health Group Information Services,New,75.0,89.2,2024-03,28118,Health Care
+Unitech,Tower A,7,2015-03,United Health Group Information Services,New,75.0,89.1,2024-03,13383,Health Care
+Unitech,Tower A,7,2015-03,United Health Group Information Services,New,75.0,89.3,2024-03,14735,Health Care
+Unitech,Tower A,7,2014-01,Hewitt Associates,Renewal,65.0,70.3,2014-12,13383,Commercial & Professional Services
+Unitech,Tower A,7,2014-01,Hewitt Associates,,65.0,70.8,2014-12,14735,Commercial & Professional Services
+Unitech,Tower A,7,2014-01,Hewitt Associates,Renewal,65.0,70.8,2014-12,28118,Commercial & Professional Services
+Unitech,Tower B,1,2025-03,Snapmint Credit Advisory,New,83.0,86.2,2028-02,4318,
+Unitech,Tower B,1,2021-12,Slatwall Commerce,New,65.0,70.2,2030-11,4318,E-Commerce
+Unitech,Tower B,1,2019-05,Sato Argox India,New,85.0,84.7,2024-05,3965,IT/ITeS
+Unitech,Tower B,2,2024-09,Religent Infotech,,87.0,86.1,2029-09,4077,
+Unitech,Tower B,2,2024-02,Archer and Bull HR Consulting,,83.0,85.5,2029-01,4124,Commercial & Professional Services
+Unitech,Tower B,2,2019-11,Xoriant Solutions,New,65.0,65.0,2024-10,6931,IT/ITeS
+Unitech,Tower B,2,2016-12,Sun Life India Service Centre,Renewal,72.7,72.9,2019-12,3317,BFSI
+Unitech,Tower B,2,2016-12,Sun Life India Service Centre,Renewal,72.7,76.6,2019-12,3596,BFSI
+Unitech,Tower B,2,2016-12,Sun Life India Service Centre,Renewal,63.3,67.9,2019-12,2688,BFSI
+Unitech,Tower B,2,2011-02,Sun Life India Service Centre,,55.0,55.0,2014-02,3614,BFSI
+Unitech,Tower B,2,2011-02,Sun Life India Service Centre,,55.0,55.0,2014-02,3596,BFSI
+Unitech,Tower B,3,2019-03,Awfis,New,86.0,96.7,2028-02,3596,Co-Working
+Unitech,Tower B,3,2019-03,Awfis,New,86.0,96.7,2028-02,4361,Co-Working
+Unitech,Tower B,3,2019-03,Awfis,New,86.0,94.3,2028-02,2688,Co-Working
+Unitech,Tower B,3,2019-03,Awfis,New,86.0,96.7,2028-02,4124,Co-Working
+Unitech,Tower B,3,2019-03,Awfis,New,86.0,96.7,2028-02,4077,Co-Working
+Unitech,Tower B,3,2019-03,Awfis,New,86.0,96.7,2028-02,3614,Co-Working
+Unitech,Tower B,3,2019-03,Awfis,New,86.0,94.3,2028-02,3317,Co-Working
+Unitech,Tower B,4,2023-12,Indxx Capital Management,New,72.0,73.3,2028-12,6812,Commercial & Professional Services
+Unitech,Tower B,4,2023-05,SMFG India Credit Company,New,172.0,177.8,2026-04,4361,BFSI
+Unitech,Tower B,4,2023-05,SHM Workspaces,,80.0,78.7,2026-04,4361,Co-Working
+Unitech,Tower B,4,2023-01,Majid Al Futtaim Hypermarkets,Renewal,77.0,81.1,2027-12,7210,Automobiles
+Unitech,Tower B,4,2019-12,Majid Al Futtaim Hypermarkets,New,90.0,91.7,2024-12,11571,Automobiles
+Unitech,Tower B,4,2019-06,Make Positive Provar India,New,90.0,89.5,2022-03,4077,Commercial & Professional Services
+Unitech,Tower B,4,2019-06,Make Positive Provar India,New,90.0,86.9,2022-03,3317,Commercial & Professional Services
+Unitech,Tower B,4,2015-08,Evalueserve,,73.0,73.0,2018-07,4124,IT/ITeS
+Unitech,Tower B,4,2015-08,Evalueserve,,73.0,73.0,2018-07,3317,IT/ITeS
+Unitech,Tower B,4,2015-08,Evalueserve,,73.0,73.0,2018-07,3614,IT/ITeS
+Unitech,Tower B,4,2015-08,Evalueserve,,73.0,73.0,2018-07,2688,IT/ITeS
+Unitech,Tower B,4,2015-08,Evalueserve,,73.0,73.0,2018-07,4361,IT/ITeS
+Unitech,Tower B,4,2015-08,Evalueserve,,73.0,73.0,2018-07,3596,IT/ITeS
+Unitech,Tower B,4,2015-08,Evalueserve,,73.0,73.0,2018-07,4077,IT/ITeS
+Unitech,Tower B,5,2023-01,Top Technologies,New,74.5,69.5,2028-01,3317,IT/ITeS
+Unitech,Tower B,5,2023-01,Top Technologies,New,70.0,68.3,2027-12,4361,IT/ITeS
+Unitech,Tower B,5,2023-01,Top Technologies,New,70.0,68.3,2027-12,4124,IT/ITeS
+Unitech,Tower B,5,2023-01,Top Technologies,New,70.0,68.3,2027-12,3614,IT/ITeS
+Unitech,Tower B,5,2023-01,Top Technologies,New,70.0,68.3,2027-12,3596,IT/ITeS
+Unitech,Tower B,5,2018-03,Frankfinn Aviation Services,New,69.9,75.9,2023-02,4077,Industrials
+Unitech,Tower B,5,2018-03,Frankfinn Aviation Services,New,69.9,75.9,2023-02,4124,Industrials
+Unitech,Tower B,5,2015-02,Evalueserve,Renewal,79.4,79.4,2018-01,4124,IT/ITeS
+Unitech,Tower B,5,2015-02,Evalueserve,,79.4,79.4,2018-01,4077,IT/ITeS
+Unitech,Tower B,6,2025-03,Sharp Business Systems,,95.0,110.0,2034-02,3614,Consumer Durables & Apparel
+Unitech,Tower B,6,2013-12,Parametric Technology,,67.3,67.3,2016-12,3317,Consumer Discretionary
+Unitech,Tower B,7,2024-06,Dario Health Services,New,151.5,155.9,2026-05,8250,
+Unitech,Tower B,7,2023-08,Indiqube,New,65.0,68.7,2028-08,25777,Co-Working
+Unitech,Tower B,7,2019-01,Smartworks,New,72.0,82.5,2028-12,25777,Co-Working
+Unitech,Tower B,8,2025-02,Madison World,,90.0,95.4,2030-02,4124,Media
+Unitech,Tower B,8,2023-04,Bank of America,,85.3,89.7,2026-04,3317,BFSI
+Unitech,Tower B,8,2022-08,Studyiq Education,,61.0,60.0,2025-07,4124,Others
+Unitech,Tower B,8,2020-04,Bank of America,Renewal,79.4,83.5,2023-04,3317,BFSI
+Unitech,Tower B,8,2019-07,Netscribes,,77.5,82.4,2024-07,4124,Commercial & Professional Services
+Unitech,Tower B,8,2016-10,Optum Global Solutions India,Renewal,110.0,122.4,2019-10,7210,Health Care
+Unitech,Tower B,8,2015-07,Egon Zehnder,New,83.0,83.0,2018-07,4361,Commercial & Professional Services
+Unitech,Tower B,8,2014-03,Olive e-Business,,62.4,66.7,2016-11,3596,E-Commerce
+Unitech,Tower B,8,2014-02,United Health Group Information Services,,110.0,110.0,2016-10,7210,Health Care
+Unitech,Tower B,8,2013-11,Olive e-Business,,62.4,64.8,2016-11,3614,E-Commerce
+Unitech,Tower B,9,2022-01,Awfis,New,50.0,52.5,2027-01,4077,Co-Working
+Unitech,Tower B,9,2022-01,Awfis,New,50.0,46.6,2027-01,2688,Co-Working
+Unitech,Tower B,9,2022-01,Awfis,New,50.0,52.5,2027-01,3614,Co-Working
+Unitech,Tower B,9,2022-01,Awfis,New,50.0,52.5,2027-01,3596,Co-Working
+Unitech,Tower B,9,2022-01,Awfis,New,50.0,46.6,2027-01,4124,Co-Working
+Unitech,Tower B,9,2022-01,Awfis,New,50.0,52.5,2027-01,4361,Co-Working
+Unitech,Tower B,9,2015-12,IBM,Renewal,80.0,78.6,2018-12,25777,IT/ITeS
+Unitech,Tower B,11,2024-06,Top Technologies,New,63.3,61.8,2027-06,4361,IT/ITeS
+Unitech,Tower B,11,2023-07,Agrocorp India Trade Services,New,82.0,93.1,2032-07,2408,Consumer Staples
+Unitech,Tower B,11,2023-02,Indus Intellirisk & Intellisense Services,New,76.0,86.7,2032-02,8201,IT/ITeS
+Unitech,Tower B,11,2021-06,Top Technologies,New,55.0,50.8,2024-06,11565,IT/ITeS
+Unitech,Tower B,11,2020-01,Office Beanz,,90.0,102.2,2029-01,4124,Co-Working
+Unitech,Tower B,11,2020-01,Office Beanz,,90.0,102.2,2029-01,4077,Co-Working
+Unitech,Tower B,11,2019-10,Office Beanz,New,90.0,98.1,2028-10,4361,Co-Working
+Unitech,Tower B,11,2019-10,Office Beanz,New,90.0,98.9,2028-10,3614,Co-Working
+Unitech,Tower B,11,2016-10,"Yatra Online, TSI Yatra",Renewal,72.1,71.0,2019-09,11571,Consumer Discretionary
+Unitech,Tower B,11,2015-12,IBM,Renewal,80.0,78.6,2018-12,14206,IT/ITeS
+Unitech,Tower B,11,2013-10,Yatra Online,Renewal,65.5,64.3,2016-09,11571,Consumer Discretionary
+Unitech,Tower B,12,2022-01,Amantya Technologies,New,90.0,89.0,2025-02,25777,IT/ITeS
+Unitech,Tower B,12,2015-12,United Health Group Information Services,,68.0,72.1,2020-11,2688,Health Care
+Unitech,Tower B,12,2015-12,United Health Group Information Services,,68.0,75.4,2020-11,3317,Health Care
+Unitech,Tower B,12,2015-12,United Health Group Information Services,,68.0,76.1,2020-11,3614,Health Care
+Unitech,Tower B,14,2023-02,G4S IT Services India,New,82.0,84.5,2029-02,3491,Commercial & Professional Services
+Unitech,Tower B,14,2022-07,Passion Gaming,New,81.0,85.5,2031-07,3602,Consumer Discretionary
+Unitech,Tower B,14,2022-04,ShopClues,New,70.9,74.4,2031-04,4194,IT/ITeS
+Unitech,Tower B,14,2022-04,ShopClues,New,70.9,75.4,2031-04,2742,IT/ITeS
+Unitech,Tower B,14,2022-04,ShopClues,New,70.9,74.4,2031-04,3336,IT/ITeS
+Unitech,Tower B,14,2022-04,ShopClues,New,70.9,74.4,2031-04,4078,IT/ITeS
+Unitech,Tower B,15,2025-03,OSM Thome India,Renewal,78.7,77.7,2028-03,3602,
+Unitech,Tower B,15,2023-01,PSJ StrategyWerks,New,78.0,85.0,2031-12,3336,IT/ITeS
+Unitech,Tower B,15,2018-04,Livelike Sports Techologies India,New,72.0,67.2,2021-04,3491,IT/ITeS
+Unitech,Tower B,15,2016-02,Cyberlinks Technology,,75.1,73.9,2019-02,4194,IT/ITeS
+Unitech,Tower B,15,2014-11,First rain Software Centre,,107.1,109.0,2017-11,3421,IT/ITeS
+Unitech,Tower B,15,2014-11,First rain Software Centre,,105.0,107.3,2017-11,3602,IT/ITeS
+Unitech,Tower B,16,2024-11,Star Health & Allied Insurance,New,105.0,115.7,2029-10,3213,BFSI
+Unitech,Tower B,16,2024-11,Star Health & Allied Insurance,New,105.0,115.7,2029-10,4150,BFSI
+Unitech,Tower B,16,2024-11,Star Health & Allied Insurance,New,105.0,115.7,2029-10,2257,BFSI
+Unitech,Tower B,16,2024-08,FinThrive India,,105.0,121.5,2033-08,4234,
+Unitech,Tower B,16,2024-08,FinThrive India,New,105.0,121.5,2033-08,3830,
+Unitech,Tower B,16,2024-08,FinThrive India,,105.0,121.5,2033-08,3308,
+Unitech,Tower B,16,2018-11,VE Commercial Vehicles,Renewal,80.0,85.8,2024-11,4150,Automobiles
+Unitech,Tower B,16,2016-04,Terumo India,,97.2,99.5,2019-04,3308,Health Care
+Unitech,Tower B,16,2016-04,Terumo India,,97.2,99.6,2019-04,4234,Health Care
+Unitech,Tower B,16,2015-11,VE Commercial Vehicles,,70.0,69.6,2018-11,4150,Automobiles
+Unitech,Tower C,1,2024-02,Zyla Health,New,93.0,91.2,2029-01,4276,Health Care
+Unitech,Tower C,1,2024-02,Hyundai L&C India,,85.0,88.0,2029-01,2094,Consumer Durables & Apparel
+Unitech,Tower C,1,2024-01,Tata AIG,New,87.0,92.6,2033-01,3656,BFSI
+Unitech,Tower C,1,2015-12,United Health Group Information Services,,68.0,77.5,2020-11,11620,Health Care
+Unitech,Tower C,1,2015-12,United Health Group Information Services,,68.0,80.2,2024-11,12690,Health Care
+Unitech,Tower C,2,2025-04,Evident Scientific,Renewal,90.0,93.5,2028-03,11502,Others
+Unitech,Tower C,2,2022-11,PVM Associates,,90.0,92.8,2027-11,6569,Energy & Utilities
+Unitech,Tower C,2,2022-08,Select Source International,,152.0,150.3,2027-07,4802,IT/ITeS
+Unitech,Tower C,2,2022-08,PVM Associates,,90.0,92.8,2027-07,4802,Energy & Utilities
+Unitech,Tower C,2,2022-04,United Biscuits,New,81.0,74.4,2027-04,4413,Consumer Staples
+Unitech,Tower C,2,2022-04,Evident Scientific,New,68.0,67.3,2025-03,11502,Others
+Unitech,Tower C,2,2015-12,United Health Group Information Services,,68.0,75.1,2020-11,3455,Health Care
+Unitech,Tower C,2,2015-12,United Health Group Information Services,Re-Registered,68.0,76.0,2020-11,4754,Health Care
+Unitech,Tower C,2,2015-12,United Health Group Information Services,Renewal,68.0,75.6,2020-11,3116,Health Care
+Unitech,Tower C,2,2015-12,United Health Group Information Services,,68.0,76.1,2020-11,3635,Health Care
+Unitech,Tower C,2,2015-12,United Health Group Information Services,,68.0,76.7,2020-11,3160,Health Care
+Unitech,Tower C,2,2011-12,United Health Group Information Services,,48.3,54.5,2015-11,3116,Health Care
+Unitech,Tower C,3,2015-12,United Health Group Information Services,,68.0,77.3,2020-11,27286,Health Care
+Unitech,Tower C,4,2025-06,Mindlance India,,85.0,104.7,2034-05,4754,
+Unitech,Tower C,4,2025-06,Mindlance India,New,83.0,104.5,2034-05,3634,
+Unitech,Tower C,4,2023-04,ML Outsourcing Services,,85.0,87.7,2028-03,4754,Commercial & Professional Services
+Unitech,Tower C,4,2023-03,Procol Tech,New,80.0,84.3,2028-02,4754,IT/ITeS
+Unitech,Tower C,4,2023-03,Procol Tech,New,80.0,84.3,2028-02,3160,IT/ITeS
+Unitech,Tower C,4,2023-03,Procol Tech,New,85.0,90.6,2028-02,3116,IT/ITeS
+Unitech,Tower C,4,2015-12,United Health Group Information Services,,68.0,72.1,2020-11,3634,Health Care
+Unitech,Tower C,4,2015-12,United Health Group Information Services,,68.0,75.5,2020-11,3116,Health Care
+Unitech,Tower C,4,2015-12,United Health Group Information Services,Re-Registered,68.0,76.0,2020-11,4754,Health Care
+Unitech,Tower C,4,2015-12,United Health Group Information Services,Renewal,68.0,75.3,2020-11,3455,Health Care
+Unitech,Tower C,4,2011-12,United Health Group Information Services,,48.3,54.4,2015-11,3455,Health Care
+Unitech,Tower C,5,2019-03,Mav Epic Ventures LLP,,72.0,89.7,2034-03,4754,Commercial & Professional Services
+Unitech,Tower C,5,2018-09,Mav Epic Ventures LLP,,90.0,112.1,2033-08,3455,Commercial & Professional Services
+Unitech,Tower C,6,2023-02,Tata AIG,New,88.0,85.6,2032-02,4754,BFSI
+Unitech,Tower C,6,2023-02,Tata AIG,New,88.0,85.6,2032-02,3116,BFSI
+Unitech,Tower C,6,2023-02,Tata AIG,New,88.0,85.6,2032-02,3160,BFSI
+Unitech,Tower C,6,2023-02,Tata AIG,New,88.0,85.6,2032-02,4754,BFSI
+Unitech,Tower C,6,2019-05,Religare Health Insurance,New,81.0,95.0,2031-04,4754,BFSI
+Unitech,Tower C,6,2019-05,Religare Health Insurance,New,81.0,95.0,2031-04,4754,BFSI
+Unitech,Tower C,6,2019-03,Kelly Services India,,82.0,105.8,2028-02,3455,Commercial & Professional Services
+Unitech,Tower C,6,2019-03,Kelly Services India,New,82.0,112.7,2028-02,3634,Commercial & Professional Services
+Unitech,Tower C,6,2019-03,Kelly Services India,New,82.0,102.1,2028-02,4413,Commercial & Professional Services
+Unitech,Tower C,6,2012-05,IBM,Renewal,59.8,59.5,2016-04,27286,IT/ITeS
+Unitech,Tower C,7,2023-06,Zyod Commerce,,82.0,90.6,2028-05,4754,Consumer Durables & Apparel
+Unitech,Tower C,7,2022-07,Redcliffe Lifetech,New,76.5,85.1,2031-06,3454,Health Care
+Unitech,Tower C,7,2022-07,Redcliffe Lifetech,New,76.5,85.1,2031-06,3635,Health Care
+Unitech,Tower C,7,2022-07,Redcliffe Lifetech,New,76.5,85.1,2031-06,3116,Health Care
+Unitech,Tower C,7,2022-04,Redcliffe Lifetech,,76.5,76.2,2025-08,4754,Health Care
+Unitech,Tower C,8,2023-10,Fujifilm,Renewal,74.8,78.9,2026-10,4754,Consumer Durables & Apparel
+Unitech,Tower C,8,2023-10,Fujifilm,Renewal,74.7,79.1,2026-10,3635,Consumer Durables & Apparel
+Unitech,Tower C,8,2023-10,Fujifilm,Renewal,74.8,78.9,2026-10,4754,Consumer Durables & Apparel
+Unitech,Tower C,8,2023-10,Fujifilm,Renewal,74.8,78.3,2026-10,4413,Consumer Durables & Apparel
+Unitech,Tower C,8,2020-10,Fujifilm,Renewal,65.0,68.6,2023-10,3116,Consumer Durables & Apparel
+Unitech,Tower C,8,2020-10,Fujifilm,Renewal,65.0,68.9,2023-10,4754,Consumer Durables & Apparel
+Unitech,Tower C,8,2020-10,Fujifilm,Renewal,65.0,68.6,2023-10,3160,Consumer Durables & Apparel
+Unitech,Tower C,8,2020-10,Fujifilm,Renewal,65.0,69.1,2023-10,3635,Consumer Durables & Apparel
+Unitech,Tower C,8,2020-10,Fujifilm,Renewal,65.0,68.9,2023-10,4754,Consumer Durables & Apparel
+Unitech,Tower C,8,2017-12,Fujifilm,New,72.0,71.2,2020-12,4413,Consumer Durables & Apparel
+Unitech,Tower C,8,2017-10,Fujifilm,New,72.0,71.7,2020-10,4754,Consumer Durables & Apparel
+Unitech,Tower C,8,2017-10,Fujifilm,New,72.0,72.1,2020-10,3454,Consumer Durables & Apparel
+Unitech,Tower C,8,2017-10,Fujifilm,New,72.0,71.9,2020-10,3635,Consumer Durables & Apparel
+Unitech,Tower C,8,2017-10,Fujifilm,New,72.0,75.3,2020-10,3160,Consumer Durables & Apparel
+Unitech,Tower C,8,2017-10,Fujifilm,New,72.0,71.7,2020-10,4754,Consumer Durables & Apparel
+Unitech,Tower C,8,2017-10,Fujifilm,New,72.0,71.4,2020-10,3116,Consumer Durables & Apparel
+Unitech,Tower C,9,2024-05,Qxpress India,New,80.0,90.9,2033-04,3634,Industrials
+Unitech,Tower C,9,2024-05,Qxpress India,New,80.0,90.9,2033-04,4413,Industrials
+Unitech,Tower C,9,2022-06,Subhlakshmi Finance,,63.0,72.6,2031-06,4754,BFSI
+Unitech,Tower C,9,2022-03,Filo Eldech,New,68.0,65.0,2025-03,4413,Consumer Discretionary
+Unitech,Tower C,9,2021-11,HT Media,,60.0,59.3,2024-10,3116,Media
+Unitech,Tower C,9,2021-11,HT Media,,60.0,59.3,2024-10,4754,Media
+Unitech,Tower C,9,2019-07,Office Beanz,,90.0,112.1,2034-07,3634,Co-Working
+Unitech,Tower C,9,2019-06,Sterlite Technologies,,157.1,170.5,2022-06,7000,IT/ITeS
+Unitech,Tower C,9,2019-06,Office Beanz,New,90.0,111.1,2034-05,4754,Co-Working
+Unitech,Tower C,9,2013-04,IBM,Renewal,59.8,61.7,2017-03,27286,IT/ITeS
+Unitech,Tower C,9,2008-04,IBM,New,52.0,53.4,2013-03,27286,IT/ITeS
+Unitech,Tower C,10,2024-05,Cresce Technology,New,94.0,97.4,2029-05,7867,
+Unitech,Tower C,10,2024-03,Positive Realtech,New,60.0,59.5,2029-03,7867,
+Unitech,Tower C,10,2023-07,SEB Administrative Services India,New,85.0,87.3,2028-06,3116,BFSI
+Unitech,Tower C,10,2023-04,"Dinesh Engineers, DEPL Projects, DEPL O&M",,85.0,97.5,2032-03,4754,
+Unitech,Tower C,10,2022-05,J Streams Solutions,,67.0,70.2,2027-05,4754,IT/ITeS
+Unitech,Tower C,10,2021-07,Velocitai Digital,,57.4,59.4,2024-06,7867,IT/ITeS
+Unitech,Tower C,10,2017-12,Techcon Labs,New,88.0,99.1,2026-11,3116,IT/ITeS
+Unitech,Tower C,10,2017-06,Metis Eduventures,New,80.0,82.4,2020-06,4754,Commercial & Professional Services
+Unitech,Tower C,11,2023-03,IndusInd Bank,Re-Registered,75.0,85.7,2032-01,3160,BFSI
+Unitech,Tower C,11,2023-01,IndusInd Bank,New,75.0,85.6,2032-01,3160,BFSI
+Unitech,Tower C,11,2023-01,IndusInd Bank,New,75.0,85.6,2032-01,4754,BFSI
+Unitech,Tower C,11,2023-01,IndusInd Bank,New,75.0,85.6,2032-01,4754,BFSI
+Unitech,Tower C,11,2022-08,Redcliffe Lifetech,New,79.0,90.0,2031-07,4754,Health Care
+Unitech,Tower C,11,2022-08,Redcliffe Lifetech,New,79.0,87.9,2031-07,4754,Health Care
+Unitech,Tower C,11,2022-08,Redcliffe Lifetech,New,79.0,73.3,2025-11,3160,Health Care
+Unitech,Tower C,11,2022-07,GCIQC Quality Certification Services,New,76.8,82.2,2027-06,3116,Commercial & Professional Services
+Unitech,Tower C,12,2023-04,Persolkelly India,,82.0,87.1,2028-04,4413,Commercial & Professional Services
+Unitech,Tower C,12,2022-11,TRPC Service Team,New,72.0,71.4,2027-11,4754,Commercial & Professional Services
+Unitech,Tower C,12,2022-11,TRPC Service Team,New,84.4,83.7,2027-11,3160,Commercial & Professional Services
+Unitech,Tower C,12,2022-11,TRPC Service Team,New,84.4,83.7,2027-11,3116,Commercial & Professional Services
+Unitech,Tower C,12,2010-09,Huawei Telecommunications,,85.0,87.7,2013-09,4754,Telecommunication Services
+Unitech,Tower C,12,2010-09,Huawei Telecommunications,,77.0,79.7,2013-09,4413,Telecommunication Services
+Unitech,Tower C,14,2023-08,Provartesting India,New,95.0,95.0,2026-07,4754,IT/ITeS
+Unitech,Tower C,14,2023-08,Provartesting India,Renewal,95.0,110.0,2032-07,3160,IT/ITeS
+Unitech,Tower C,14,2022-08,Advantage Club Technologies,New,76.5,80.3,2031-09,4413,IT/ITeS
+Unitech,Tower C,14,2022-08,Advantage Club Technologies,New,68.0,72.1,2031-09,3634,IT/ITeS
+Unitech,Tower C,14,2022-08,Advantage Club Technologies,New,76.5,80.3,2031-09,3454,IT/ITeS
+Unitech,Tower C,15,2017-07,Nthrive Global Solutions,New,69.0,70.3,2022-07,5860,Health Care
+Unitech,Tower C,15,2017-07,Nthrive Global Solutions,New,69.0,70.3,2022-07,6984,Health Care
+Unitech,Tower C,15,2017-07,Nthrive Global Solutions,New,69.0,70.3,2022-07,3139,Health Care
+Unitech,Tower C,15,2013-05,IBM,Renewal,59.8,59.5,2017-04,27286,IT/ITeS
+Unitech,Tower C,15,2008-09,IBM,New,52.0,52.9,2013-04,16754,IT/ITeS
+Unitech,Tower C,16,2021-04,Tata Technologies,New,81.0,86.8,2026-03,5700,IT/ITeS
+Unitech,Tower C,16,2016-11,Egon Zehnder,,78.0,78.0,2019-11,2551,Commercial & Professional Services
+Unitech,Tower C,16,2016-11,Egon Zehnder,,78.0,78.0,2019-11,6000,Commercial & Professional Services
+Unitech,Tower C,16,2016-04,Egon Zehnder,Renewal,79.0,79.0,2025-04,950,Commercial & Professional Services
+Unitech,Tower C,16,2016-04,Egon Zehnder,Re-Registered,79.0,79.0,2025-04,1000,Commercial & Professional Services
+Unitech,Tower C,16,2016-04,Egon Zehnder,,79.0,79.0,2019-04,1400,Commercial & Professional Services
+Unitech,Tower C,16,2016-04,Egon Zehnder,,79.0,79.0,2019-04,1400,Commercial & Professional Services
+Unitech,Tower C,16,2012-05,Egon Zehnder,,75.0,75.0,2013-11,5851,Commercial & Professional Services
+Unitech,Tower D,6,2024-06,Candi Solar,New,80.0,83.9,2029-06,3668,Energy & Utilities
+Unitech,Tower D,6,2024-04,Cygnett Hotels & Resorts,New,80.0,80.2,2029-04,4000,Consumer Discretionary
+Unitech,Tower D,6,2023-11,Maysquare Lifestyle,Renewal,82.0,85.0,2028-11,12195,Consumer Durables & Apparel
+Unitech,Tower D,6,2017-12,Yatra Online,Renewal,75.0,73.6,2020-12,11015,Consumer Discretionary
+Unitech,Tower D,6,2017-07,Huawei Telecommunications,,80.0,82.4,2020-07,16100,Telecommunication Services
+Unitech,Tower D,6,2014-12,Yatra Online,New,89.0,89.5,2017-12,11015,Consumer Discretionary
+Unitech,Tower D,7,2024-10,Electro Rent India,New,85.0,98.4,2033-10,5058,Commercial & Professional Services
+Unitech,Tower D,7,2024-05,Nihon Parkerizing India,New,78.0,81.7,2029-04,7690,Materials
+Unitech,Tower D,7,2024-04,PMG Group,,87.6,95.4,2033-04,12195,Commercial & Professional Services
+Unitech,Tower D,7,2013-03,"Yatra Online, TSI Yatra",Re-Registered,94.5,92.9,2015-02,12470,Consumer Discretionary
+Unitech,Tower D,8,2023-06,Dotpe,New,80.0,84.8,2028-05,27115,IT/ITeS
+Unitech,Tower D,8,2016-10,Fil Research India,Renewal,86.3,86.3,2019-10,27115,BFSI
+Unitech,Tower D,9,2024-04,OYO Workspaces,New,80.0,89.1,2033-04,25719,Co-Working
+Unitech,Tower D,9,2016-10,Fil Research India,Renewal,86.3,92.7,2022-10,25719,BFSI
+Unitech,Tower D,9,2013-10,FIL India Business and Research Services,,75.0,75.0,2016-10,25719,BFSI
+Vatika,Building 1,1,2024-08,Home Depot Sourcing India,Renewal,65.1,64.4,2027-07,6904,Others
+Vatika,Building 1,1,2021-08,Home Depot Sourcing India,Renewal,62.0,61.3,2024-07,6904,Others
+Vatika,Building 1,1,2021-02,TCS,New,61.0,68.0,2030-02,32060,IT/ITeS
+Vatika,Building 1,1,2015-02,Home Depot Sourcing India,Renewal,59.8,59.8,2018-02,4341,Others
+Vatika,Building 1,1,2012-12,Home Depot Sourcing India,New,52.0,52.0,2015-12,4341,Others
+Vatika,Building 1,1,2009-04,Lenovo,New,50.0,49.9,2014-03,5251,IT/ITeS
+Vatika,Building 1,2,2021-12,Stryker Global Technology Center,Renewal,55.6,60.6,2024-11,28225,Commercial & Professional Services
+Vatika,Building 1,2,2015-02,Pepperfry,New,50.0,50.7,2020-02,14059,E-Commerce
+Vatika,Building 1,2,2014-01,Oppo,,50.0,49.2,2016-11,13017,Telecommunication Services
+Vatika,Building 1,3,2023-08,BFL Brandfolio,New,57.0,51.7,2028-08,4774,Automobiles
+Vatika,Building 1,3,2022-11,Fleetx Technologies,New,55.0,48.1,2027-11,4441,IT/ITeS
+Vatika,Building 1,3,2022-11,Fleetx Technologies,New,69.5,69.1,2027-11,12566,IT/ITeS
+Vatika,Building 1,3,2017-07,McKinsey,New,64.0,71.9,2026-06,12594,Commercial & Professional Services
+Vatika,Building 1,4,2023-05,Llama Logisol,New,216.7,269.3,2032-04,6230,IT/ITeS
+Vatika,Building 1,4,2023-02,Ofis Spaces,New,55.0,51.6,2028-02,13080,Co-Working
+Vatika,Building 1,4,2022-02,Alps Electric India,New,65.0,63.9,2027-01,7410,IT/ITeS
+Vatika,Building 1,4,2014-12,Woox Innovation India,New,52.0,52.7,2019-12,7467,Commercial & Professional Services
+Vatika,Building 1,5,2022-10,AMH Services,New,55.0,58.0,2031-10,22495,Commercial & Professional Services
+Vatika,Building 1,6,2024-07,Xerox India,Renewal,70.9,69.7,2027-04,8765,IT/ITeS
+Vatika,Building 1,6,2023-07,M Swasth Solutions,,59.0,60.6,2028-06,4000,Health Care
+Vatika,Building 1,6,2021-04,Xerox India,New,60.0,58.4,2024-04,14815,IT/ITeS
+Vatika,Building 1,7,2016-11,Fujifilm,Renewal,67.5,66.4,2019-10,15231,Consumer Durables & Apparel
+Vatika,Building 1,7,2013-11,Fujifilm,,63.3,62.2,2016-10,15231,Consumer Durables & Apparel
+Vatika,Building 1,8,2021-08,Regi India Cosmetics,New,58.0,55.7,2026-07,2705,Consumer Discretionary
+Vatika,Building 1,8,2018-06,Estee Advisors,New,62.0,61.3,2021-06,8045,BFSI
+Vatika,Building 1,8,2017-03,AU Financiers India,New,62.0,57.9,2020-03,8045,BFSI
+Vatika,Building 1,8,2014-09,Ashiana Housing,New,53.0,50.9,2017-09,2593,Real Estate
+Vatika,Building 1,8,2014-08,SS Supply Chain Solutions,New,50.0,47.8,2017-08,5717,Commercial & Professional Services
+Vatika,Building 2,1,2023-04,Leixir Resources,Renewal,69.0,73.4,2028-03,3942,Health Care
+Vatika,Building 2,1,2019-04,Leixir Resources,,70.8,77.0,2023-03,3942,Health Care
+Vatika,Building 2,1,2012-03,Vatika Hotels,New,66.0,73.9,2021-03,29313,Consumer Discretionary
+Vatika,Building 2,2,2024-02,Johnson Controls,Renewal,65.0,67.4,2028-02,28900,Industrials
+Vatika,Building 2,2,2019-07,Cubastion Consulting,New,72.0,80.7,2028-07,12827,Commercial & Professional Services
+Vatika,Building 2,2,2019-02,Johnson Controls,New,60.0,61.3,2024-02,28900,Industrials
+Vatika,Building 2,3,2014-12,TCS,New,48.0,54.0,2023-12,39958,IT/ITeS
+Vatika,Building 2,4,2015-02,TCS,New,48.0,54.0,2024-01,22269,IT/ITeS
+Vatika,Building 2,5,2019-02,"Indus Concessions India, Panipat Jalandhar NH-1 Tollway, Soma Indus Varanasi Aurangabad Tollway",Renewal,66.0,66.0,2022-02,15681,Commercial & Professional Services
+Vatika,Building 2,5,2016-08,Lesso Buildtech,New,75.0,74.1,2019-08,6974,Capital Goods
+Vatika,Building 2,5,2016-02,Indus Concessions India,New,68.0,66.7,2019-02,15681,Commercial & Professional Services
+Vatika,Building 2,6,2015-11,TCS,New,60.0,67.5,2024-11,14527,IT/ITeS
+Vatika,Building 2,6,2014-01,ADM Argo Industries India,Renewal,69.0,69.0,2017-01,14527,Consumer Staples
+Vatika,Building 2,6,2011-05,Pepperl + Fuchs,New,44.0,40.8,2014-04,8435,Industrials
+Vatika,Building 2,7,2019-09,Stryker Global Technology Center,Renewal,75.0,74.4,2022-08,11955,Commercial & Professional Services
+Vatika,Building 2,7,2016-09,Stryker Global Technology Center,Renewal,82.8,81.9,2019-08,11955,Commercial & Professional Services
+Vatika,Building 2,7,2015-07,Cubastion Consulting,,68.0,68.0,2018-07,5781,Commercial & Professional Services
+Vatika,Building 2,8,2024-09,Hexa Climate Solutions,New,59.0,64.8,2033-09,12412,Energy & Utilities
+Vatika,Building 2,8,2024-04,Heidelberg Cement India,New,59.0,55.9,2029-04,10867,Materials
+Vatika,Building 2,11,2025-01,Cubastion Consulting,New,59.0,50.7,2030-01,23279,Commercial & Professional Services
+Vatika,Building 2,12,2021-12,Stryker Global Technology Center,Renewal,54.3,53.7,2024-11,22510,Commercial & Professional Services
+Vatika,Building 2,13,2015-08,Xerox India,New,70.0,68.1,2018-07,22522,IT/ITeS
+Vatika,Building 2,14,2024-10,Edag Production Solutions India,,83.7,84.4,2027-10,10161,Automobiles
+Vatika,Building 2,14,2024-03,Hexa Climate Solutions,New,90.9,89.9,2027-03,3411,Energy & Utilities
+Vatika,Building 2,14,2024-03,Edag Production Solutions India,Renewal,66.6,66.6,2027-03,11372,Automobiles
+Vatika,Building 2,14,2023-12,Edag Production Solutions India,,85.2,85.2,2027-03,6750,Automobiles
+Vatika,Building 2,14,2023-02,Edag Production Solutions India,,93.5,93.5,2026-01,3207,Automobiles
+Vatika,Building 2,14,2021-03,Edag Production Solutions India,New,62.0,60.3,2024-03,11372,Automobiles
+Vatika,Building 2,14,2017-12,Edag Production Solutions India,,89.1,89.1,2020-11,2806,Automobiles
+Vatika,Building 2,14,2012-03,Edag Engineering & Design India,New,62.0,62.0,2015-03,11372,Media
+Vatika,Building 3,6,2012-01,McKinsey,New,48.0,44.0,2015-01,26802,Commercial & Professional Services
+Vatika,Building 3,7,2012-01,McKinsey,New,48.0,42.7,2015-01,24844,Commercial & Professional Services
+Vatika,Building 3,8,2024-01,Mckinsey Global Capabilities & Services,Renewal,66.4,65.7,2027-01,27950,Commercial & Professional Services
+Vatika,Building 3,8,2021-01,McKinsey,Renewal,61.8,61.1,2024-01,27950,Commercial & Professional Services
+Vatika,Building 3,8,2016-05,McKinsey,New,62.0,69.8,2025-04,26281,Commercial & Professional Services
+Vatika,Building 3,8,2014-12,Torus Business Solutions,New,62.0,58.2,2017-12,26281,Commercial & Professional Services

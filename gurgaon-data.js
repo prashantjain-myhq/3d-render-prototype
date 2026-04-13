@@ -3801,7 +3801,7 @@ const GURGAON_CITY_PARKS_DATA = {
       lat: 28.406558, lng: 77.044062,
       position: { x: 0, z: 0 },
       color: '#2563eb',
-      hasDetailedView: false,
+      hasDetailedView: true,
       totalArea: '8.5L sqft',
       buildings: 3,
       avgRent: '₹57-69/sqft',
