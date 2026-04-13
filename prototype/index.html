@@ -5490,10 +5490,11 @@ function openParkPanel() {
 
   // Wire up scoreboard row clicks
   panelMiddle.querySelectorAll('.park-score-row').forEach(row => {
-    row.addEventListener('click', () => {
+    row.addEventListener('click', (e) => {
+      e.stopPropagation();
       const bid = row.dataset.bid;
       const bldg = ACTIVE_DATA.buildings.find(b => b.id === bid);
-      if (bldg) { closePanel(); setTimeout(() => openPanel(bldg), 100); }
+      if (bldg) { closePanel(); setTimeout(() => openPanel(bldg, 0), 300); }
     });
   });
 }
@@ -6429,6 +6430,7 @@ function onClick(e) {
   if (e.target.closest('#enquiry-overlay')) return;
   if (e.target.closest('#tenant-overlay')) return;
   if (e.target.closest('#time-slider-wrap')) return;
+  if (e.target.closest('#deal-timeline-wrap')) return;
 
   raycaster.setFromCamera(pointer, camera);
   const intersects = raycaster.intersectObjects(floorMeshes);
@@ -8834,6 +8836,7 @@ function transitionToView(targetView) {
       document.body.classList.remove('city-view-active');
       document.getElementById('city-breadcrumb').classList.remove('visible');
       document.getElementById('center-park-picker').style.display = 'none';
+      if (document.getElementById('deal-timeline-wrap')) document.getElementById('deal-timeline-wrap').style.display = 'block';
       document.querySelector('#title-bar h1').textContent = ACTIVE_DATA.name;
       document.querySelector('#title-bar p').textContent = ACTIVE_DATA.address + ' \u00b7 ' + ACTIVE_DATA.buildings.length + ' Buildings';
       document.querySelector('.tb-logo-prestige').textContent = ACTIVE_DATA.name.split(' ')[0].toUpperCase();
