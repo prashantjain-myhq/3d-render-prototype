@@ -5524,7 +5524,7 @@ function openPanel(building, highlightFloorIndex) {
         </div>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
-        <span class="ph-badge" data-tip="Building classification — A+ (premium), A (institutional), B+ (good), B (standard)">${'Grade ' + building.grade}</span>
+        <span class="ph-badge" data-tip="Building classification — A+ (premium), A (institutional), B+ (good), B (standard)">${building.grade.startsWith('Grade') ? building.grade : 'Grade ' + building.grade}</span>
         ${building.buildingCategory ? '<span class="ph-badge" style="background:' + (building.buildingCategory === 'SEZ' ? '#fef3c7;color:#92400e;border-color:#fde68a' : '#eff6ff;color:#1d4ed8;border-color:#bfdbfe') + '" data-tip="' + (building.buildingCategory === 'SEZ' ? 'Special Economic Zone — tax benefits for eligible tenants' : 'IT Park classification under state IT policy') + '">' + building.buildingCategory + '</span>' : ''}
         ${building.certification ? '<span class="ph-badge" style="background:#f0fdf4;color:#16a34a;border-color:#bbf7d0" data-tip="Green building certification">' + building.certification + '</span>' : ''}
         ${building.developer ? '<span class="ph-badge" style="background:#faf5ff;color:#7c3aed;border-color:#ddd6fe" data-tip="Building developer/constructor">' + building.developer + '</span>' : ''}
