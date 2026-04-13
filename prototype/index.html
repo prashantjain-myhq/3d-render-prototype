@@ -2361,7 +2361,7 @@
     <button id="tb-enquiry-btn" title="Submit an office space enquiry" style="padding:8px 20px;background:linear-gradient(135deg,#6366f1,#4f46e5);border:none;border-radius:10px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;transition:all 0.2s;box-shadow:0 2px 8px rgba(79,70,229,0.3)" onmouseover="this.style.boxShadow='0 4px 16px rgba(79,70,229,0.4)';this.style.transform='translateY(-1px)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(79,70,229,0.3)';this.style.transform='none'">&#9993;&#65039; Enquire Now</button>
   </div>
 </div>
-<div id="shortcut-hint">P Park Overview · 1 Occupancy · 2 Rent · 3 Yield · 4 Lease Expiry · 5 Sector · 0 Reset · R Rotate</div>
+<div id="shortcut-hint">P Park Overview · T Timeline · B Editor · 1 Occupancy · 2 Rent · 4 Lease Expiry · 5 Sector · 0 Reset</div>
 
 <div id="tooltip">
   <div class="tt-header"></div>
@@ -4458,7 +4458,7 @@ function updateEditorPanel() {
 document.addEventListener('keydown', (e) => {
   if (currentView !== 'park') return;
   // Mode switching
-  if (e.key === '0' || e.key === '9') { editorMode = editorMode === 'buildings' ? null : 'buildings'; selectedIdx = 0; updateEditorPanel(); return; }
+  if (e.key === 'b' || e.key === 'B' || e.key === '9') { editorMode = editorMode === 'buildings' ? null : 'buildings'; selectedIdx = 0; updateEditorPanel(); return; }
   if (e.key === '8') { editorMode = editorMode === 'gates' ? null : 'gates'; selectedIdx = 0; updateEditorPanel(); return; }
   if (e.key === '7') { editorMode = editorMode === 'roads' ? null : 'roads'; selectedIdx = 0; roadDrawing = false; updateEditorPanel(); return; }
   if (e.key === '6') { editorMode = editorMode === 'amenities' ? null : 'amenities'; selectedIdx = 0; updateEditorPanel(); return; }
@@ -7500,7 +7500,7 @@ let dtPlaying = false;
 let dtInterval = null;
 
 // Show timeline when in park view (not city view)
-if (currentView === 'park') dtWrap.style.display = 'block';
+// Deal timeline hidden by default — press T to show
 
 // Keyboard shortcut T to toggle timeline
 document.addEventListener('keydown', (e) => {
@@ -8845,7 +8845,7 @@ function transitionToView(targetView) {
       document.body.classList.remove('city-view-active');
       document.getElementById('city-breadcrumb').classList.remove('visible');
       document.getElementById('center-park-picker').style.display = 'none';
-      if (document.getElementById('deal-timeline-wrap')) document.getElementById('deal-timeline-wrap').style.display = 'block';
+      // Deal timeline stays hidden until user presses T
       document.querySelector('#title-bar h1').textContent = ACTIVE_DATA.name;
       document.querySelector('#title-bar p').textContent = ACTIVE_DATA.address + ' \u00b7 ' + ACTIVE_DATA.buildings.length + ' Buildings';
       document.querySelector('.tb-logo-prestige').textContent = ACTIVE_DATA.name.split(' ')[0].toUpperCase();
