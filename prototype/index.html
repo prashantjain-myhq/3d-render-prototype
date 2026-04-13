@@ -2758,9 +2758,8 @@
         <div class="sp-filter-label">Occupancy</div>
         <div class="sp-pills" id="sp-occ-pills">
           <span class="sp-pill active" data-occ="all">All</span>
-          <span class="sp-pill" data-occ="90">&gt;90%</span>
-          <span class="sp-pill" data-occ="70-90">70-90%</span>
-          <span class="sp-pill" data-occ="lt70">&lt;70%</span>
+          <span class="sp-pill" data-occ="occupied">Occupied</span>
+          <span class="sp-pill" data-occ="partial">Partial</span>
           <span class="sp-pill" data-occ="vacant">Vacant</span>
         </div>
       </div>
@@ -7642,11 +7641,10 @@ function runSearch() {
         const searchStr = `${b.name} ${f.tenant} ${f.sector || ''} ${b.phase || ''}`.toLowerCase();
         if (!searchStr.includes(query)) return;
       }
-      // Occupancy filter
-      if (spOccFilter === '90' && f.occupancy <= 90) return;
-      if (spOccFilter === '70-90' && (f.occupancy < 70 || f.occupancy > 90)) return;
-      if (spOccFilter === 'lt70' && f.occupancy >= 70) return;
-      if (spOccFilter === 'vacant' && f.occupancy > 0 && f.tenant !== 'Vacant') return;
+      // Occupancy filter — same logic as floor panel quick filters
+      if (spOccFilter === 'occupied' && f.occupancy < 100) return;
+      if (spOccFilter === 'partial' && (f.occupancy <= 0 || f.occupancy >= 100)) return;
+      if (spOccFilter === 'vacant' && f.occupancy > 0) return;
       // Rent range
       if (f.rentPerSqft && (f.rentPerSqft < rentMin || f.rentPerSqft > rentMax)) return;
       // Yield filter
