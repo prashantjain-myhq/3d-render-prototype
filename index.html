@@ -5778,7 +5778,7 @@ function openPanel(building, highlightFloorIndex) {
       const totalNew = td.reduce((s,d) => s + d.newDeals, 0);
       const totalRenew = td.reduce((s,d) => s + d.renewals, 0);
 
-      const W = 310, H = 130, pad = 28, padR = 8, padT = 8, padB = 20;
+      const W = 280, H = 120, pad = 28, padR = 8, padT = 8, padB = 20;
       const minY = tdWithRent.length ? Math.min(...tdWithRent.map(d=>d.rent)) : 0;
       const maxY = tdWithRent.length ? Math.max(...tdWithRent.map(d=>d.rent)) : 100;
       const minX = td[0].year, maxX = td[td.length-1].year;
@@ -5786,7 +5786,7 @@ function openPanel(building, highlightFloorIndex) {
       const sx = (yr) => pad + (yr - minX) / (maxX - minX || 1) * (W - pad - padR);
       const sy = (r) => padT + (1 - (r - minY * 0.9) / ((maxY * 1.05) - minY * 0.9 || 1)) * (H - padT - padB);
 
-      let html = '<div class="ph-section" style="padding:14px;background:#fff;border:1px solid #e2e8f0;border-radius:10px">';
+      let html = '<div class="ph-section" style="padding:14px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden">';
 
       // Header with stats
       html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">';
@@ -5803,7 +5803,7 @@ function openPanel(building, highlightFloorIndex) {
       html += '</div>';
 
       // SVG chart — bars for deals + line for rent
-      html += '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" style="display:block">';
+      html += '<svg width="100%" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="xMidYMid meet" style="display:block;max-width:100%">';
 
       // Grid lines
       for (let i = 0; i <= 3; i++) {
@@ -8336,7 +8336,7 @@ function openTenantAnalysis() {
         <th style="text-align:left;padding:10px 8px;font-size:10px;text-transform:uppercase;color:#64748b;font-weight:700">Buildings ${tip('Which towers/buildings this tenant has space in.')}</th>
       </tr></thead>
       <tbody>${tenants.slice(0,30).map((t,i) => `<tr style="border-bottom:1px solid #f1f5f9;${i%2?'background:#fafbfc':''}">
-        <td style="padding:8px 12px;font-weight:600;color:#0f172a;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.name.substring(0,30)}${t.name.length>30?'\u2026':''} <span style="color:#94a3b8;font-weight:400">(${t.floors.length}F)</span></td>
+        <td style="padding:8px 12px;font-weight:600;color:#0f172a;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${t.name}">${t.name.substring(0,30)}${t.name.length>30?'\u2026':''} <span style="color:#94a3b8;font-weight:400">(${t.floors.length}F)</span></td>
         <td style="padding:8px"><span style="padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600;background:${(sectorColors[t.sector]||'#94a3b8')}18;color:${sectorColors[t.sector]||'#64748b'}">${t.sector||'\u2014'}</span></td>
         <td style="padding:8px;text-align:center"><span style="padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;${t.health.cls}">${t.health.label}</span></td>
         <td style="padding:8px;text-align:right;font-weight:600;color:#475569">${(t.totalArea/1000).toFixed(0)}K</td>
@@ -8574,7 +8574,7 @@ function openTransactions() {
           <div style="flex:1;padding:12px 16px;display:flex;gap:16px;align-items:center">
             <div style="flex:1;min-width:0">
               <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-                <span style="font-size:14px;font-weight:700;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.tenant}</span>
+                <span style="font-size:14px;font-weight:700;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${t.tenant}">${t.tenant}</span>
                 ${t.multiTenant ? '<span style="font-size:10px;color:#94a3b8">+' + (t.tenantCount - 1) + ' on floor</span>' : ''}
                 ${t.type ? '<span style="padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;background:' + s.bg + ';color:' + s.color + ';flex-shrink:0">' + t.type + '</span>' : ''}
                 ${t.sector ? '<span style="padding:1px 6px;border-radius:4px;font-size:9px;font-weight:600;background:' + sectorHex + '18;color:' + sectorHex + ';flex-shrink:0">' + t.sector + '</span>' : ''}
