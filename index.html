@@ -6698,6 +6698,9 @@ function onClick(e) {
   if (intersects.length > 0) {
     const data = floorDataMap.get(intersects[0].object);
     openPanel(data.building, data.floorIndex);
+  } else if (panelOpen) {
+    // Clicked empty space — dismiss park overview panel
+    closePanel();
   }
 }
 
