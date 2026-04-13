@@ -5444,7 +5444,7 @@ function openParkPanel() {
             const bRents = b.floors.filter(f => f.occupancy > 0 && (f.effectiveRent || f.rentPerSqft));
             const bRent = bRents.length ? Math.round(bRents.reduce((s, f) => s + (f.effectiveRent || f.rentPerSqft), 0) / bRents.length) : 0;
             const bVacant = b.floors.filter(f => f.occupancy === 0).length;
-            return '<tr style="border-bottom:1px solid #f1f5f9;cursor:pointer" onclick="closePanel();setTimeout(function(){openPanel(ACTIVE_DATA.buildings.find(b=>b.id===\\''+b.id+'\\'))},100)">' +
+            return '<tr style="border-bottom:1px solid #f1f5f9;cursor:pointer" onclick="closePanel();setTimeout(function(){openPanel(ACTIVE_DATA.buildings.find(function(b){return b.id===&quot;'+b.id+'&quot;}))},100)">' +
               '<td style="padding:6px 4px;font-weight:600;color:' + b.color + '">' + b.name + '</td>' +
               '<td style="padding:6px 4px;text-align:right;color:' + (bOcc >= 90 ? '#16a34a' : bOcc >= 70 ? '#d97706' : '#dc2626') + ';font-weight:700">' + bOcc + '%</td>' +
               '<td style="padding:6px 4px;text-align:right;font-weight:600">\u20B9' + bRent + '</td>' +
