@@ -3123,7 +3123,7 @@ if (activeCity !== 'gurgaon') scene.add(ground); // Gurgaon uses satellite overl
 if (ACTIVE_DATA.campus) {
   const satCoords = {
     'Unitech Cyber Park': { center: [77.056043, 28.443524], campus: [77.056159, 28.443089] },
-    'Vatika Business Park': { center: [77.044062, 28.406558], campus: [77.044062, 28.406558] }
+    'Vatika Business Park': { center: [77.04477604680713, 28.406163945224577], campus: [77.04477604680713, 28.406163945224577] }
   };
   const satConfig = satCoords[ACTIVE_DATA.name];
   const campusCenter = satConfig ? satConfig.campus : (activeCity === 'gurgaon' ? [77.056159, 28.443089] : null);
