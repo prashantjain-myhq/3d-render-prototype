@@ -6935,7 +6935,7 @@ setTimeout(() => {
     document.getElementById('mapbox-city').style.display = 'block';
     renderer.domElement.style.display = 'none';
     labelRenderer.domElement.style.display = 'none';
-    if (typeof mapboxMap !== 'undefined') mapboxMap.resize();
+    try { if (mapboxMap) mapboxMap.resize(); } catch(e) {}
     document.body.classList.add('city-view-active');
     document.getElementById('center-park-picker').style.display = 'flex';
     document.querySelector('#title-bar h1').textContent = activeCity === 'gurgaon' ? 'Gurgaon Tech Parks' : 'Bangalore Tech Parks';
@@ -8738,7 +8738,7 @@ function renderGallery() {
     </div>
     ` + galFooterHTML();
   } else if (images) {
-    galBody.innerHTML = galleryImages_gurgaon.map(img =>
+    galBody.innerHTML = images.map(img =>
       `<div class="gal-card${img.featured ? ' gal-featured' : ''}">
         <img src="${img.src}" alt="${img.title}" loading="lazy">
         <div class="gal-badge">${img.badge}</div>
