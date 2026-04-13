@@ -8495,10 +8495,9 @@ const galleryImages_bangalore = [
 ];
 
 function renderGallery() {
-  const isGurgaon = activeCity === 'gurgaon';
-  const galleryImages = isGurgaon ? [] : galleryImages_bangalore;
+  const parkName = ACTIVE_DATA.name;
 
-  const galleryImages_gurgaon = [
+  const galleryImages_unitech = [
     { src: 'gallery/unitech-entrance.png', title: 'Main Entrance', sub: 'Unitech Cyber Park gate with signage and landscaped roundabout', badge: 'ENTRANCE', featured: true },
     { src: 'gallery/unitech-towers.png', title: 'Tower View', sub: 'Glass, red brick and yellow facade towers — 4 buildings, 15.5L sqft', badge: 'TOWERS' },
     { src: 'gallery/unitech-campus.png', title: 'Campus Walkway', sub: 'Internal road between Tower B and Tower C', badge: 'CAMPUS' },
@@ -8509,7 +8508,25 @@ function renderGallery() {
     { src: 'gallery/unitech-floorplan2.png', title: 'Floor Plan (Variant)', sub: 'Alternate floor configuration with different wing proportions', badge: 'FLOOR PLAN' },
   ];
 
-  if (isGurgaon) {
+  const parkImages = {
+    'Unitech Cyber Park': galleryImages_unitech,
+    'Prestige Tech Park': galleryImages_bangalore,
+  };
+  const images = parkImages[parkName];
+
+  if (!images) {
+    // No photos for this park — show coming soon with site visit CTA
+    galBody.innerHTML = `
+    <div style="grid-column:1/-1;text-align:center;padding:40px 20px">
+      <div style="margin:0 auto 16px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(148,163,184,0.6)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      </div>
+      <div style="font-size:16px;font-weight:700;color:#e2e8f0;margin-bottom:6px">Photos Coming Soon</div>
+      <div style="font-size:12px;color:#64748b;max-width:340px;margin:0 auto;line-height:1.5">Campus photos for ${parkName} are being collected. Schedule a site visit to see the property in person.</div>
+      <button onclick="document.getElementById('gallery-overlay').classList.remove('open');document.getElementById('enquiry-overlay').classList.add('open');document.getElementById('eq-floor-info').textContent='Site Visit \u2014 ${parkName}'" style="margin-top:16px;padding:10px 24px;background:#4f46e5;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Schedule Site Visit</button>
+    </div>
+    ` + galFooterHTML();
+  } else if (images) {
     galBody.innerHTML = galleryImages_gurgaon.map(img =>
       `<div class="gal-card${img.featured ? ' gal-featured' : ''}">
         <img src="${img.src}" alt="${img.title}" loading="lazy">
