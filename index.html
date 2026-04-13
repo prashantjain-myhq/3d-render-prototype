@@ -5408,6 +5408,7 @@ function openParkPanel() {
         <div>
           <div class="ph-name">${ACTIVE_DATA.name}</div>
           <div style="font-size:10px;color:#64748b;margin-top:2px">${buildings.length} Buildings \u00b7 ${allFloors.length} Floors \u00b7 ${(totalArea/100000).toFixed(1)}L sqft</div>
+          <div style="font-size:8px;margin-top:2px"><span style="color:#6366f1;font-weight:600">CRE</span> = CRE Matrix \u00b7 <span style="color:#d97706;font-weight:600">ST</span> = Sales Team</div>
         </div>
       </div>
     </div>
@@ -8032,7 +8033,8 @@ function openTenantAnalysis() {
   let html = `
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
     <div><div style="font-size:20px;font-weight:800;color:#0f172a">Tenant Strength Analysis</div>
-    <div style="font-size:12px;color:#64748b">${ACTIVE_DATA.name} \u00b7 ${tenants.length} tenants \u00b7 ${ACTIVE_DATA.buildings.length} buildings</div></div>
+    <div style="font-size:12px;color:#64748b">${ACTIVE_DATA.name} \u00b7 ${tenants.length} tenants \u00b7 ${ACTIVE_DATA.buildings.length} buildings</div>
+    <div style="font-size:9px;margin-top:4px"><span style="color:#6366f1;font-weight:600">CRE</span> = CRE Matrix verified \u00b7 <span style="color:#d97706;font-weight:600">ST</span> = myHQ Sales Team</div></div>
   </div>
 
   <!-- MODULE 1: Portfolio Overview -->
@@ -8968,7 +8970,7 @@ function openShortlistCompare() {
   const hasCapitalValue = items.some(s => s.building.capitalValuePerSqft);
   const isMulti = (f) => f.tenants && f.tenants.filter(t => t.name !== 'Vacant').length > 1;
 
-  let html = '<h2 style="font-size:20px;font-weight:700;color:#0f172a;margin-bottom:20px">Shortlist Comparison</h2>';
+  let html = '<h2 style="font-size:20px;font-weight:700;color:#0f172a;margin-bottom:4px">Shortlist Comparison</h2><div style="font-size:9px;color:#94a3b8;margin-bottom:16px"><span style="color:#6366f1;font-weight:600">CRE</span> = CRE Matrix \u00b7 <span style="color:#d97706;font-weight:600">ST</span> = Sales Team \u00b7 Vacant floor rent is building avg estimate</div>';
   html += '<div class="compare-cards">';
   items.forEach(s => {
     const f = s.floor, b = s.building;
@@ -8983,7 +8985,7 @@ function openShortlistCompare() {
       <div class="cc-row"><span class="cc-label">Carpet Area${ti('Usable floor area excluding walls and common areas')}</span><span class="cc-val${f.carpetArea===maxArea?' best':''}">${(f.carpetArea||0).toLocaleString()} sqft</span></div>
       ${rent ? '<div class="cc-row"><span class="cc-label">' + (f.occupancy===0?'Asking':'Rent') + ti('Asking rent per sq ft per month from CRE Matrix') + '</span><span class="cc-val' + (rent===minRent?' best':'') + '">\u20B9' + rent + '/sqft</span></div>' : ''}
       ${f.effectiveRent && f.occupancy > 0 ? '<div class="cc-row"><span class="cc-label">Effective'+ti('Post-adjustment rent accounting for rent-free period and escalation')+'</span><span class="cc-val">\u20B9' + f.effectiveRent + '/sqft</span></div>' : ''}
-      <div class="cc-row"><span class="cc-label">CAM${ti('Common Area Maintenance charges from building specifications')}</span><span class="cc-val">\u20B9${b.camCharges}/sqft</span></div>
+      <div class="cc-row"><span class="cc-label">CAM <span style="font-size:8px;color:#d97706">ST</span>${ti('Common Area Maintenance — from Sales Team')}</span><span class="cc-val">\u20B9${b.camCharges}/sqft</span></div>
       <div class="cc-row"><span class="cc-label">Occupancy${ti('% of floor area currently leased')}</span><span class="cc-val" style="color:${f.occupancy>=90?'#16a34a':f.occupancy>0?'#d97706':'#dc2626'}">${f.occupancy===0?'Vacant':f.occupancy+'%'}</span></div>
       ${(f.propertyCondition||f.fitOut) ? '<div class="cc-row"><span class="cc-label">Condition'+ti('Bare Shell (empty), Warm Shell (basic infra), Fitted Out (ready)')+'</span><span class="cc-val">'+(f.propertyCondition||f.fitOut)+'</span></div>' : ''}
       ${f.rentalYield && hasCapitalValue ? '<div class="cc-row"><span class="cc-label">Yield'+ti('Annual rental return as % of capital value')+'</span><span class="cc-val'+((f.rentalYield||0)===maxYield?' best':'')+'">'+f.rentalYield+'%</span></div>' : ''}
@@ -9029,7 +9031,7 @@ function openShortlistCompare() {
 
   const rows = [
     { label:'Monthly Rent', key:'monthlyRent', tip:'Effective rent \u00d7 carpet area. From CRE Matrix transaction data.' },
-    { label:'Monthly CAM', key:'monthlyCAM', tip:'Common Area Maintenance \u00d7 carpet area. From building specifications.' },
+    { label:'Monthly CAM <span style="font-size:8px;color:#d97706">ST</span>', key:'monthlyCAM', tip:'Common Area Maintenance \u00d7 carpet area. From Sales Team.' },
     { label:'Monthly Total', key:'monthlyTotal', best:minMonthly, total:true, tip:'Rent + CAM. Total monthly occupancy cost for this floor.' },
     { label:'Security Deposit', key:'deposit', tip:'Deposit months \u00d7 monthly rent. Refundable at lease end.' },
     { label:'Escalation', key:'_escalation', tip:'Rent increase % and frequency from CRE Matrix deal terms.' },
