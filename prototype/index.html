@@ -8863,6 +8863,15 @@ function transitionToView(targetView) {
     currentView = targetView;
     tooltip.style.display = 'none';
 
+    // Update URL to reflect current view
+    const url = new URL(window.location);
+    if (targetView === 'park') {
+      url.searchParams.set('park', ACTIVE_DATA.name.toLowerCase().replace(/\s+/g, '-'));
+    } else {
+      url.searchParams.delete('park');
+    }
+    history.replaceState(null, '', url);
+
     // Fade out
     setTimeout(() => { viewFade.classList.remove('active'); }, 50);
 
