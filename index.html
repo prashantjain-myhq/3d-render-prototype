@@ -5759,16 +5759,14 @@ function openPanel(building, highlightFloorIndex) {
 
     <!-- Deal Flow + Rent Trend (merged widget) -->
     ${(() => {
-      // Aggregate deal history across all buildings for park-level view
+      // Deal history for THIS building only
       const rentByYear = {};
-      ACTIVE_DATA.buildings.forEach(b => {
-        (b.dealHistory || []).forEach(h => {
-          if (!rentByYear[h.year]) rentByYear[h.year] = { rents: [], deals: 0, newDeals: 0, renewals: 0 };
-          if (h.avgRent) rentByYear[h.year].rents.push(h.avgRent);
-          rentByYear[h.year].deals += h.deals;
-          rentByYear[h.year].newDeals += h.newDeals;
-          rentByYear[h.year].renewals += h.renewals;
-        });
+      (building.dealHistory || []).forEach(h => {
+        if (!rentByYear[h.year]) rentByYear[h.year] = { rents: [], deals: 0, newDeals: 0, renewals: 0 };
+        if (h.avgRent) rentByYear[h.year].rents.push(h.avgRent);
+        rentByYear[h.year].deals += h.deals;
+        rentByYear[h.year].newDeals += h.newDeals;
+        rentByYear[h.year].renewals += h.renewals;
       });
       const td = Object.entries(rentByYear)
         .map(([yr, d]) => ({ year: +yr, rent: d.rents.length ? Math.round(d.rents.reduce((s,r)=>s+r,0)/d.rents.length) : 0, deals: d.deals, newDeals: d.newDeals, renewals: d.renewals }))
