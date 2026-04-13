@@ -4272,6 +4272,13 @@ ACTIVE_DATA.buildings.forEach(b => {
   buildingGroups.push(createBuilding3D(b));
 });
 
+// Apply Vatika default theme after buildings are created
+if (ACTIVE_DATA.name === 'Vatika Business Park') {
+  // Force apply by temporarily setting to different theme
+  currentTheme = 'default';
+  setTimeout(() => { applyBuildingTheme('corporate'); }, 100);
+}
+
 // ============================================================
 // CAMPUS EDITOR — Buildings (9), Gates (8), Roads (7), Amenities (6)
 // ============================================================
@@ -7063,7 +7070,7 @@ const buildingThemes = {
   },
 };
 
-let currentTheme = 'default';
+let currentTheme = (ACTIVE_DATA.name === 'Vatika Business Park') ? 'corporate' : 'default';
 
 function createThemedWindowTexture(theme, widthPx, heightPx, cols, rows) {
   const t = buildingThemes[theme];
