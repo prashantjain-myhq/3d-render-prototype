@@ -693,7 +693,10 @@ def build_floor_object(entry, floor_plate, all_entries, txn_lookup=None):
                 if exp_date < now and not is_vacant:
                     is_vacant = True
                     source = 'CRE Matrix' if has_cre else 'Sales Team CSV'
-                    entry['vacancyReason'] = f'Lease expired {lease_expiry} ({source})'
+                    _mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+                    _ep = lease_expiry.split('-')
+                    _fmt = f'{_ep[0]}-{_mo[int(_ep[1])-1]}' if len(_ep) >= 2 else lease_expiry
+                    entry['vacancyReason'] = f'Lease expired {_fmt} ({source})'
         except: pass
 
     if is_vacant:
