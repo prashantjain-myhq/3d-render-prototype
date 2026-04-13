@@ -5858,6 +5858,15 @@ function openPanel(building, highlightFloorIndex) {
       html += '<span style="font-size:8px;color:#94a3b8;display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;background:#6366f1;opacity:0.25;border-radius:1px"></span>New</span>';
       html += '<span style="font-size:8px;color:#94a3b8;display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;background:#22c55e;opacity:0.25;border-radius:1px"></span>Renewed</span>';
       html += '</div>';
+
+      // Year-by-year table
+      html += '<table style="width:100%;border-collapse:collapse;font-size:9px;margin-top:10px">';
+      html += '<thead><tr style="border-bottom:1px solid #e2e8f0"><th style="text-align:left;padding:3px 4px;color:#94a3b8;font-weight:600">Year</th><th style="text-align:right;padding:3px 4px;color:#94a3b8;font-weight:600">Deals</th><th style="text-align:right;padding:3px 4px;color:#94a3b8;font-weight:600">New</th><th style="text-align:right;padding:3px 4px;color:#94a3b8;font-weight:600">Renewed</th><th style="text-align:right;padding:3px 4px;color:#94a3b8;font-weight:600">Avg Rent</th></tr></thead><tbody>';
+      td.slice(-10).forEach(function(d, i) {
+        html += '<tr style="border-bottom:1px solid #f8fafc;' + (i%2 ? 'background:#fafbfc' : '') + '"><td style="padding:3px 4px;color:#475569">' + d.year + '</td><td style="padding:3px 4px;text-align:right;font-weight:600">' + d.deals + '</td><td style="padding:3px 4px;text-align:right;color:#16a34a">' + d.newDeals + '</td><td style="padding:3px 4px;text-align:right;color:#2563eb">' + d.renewals + '</td><td style="padding:3px 4px;text-align:right;color:#4f46e5;font-weight:600">' + (d.rent ? '\u20B9' + d.rent : '\u2014') + '</td></tr>';
+      });
+      html += '</tbody></table>';
+
       html += '</div>';
       return html;
     })()}
