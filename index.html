@@ -5392,6 +5392,11 @@ function openParkPanel() {
   const fc = (n) => n >= 10000000 ? '\u20B9' + (n / 10000000).toFixed(2) + 'Cr' : n >= 100000 ? '\u20B9' + (n / 100000).toFixed(1) + 'L' : '\u20B9' + n.toLocaleString();
   const sectorColors = ['#4f46e5','#0891b2','#059669','#d97706','#dc2626','#7c3aed','#be185d','#64748b'];
 
+  // Single panel — hide middle and right, expand left
+  panelMiddle.style.display = 'none';
+  document.getElementById('panel-right').style.display = 'none';
+  panelLeft.style.width = '400px';
+
   panelLeft.innerHTML = `
     <div class="ph-section">
       <div class="ph-title-row">
@@ -5404,18 +5409,48 @@ function openParkPanel() {
     </div>
 
     <div class="ph-section">
-      <div class="ph-stats">
+      <div class="ph-stats" style="grid-template-columns:repeat(3,1fr)">
         <div class="ph-stat"><div class="ph-stat-label">Occupancy</div><div class="ph-stat-value" style="color:${avgOcc>=90?'#16a34a':avgOcc>=70?'#d97706':'#dc2626'}">${avgOcc}%</div></div>
         <div class="ph-stat"><div class="ph-stat-label">Avg Eff. Rent</div><div class="ph-stat-value">\u20B9${avgRent}</div></div>
         <div class="ph-stat"><div class="ph-stat-label">Vacant Floors</div><div class="ph-stat-value" style="color:#dc2626">${vacantFloors.length}</div></div>
         <div class="ph-stat"><div class="ph-stat-label">Vacant Area</div><div class="ph-stat-value">${(vacantArea/1000).toFixed(0)}K sqft</div></div>
-        <div class="ph-stat"><div class="ph-stat-label">Monthly Revenue</div><div class="ph-stat-value">${fc(totalRevenue)}</div></div>
-        <div class="ph-stat"><div class="ph-stat-label">Revenue at Risk</div><div class="ph-stat-value" style="color:${revenueAtRisk>0?'#dc2626':'#16a34a'}">${fc(revenueAtRisk)}</div></div>
+        <div class="ph-stat"><div class="ph-stat-label">Monthly Rev.</div><div class="ph-stat-value">${fc(totalRevenue)}</div></div>
+        <div class="ph-stat"><div class="ph-stat-label">Rev. at Risk</div><div class="ph-stat-value" style="color:${revenueAtRisk>0?'#dc2626':'#16a34a'}">${fc(revenueAtRisk)}</div></div>
       </div>
     </div>
 
+    ${expiringFloors.length > 0 ? '<div class="ph-section" style="padding:8px 10px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px"><div style="font-size:10px;font-weight:600;color:#dc2626;text-transform:uppercase;margin-bottom:3px">Expiring in 12 Months</div><div style="font-size:11px;color:#991b1b">' + expiringFloors.length + ' floors \u00b7 ' + fc(revenueAtRisk) + '/mo at risk</div></div>' : ''}
+
     <div class="ph-section">
-      <div style="font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Sector Breakdown</div>
+      <div style="font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Building Scoreboard</div>
+      <table style="width:100%;border-collapse:collapse;font-size:10px">
+        <thead><tr style="border-bottom:2px solid #e2e8f0">
+          <th style="text-align:left;padding:5px 4px;color:#94a3b8;font-weight:600">Building</th>
+          <th style="text-align:right;padding:5px 4px;color:#94a3b8;font-weight:600">Occ</th>
+          <th style="text-align:right;padding:5px 4px;color:#94a3b8;font-weight:600">Rent</th>
+          <th style="text-align:right;padding:5px 4px;color:#94a3b8;font-weight:600">Floors</th>
+          <th style="text-align:right;padding:5px 4px;color:#94a3b8;font-weight:600">Vacant</th>
+        </tr></thead>
+        <tbody>
+          ${buildings.map(b => {
+            const bOcc = Math.round(b.floors.reduce((s, f) => s + f.occupancy, 0) / b.floors.length);
+            const bRents = b.floors.filter(f => f.occupancy > 0 && (f.effectiveRent || f.rentPerSqft));
+            const bRent = bRents.length ? Math.round(bRents.reduce((s, f) => s + (f.effectiveRent || f.rentPerSqft), 0) / bRents.length) : 0;
+            const bVacant = b.floors.filter(f => f.occupancy === 0).length;
+            return '<tr style="border-bottom:1px solid #f1f5f9">' +
+              '<td style="padding:5px 4px;font-weight:600;color:' + b.color + '">' + b.name + '</td>' +
+              '<td style="padding:5px 4px;text-align:right;color:' + (bOcc >= 90 ? '#16a34a' : bOcc >= 70 ? '#d97706' : '#dc2626') + ';font-weight:700">' + bOcc + '%</td>' +
+              '<td style="padding:5px 4px;text-align:right;font-weight:600">\u20B9' + bRent + '</td>' +
+              '<td style="padding:5px 4px;text-align:right">' + b.totalFloors + '</td>' +
+              '<td style="padding:5px 4px;text-align:right;color:' + (bVacant > 0 ? '#dc2626' : '#16a34a') + '">' + bVacant + '</td>' +
+            '</tr>';
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ph-section">
+      <div style="font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Sector Breakdown</div>
       <div style="display:flex;flex-direction:column;gap:4px">
         ${sectors.slice(0, 8).map(([sec, area], i) => {
           const pct = totalOccArea > 0 ? (area / totalOccArea * 100).toFixed(1) : 0;
@@ -5424,40 +5459,8 @@ function openParkPanel() {
       </div>
     </div>
 
-    ${expiringFloors.length > 0 ? '<div class="ph-section" style="padding:10px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px"><div style="font-size:10px;font-weight:600;color:#dc2626;text-transform:uppercase;margin-bottom:4px">Expiring in 12 Months</div><div style="font-size:11px;color:#991b1b">' + expiringFloors.length + ' floors \u00b7 ' + fc(revenueAtRisk) + '/mo at risk</div></div>' : ''}
-  `;
-
-  panelMiddle.innerHTML = `
     <div class="ph-section">
-      <div style="font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Building Scoreboard</div>
-      <table style="width:100%;border-collapse:collapse;font-size:10px">
-        <thead><tr style="border-bottom:2px solid #e2e8f0">
-          <th style="text-align:left;padding:6px 4px;color:#94a3b8;font-weight:600">Building</th>
-          <th style="text-align:right;padding:6px 4px;color:#94a3b8;font-weight:600">Occ</th>
-          <th style="text-align:right;padding:6px 4px;color:#94a3b8;font-weight:600">Rent</th>
-          <th style="text-align:right;padding:6px 4px;color:#94a3b8;font-weight:600">Floors</th>
-          <th style="text-align:right;padding:6px 4px;color:#94a3b8;font-weight:600">Vacant</th>
-        </tr></thead>
-        <tbody>
-          ${buildings.map(b => {
-            const bOcc = Math.round(b.floors.reduce((s, f) => s + f.occupancy, 0) / b.floors.length);
-            const bRents = b.floors.filter(f => f.occupancy > 0 && (f.effectiveRent || f.rentPerSqft));
-            const bRent = bRents.length ? Math.round(bRents.reduce((s, f) => s + (f.effectiveRent || f.rentPerSqft), 0) / bRents.length) : 0;
-            const bVacant = b.floors.filter(f => f.occupancy === 0).length;
-            return '<tr class="park-score-row" data-bid="'+b.id+'" style="border-bottom:1px solid #f1f5f9;cursor:pointer">' +
-              '<td style="padding:6px 4px;font-weight:600;color:' + b.color + '">' + b.name + '</td>' +
-              '<td style="padding:6px 4px;text-align:right;color:' + (bOcc >= 90 ? '#16a34a' : bOcc >= 70 ? '#d97706' : '#dc2626') + ';font-weight:700">' + bOcc + '%</td>' +
-              '<td style="padding:6px 4px;text-align:right;font-weight:600">\u20B9' + bRent + '</td>' +
-              '<td style="padding:6px 4px;text-align:right">' + b.totalFloors + '</td>' +
-              '<td style="padding:6px 4px;text-align:right;color:' + (bVacant > 0 ? '#dc2626' : '#16a34a') + '">' + bVacant + '</td>' +
-            '</tr>';
-          }).join('')}
-        </tbody>
-      </table>
-    </div>
-
-    <div class="ph-section" style="margin-top:12px">
-      <div style="font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Top 5 Tenants by Area</div>
+      <div style="font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Top 5 Tenants by Area</div>
       ${(() => {
         const tenantMap = {};
         allFloors.forEach(f => {
@@ -5472,7 +5475,7 @@ function openParkPanel() {
       })()}
     </div>
 
-    <div class="ph-section" style="margin-top:12px;padding:8px 10px;background:#f0f4ff;border:1px solid #c7d2fe;border-radius:8px">
+    <div class="ph-section" style="padding:8px 10px;background:#f0f4ff;border:1px solid #c7d2fe;border-radius:8px">
       <div style="font-size:9px;font-weight:700;color:#4338ca;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Data Sources</div>
       <div style="font-size:10px;color:#64748b;line-height:1.6">
         ${ACTIVE_DATA.dataSources ? ACTIVE_DATA.dataSources.map(s =>
@@ -5482,8 +5485,6 @@ function openParkPanel() {
       </div>
     </div>
   `;
-
-  document.getElementById('panel-right').innerHTML = '<div style="padding:40px 20px;text-align:center"><div style="font-size:28px;margin-bottom:12px;opacity:0.3">\ud83c\udfe2</div><div style="font-size:13px;color:#94a3b8;font-weight:600">Click a building in the scoreboard<br>or in the 3D view to see floor details</div></div>';
 
   panelContainer.classList.add('open');
   panelOverlay.classList.add('open');
@@ -5767,6 +5768,10 @@ function closePanel() {
   // Restore 3D interaction
   renderer.domElement.style.pointerEvents = '';
   controls.enabled = true;
+  // Restore panel visibility (park overview hides middle + right)
+  panelMiddle.style.display = '';
+  document.getElementById('panel-right').style.display = '';
+  panelLeft.style.width = '';
 }
 
 panelCloseBtn.addEventListener('click', closePanel);
