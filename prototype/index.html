@@ -5692,112 +5692,110 @@ function openPanel(building, highlightFloorIndex) {
       </div>
     </div>` : ''}
 
-    <!-- Deal History (from CREMatrix) -->
-    ${building.dealHistory && building.dealHistory.length > 0 ? `
-    <div class="ph-section" style="padding:12px;background:#fff;border:1px solid #e2e8f0;border-radius:10px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px">Deal Flow</span><span style="font-size:8px;color:#6366f1;font-weight:600">CREMatrix</span></div>
-      <div style="display:flex;align-items:flex-end;gap:2px;height:50px;padding:0 2px">
-        ${building.dealHistory.map(h => {
-          const maxDeals = Math.max(...building.dealHistory.map(x => x.deals));
-          const barH = Math.max(4, (h.deals / maxDeals) * 44);
-          const newPct = h.deals > 0 ? (h.newDeals / h.deals * 100).toFixed(0) : 0;
-          const renewPct = h.deals > 0 ? (h.renewals / h.deals * 100).toFixed(0) : 0;
-          const otherCount = h.deals - h.newDeals - h.renewals;
-          return '<div data-tip="' + h.year + ': ' + h.deals + ' deals (' + h.newDeals + ' new, ' + h.renewals + ' renewed' + (otherCount > 0 ? ', ' + otherCount + ' other' : '') + ')' + (h.avgRent ? ' Avg \u20B9' + h.avgRent + '/sqft' : '') + '" style="flex:1;height:' + barH + 'px;background:linear-gradient(to top,#6366f1 ' + newPct + '%,#22c55e ' + newPct + '% ' + (parseInt(newPct)+parseInt(renewPct)) + '%,#cbd5e1 ' + (parseInt(newPct)+parseInt(renewPct)) + '%);border-radius:2px 2px 0 0;min-width:3px;cursor:pointer"></div>';
-        }).join('')}
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:9px;color:#94a3b8;margin-top:2px">
-        <span>${building.dealHistory[0]?.year || ''}</span>
-        <span>${building.dealHistory[building.dealHistory.length - 1]?.year || ''}</span>
-      </div>
-      ${(() => {
-        const td = building.dealHistory.reduce((s,h) => s + h.deals, 0);
-        const tn = building.dealHistory.reduce((s,h) => s + h.newDeals, 0);
-        const tr = building.dealHistory.reduce((s,h) => s + h.renewals, 0);
-        const to = td - tn - tr;
-        return '<div style="font-size:10px;color:#64748b;margin-top:6px;margin-bottom:8px">Total: <b>' + td + ' deals</b> \u00b7 New: <b>' + tn + '</b> \u00b7 Renewed: <b>' + tr + '</b>' + (to > 0 ? ' \u00b7 Other: <b>' + to + '</b>' : '') + '</div>';
-      })()}
-      <table style="width:100%;border-collapse:collapse;font-size:10px">
-        <thead><tr style="border-bottom:1px solid #e2e8f0">
-          <th style="text-align:left;padding:4px 6px;color:#94a3b8;font-weight:600">Year</th>
-          <th style="text-align:right;padding:4px 6px;color:#94a3b8;font-weight:600">Deals</th>
-          <th style="text-align:right;padding:4px 6px;color:#94a3b8;font-weight:600">New</th>
-          <th style="text-align:right;padding:4px 6px;color:#94a3b8;font-weight:600">Renewed</th>
-          <th style="text-align:right;padding:4px 6px;color:#94a3b8;font-weight:600">Avg Rent</th>
-        </tr></thead>
-        <tbody>
-          ${building.dealHistory.slice(-8).map((h, i) => '<tr style="border-bottom:1px solid #f1f5f9;' + (i%2 ? 'background:#fafbfc' : '') + '"><td style="padding:3px 6px;color:#475569">' + h.year + '</td><td style="padding:3px 6px;text-align:right;font-weight:600">' + h.deals + '</td><td style="padding:3px 6px;text-align:right;color:#16a34a">' + (h.newDeals||0) + '</td><td style="padding:3px 6px;text-align:right;color:#2563eb">' + (h.renewals||0) + '</td><td style="padding:3px 6px;text-align:right;color:#4f46e5;font-weight:600">' + (h.avgRent ? '\u20B9' + h.avgRent : '\u2014') + '</td></tr>').join('')}
-        </tbody>
-      </table>
-    </div>` : ''}
-
-    <!-- Rent Trend Chart -->
+    <!-- Deal Flow + Rent Trend (merged widget) -->
     ${(() => {
+      // Aggregate deal history across all buildings for park-level view
       const rentByYear = {};
       ACTIVE_DATA.buildings.forEach(b => {
         (b.dealHistory || []).forEach(h => {
-          if (!rentByYear[h.year]) rentByYear[h.year] = { rents: [], deals: 0 };
+          if (!rentByYear[h.year]) rentByYear[h.year] = { rents: [], deals: 0, newDeals: 0, renewals: 0 };
           if (h.avgRent) rentByYear[h.year].rents.push(h.avgRent);
           rentByYear[h.year].deals += h.deals;
+          rentByYear[h.year].newDeals += h.newDeals;
+          rentByYear[h.year].renewals += h.renewals;
         });
       });
       const td = Object.entries(rentByYear)
-        .map(([yr, d]) => ({ year: +yr, rent: d.rents.length ? Math.round(d.rents.reduce((s,r)=>s+r,0)/d.rents.length) : 0, deals: d.deals }))
-        .filter(d => d.rent > 0).sort((a,b) => a.year - b.year);
-      if (td.length < 3) return '';
+        .map(([yr, d]) => ({ year: +yr, rent: d.rents.length ? Math.round(d.rents.reduce((s,r)=>s+r,0)/d.rents.length) : 0, deals: d.deals, newDeals: d.newDeals, renewals: d.renewals }))
+        .sort((a,b) => a.year - b.year);
+      const tdWithRent = td.filter(d => d.rent > 0);
+      if (td.length < 2) return '';
 
-      const W = 290, H = 110, pad = 30, padR = 10, padT = 10, padB = 22;
-      const minY = Math.min(...td.map(d=>d.rent)), maxY = Math.max(...td.map(d=>d.rent));
+      const totalDeals = td.reduce((s,d) => s + d.deals, 0);
+      const totalNew = td.reduce((s,d) => s + d.newDeals, 0);
+      const totalRenew = td.reduce((s,d) => s + d.renewals, 0);
+
+      const W = 310, H = 130, pad = 28, padR = 8, padT = 8, padB = 20;
+      const minY = tdWithRent.length ? Math.min(...tdWithRent.map(d=>d.rent)) : 0;
+      const maxY = tdWithRent.length ? Math.max(...tdWithRent.map(d=>d.rent)) : 100;
       const minX = td[0].year, maxX = td[td.length-1].year;
       const maxDeals = Math.max(...td.map(d=>d.deals));
-      const sx = (yr) => pad + (yr - minX) / (maxX - minX) * (W - pad - padR);
-      const sy = (r) => padT + (1 - (r - minY) / (maxY - minY || 1)) * (H - padT - padB);
+      const sx = (yr) => pad + (yr - minX) / (maxX - minX || 1) * (W - pad - padR);
+      const sy = (r) => padT + (1 - (r - minY * 0.9) / ((maxY * 1.05) - minY * 0.9 || 1)) * (H - padT - padB);
 
-      let svg = '<div class="ph-section" style="padding:12px;background:#fff;border:1px solid #e2e8f0;border-radius:10px">';
-      svg += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px">Rent Trend</span><span style="font-size:8px;color:#6366f1;font-weight:600">' + minX + '\u2013' + maxX + '</span></div>';
-      svg += '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" style="display:block">';
+      let html = '<div class="ph-section" style="padding:14px;background:#fff;border:1px solid #e2e8f0;border-radius:10px">';
 
-      // Deal volume bars (faint background)
-      td.forEach(d => {
-        const bh = maxDeals > 0 ? (d.deals / maxDeals) * (H - padT - padB) * 0.6 : 0;
-        svg += '<rect x="' + (sx(d.year)-3) + '" y="' + (H - padB - bh) + '" width="6" height="' + bh + '" fill="#e0e7ff" rx="1"/>';
-      });
+      // Header with stats
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">';
+      html += '<span style="font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px">Deal Flow & Rent Trend</span>';
+      html += '<span style="font-size:8px;color:#6366f1;font-weight:600">CRE Matrix</span>';
+      html += '</div>';
+
+      // Summary stats row
+      html += '<div style="display:flex;gap:12px;margin-bottom:10px">';
+      html += '<div style="flex:1;padding:6px 8px;background:#f8fafc;border-radius:6px;text-align:center"><div style="font-size:14px;font-weight:800;color:#0f172a">' + totalDeals + '</div><div style="font-size:8px;color:#94a3b8;text-transform:uppercase">Deals</div></div>';
+      html += '<div style="flex:1;padding:6px 8px;background:#f0fdf4;border-radius:6px;text-align:center"><div style="font-size:14px;font-weight:800;color:#16a34a">' + totalNew + '</div><div style="font-size:8px;color:#94a3b8;text-transform:uppercase">New</div></div>';
+      html += '<div style="flex:1;padding:6px 8px;background:#eff6ff;border-radius:6px;text-align:center"><div style="font-size:14px;font-weight:800;color:#2563eb">' + totalRenew + '</div><div style="font-size:8px;color:#94a3b8;text-transform:uppercase">Renewed</div></div>';
+      html += '<div style="flex:1;padding:6px 8px;background:#faf5ff;border-radius:6px;text-align:center"><div style="font-size:14px;font-weight:800;color:#7c3aed">' + minX + '\u2013' + maxX + '</div><div style="font-size:8px;color:#94a3b8;text-transform:uppercase">Period</div></div>';
+      html += '</div>';
+
+      // SVG chart — bars for deals + line for rent
+      html += '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" style="display:block">';
 
       // Grid lines
-      for (let i = 0; i < 3; i++) {
-        const gy = padT + i * (H - padT - padB) / 2;
-        svg += '<line x1="' + pad + '" y1="' + gy + '" x2="' + (W-padR) + '" y2="' + gy + '" stroke="#f1f5f9" stroke-width="0.5"/>';
+      for (let i = 0; i <= 3; i++) {
+        const gy = padT + i * (H - padT - padB) / 3;
+        html += '<line x1="' + pad + '" y1="' + gy + '" x2="' + (W-padR) + '" y2="' + gy + '" stroke="#f1f5f9" stroke-width="0.5"/>';
       }
 
-      // Gradient fill under line
-      const pts = td.map(d => sx(d.year) + ',' + sy(d.rent)).join(' ');
-      svg += '<defs><linearGradient id="rtg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6366f1" stop-opacity="0.15"/><stop offset="100%" stop-color="#6366f1" stop-opacity="0.01"/></linearGradient></defs>';
-      svg += '<polygon points="' + sx(td[0].year) + ',' + (H-padB) + ' ' + pts + ' ' + sx(td[td.length-1].year) + ',' + (H-padB) + '" fill="url(#rtg)"/>';
-
-      // Line
-      svg += '<polyline points="' + pts + '" fill="none" stroke="#6366f1" stroke-width="2" stroke-linejoin="round"/>';
-
-      // Dots + tooltips
+      // Deal volume stacked bars (new=indigo, renewal=green, other=grey)
+      const barW = Math.max(4, Math.min(14, (W - pad - padR) / td.length - 2));
       td.forEach(d => {
-        svg += '<circle cx="' + sx(d.year) + '" cy="' + sy(d.rent) + '" r="3" fill="#fff" stroke="#6366f1" stroke-width="1.5" data-tip="' + d.year + ': \u20B9' + d.rent + '/sqft (' + d.deals + ' deals)"/>';
+        const totalH = maxDeals > 0 ? (d.deals / maxDeals) * (H - padT - padB) * 0.7 : 0;
+        const newH = d.deals > 0 ? (d.newDeals / d.deals) * totalH : 0;
+        const renewH = d.deals > 0 ? (d.renewals / d.deals) * totalH : 0;
+        const otherH = totalH - newH - renewH;
+        const bx = sx(d.year) - barW/2;
+        let by = H - padB;
+        if (newH > 0) { html += '<rect x="'+bx+'" y="'+(by-newH)+'" width="'+barW+'" height="'+newH+'" fill="#6366f1" opacity="0.25" rx="1"/>'; by -= newH; }
+        if (renewH > 0) { html += '<rect x="'+bx+'" y="'+(by-renewH)+'" width="'+barW+'" height="'+renewH+'" fill="#22c55e" opacity="0.25" rx="1"/>'; by -= renewH; }
+        if (otherH > 0) { html += '<rect x="'+bx+'" y="'+(by-otherH)+'" width="'+barW+'" height="'+otherH+'" fill="#cbd5e1" opacity="0.25" rx="1"/>'; }
       });
 
-      // Y-axis labels
-      svg += '<text x="2" y="' + (padT + 4) + '" font-size="8" fill="#94a3b8">\u20B9' + maxY + '</text>';
-      svg += '<text x="2" y="' + (H - padB) + '" font-size="8" fill="#94a3b8">\u20B9' + minY + '</text>';
-
-      // X-axis labels
-      svg += '<text x="' + sx(minX) + '" y="' + (H-4) + '" text-anchor="middle" font-size="8" fill="#94a3b8">' + minX + '</text>';
-      svg += '<text x="' + sx(maxX) + '" y="' + (H-4) + '" text-anchor="middle" font-size="8" fill="#94a3b8">' + maxX + '</text>';
-      if (maxX - minX > 6) {
-        const mid = Math.round((minX + maxX) / 2);
-        svg += '<text x="' + sx(mid) + '" y="' + (H-4) + '" text-anchor="middle" font-size="8" fill="#94a3b8">' + mid + '</text>';
+      // Rent trend line + gradient
+      if (tdWithRent.length >= 2) {
+        const pts = tdWithRent.map(d => sx(d.year) + ',' + sy(d.rent)).join(' ');
+        html += '<defs><linearGradient id="rtg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6366f1" stop-opacity="0.12"/><stop offset="100%" stop-color="#6366f1" stop-opacity="0.01"/></linearGradient></defs>';
+        html += '<polygon points="' + sx(tdWithRent[0].year) + ',' + (H-padB) + ' ' + pts + ' ' + sx(tdWithRent[tdWithRent.length-1].year) + ',' + (H-padB) + '" fill="url(#rtg2)"/>';
+        html += '<polyline points="' + pts + '" fill="none" stroke="#6366f1" stroke-width="2" stroke-linejoin="round"/>';
+        tdWithRent.forEach(d => {
+          const other = d.deals - d.newDeals - d.renewals;
+          html += '<circle cx="' + sx(d.year) + '" cy="' + sy(d.rent) + '" r="3.5" fill="#fff" stroke="#6366f1" stroke-width="1.5" data-tip="' + d.year + ': \u20B9' + d.rent + '/sqft \u00b7 ' + d.deals + ' deals (' + d.newDeals + ' new, ' + d.renewals + ' renewed' + (other > 0 ? ', ' + other + ' other' : '') + ')" style="cursor:pointer"/>';
+        });
       }
 
-      svg += '</svg>';
-      svg += '<div style="display:flex;gap:12px;margin-top:4px"><span style="font-size:8px;color:#94a3b8"><span style="display:inline-block;width:8px;height:2px;background:#6366f1;border-radius:1px;vertical-align:middle;margin-right:3px"></span>Avg Rent</span><span style="font-size:8px;color:#94a3b8"><span style="display:inline-block;width:8px;height:6px;background:#e0e7ff;border-radius:1px;vertical-align:middle;margin-right:3px"></span>Deal Volume</span></div>';
-      svg += '</div>';
-      return svg;
+      // Y-axis
+      html += '<text x="2" y="' + (padT + 4) + '" font-size="7" fill="#94a3b8">\u20B9' + maxY + '</text>';
+      html += '<text x="2" y="' + (H - padB) + '" font-size="7" fill="#94a3b8">\u20B9' + minY + '</text>';
+
+      // X-axis
+      const xLabels = [minX];
+      if (maxX - minX > 8) xLabels.push(Math.round((minX+maxX)/2));
+      xLabels.push(maxX);
+      xLabels.forEach(yr => {
+        html += '<text x="' + sx(yr) + '" y="' + (H-3) + '" text-anchor="middle" font-size="7" fill="#94a3b8">' + yr + '</text>';
+      });
+
+      html += '</svg>';
+
+      // Legend
+      html += '<div style="display:flex;gap:10px;margin-top:6px;flex-wrap:wrap">';
+      html += '<span style="font-size:8px;color:#94a3b8;display:flex;align-items:center;gap:3px"><span style="width:10px;height:2px;background:#6366f1;border-radius:1px"></span>Avg Rent</span>';
+      html += '<span style="font-size:8px;color:#94a3b8;display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;background:#6366f1;opacity:0.25;border-radius:1px"></span>New</span>';
+      html += '<span style="font-size:8px;color:#94a3b8;display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;background:#22c55e;opacity:0.25;border-radius:1px"></span>Renewed</span>';
+      html += '</div>';
+      html += '</div>';
+      return html;
     })()}
 
     <!-- Lease Expiry Summary -->
