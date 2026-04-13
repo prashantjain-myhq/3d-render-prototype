@@ -628,7 +628,39 @@ def aggregate_floors(floor_entries, building_info, txn_lookup=None):
                 for t in tenant_list:
                     if t.get('occupancy'):
                         t['occupancy'] = round(t['occupancy'] * scale, 1)
-            agg['tenants'] = tenant_list
+            # Check each tenant's lease expiry — mark expired tenants as Vacant
+            now_str = '2026-04'
+            active_tenants = []
+            expired_count = 0
+            for t in tenant_list:
+                t_expiry = t.get('leaseExpiryDate')
+                if t_expiry and t_expiry < now_str and t.get('name', '').lower() != 'vacant':
+                    # This tenant's lease expired — convert to Vacant
+                    expired_count += 1
+                    t['name'] = 'Vacant'
+                    t['sector'] = None
+                    t['dealType'] = None
+                    t['rentPerSqft'] = None
+                    t['effectiveRent'] = None
+                active_tenants.append(t)
+
+            agg['tenants'] = active_tenants
+
+            # Recalculate floor occupancy from non-vacant tenants
+            if expired_count > 0:
+                non_vacant = [t for t in active_tenants if t.get('name') != 'Vacant']
+                if not non_vacant:
+                    # All tenants expired → fully vacant
+                    agg['occupancy'] = 0
+                    agg['tenant'] = 'Vacant'
+                    agg['status'] = 'Vacant'
+                else:
+                    # Some tenants active — recalculate occupancy
+                    total_occ = sum(t.get('occupancy', 0) for t in non_vacant)
+                    agg['occupancy'] = min(100, round(total_occ, 1))
+                    primary = max(non_vacant, key=lambda t: t.get('occupancy', 0))
+                    others = len(non_vacant) - 1
+                    agg['tenant'] = primary['name'] + (' + ' + str(others) + ' more' if others > 0 else '')
 
             aggregated.append(agg)
 

@@ -5875,29 +5875,25 @@ function openPanel(building, highlightFloorIndex) {
     ${(() => {
       const now = new Date();
       const floors = building.floors;
+      const vacant = floors.filter(f => f.occupancy === 0);
+      const partial = floors.filter(f => f.occupancy > 0 && f.occupancy < 100);
       const expiring6m = floors.filter(f => {
-        if (!f.leaseExpiryDate) return false;
+        if (!f.leaseExpiryDate || f.occupancy === 0) return false;
         const [y, m] = f.leaseExpiryDate.split('-').map(Number);
-        const exp = new Date(y, m - 1);
-        const diffM = (exp - now) / (1000 * 60 * 60 * 24 * 30);
+        const diffM = (new Date(y, m - 1) - now) / (1000 * 60 * 60 * 24 * 30);
         return diffM > 0 && diffM <= 6;
       });
       const expiring12m = floors.filter(f => {
-        if (!f.leaseExpiryDate) return false;
+        if (!f.leaseExpiryDate || f.occupancy === 0) return false;
         const [y, m] = f.leaseExpiryDate.split('-').map(Number);
-        const exp = new Date(y, m - 1);
-        const diffM = (exp - now) / (1000 * 60 * 60 * 24 * 30);
+        const diffM = (new Date(y, m - 1) - now) / (1000 * 60 * 60 * 24 * 30);
         return diffM > 6 && diffM <= 12;
       });
-      const expired = floors.filter(f => {
-        if (!f.leaseExpiryDate) return false;
-        const [y, m] = f.leaseExpiryDate.split('-').map(Number);
-        return new Date(y, m - 1) < now;
-      });
-      if (expiring6m.length + expiring12m.length + expired.length === 0) return '';
+      if (vacant.length + partial.length + expiring6m.length + expiring12m.length === 0) return '';
       return '<div class="ph-section" style="padding:12px;background:#fff;border:1px solid #e2e8f0;border-radius:10px">' +
         '<div style="font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Lease Expiry Alert</div>' +
-        (expired.length > 0 ? '<div style="font-size:11px;color:#dc2626;margin-bottom:3px">&#9679; <b>' + expired.length + ' floor' + (expired.length > 1 ? 's' : '') + '</b> — lease expired</div>' : '') +
+        (vacant.length > 0 ? '<div style="font-size:11px;color:#dc2626;margin-bottom:3px">&#9679; <b>' + vacant.length + ' floor' + (vacant.length > 1 ? 's' : '') + '</b> — vacant</div>' : '') +
+        (partial.length > 0 ? '<div style="font-size:11px;color:#d97706;margin-bottom:3px">&#9679; <b>' + partial.length + ' floor' + (partial.length > 1 ? 's' : '') + '</b> — partially occupied</div>' : '') +
         (expiring6m.length > 0 ? '<div style="font-size:11px;color:#f59e0b;margin-bottom:3px">&#9679; <b>' + expiring6m.length + ' floor' + (expiring6m.length > 1 ? 's' : '') + '</b> — expiring within 6 months</div>' : '') +
         (expiring12m.length > 0 ? '<div style="font-size:11px;color:#3b82f6;margin-bottom:3px">&#9679; <b>' + expiring12m.length + ' floor' + (expiring12m.length > 1 ? 's' : '') + '</b> — expiring in 6-12 months</div>' : '') +
         '</div>';
