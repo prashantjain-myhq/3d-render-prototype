@@ -5386,17 +5386,18 @@ function openParkPanel() {
   const totalOccArea = sectors.reduce((s, [, a]) => s + a, 0);
 
   panelOpen = true;
-  renderer.domElement.style.pointerEvents = 'none';
-  controls.enabled = false;
+  // Keep 3D interactive so user can click buildings while park overview is open
+  renderer.domElement.style.pointerEvents = '';
+  controls.enabled = true;
 
   const fc = (n) => n >= 10000000 ? '\u20B9' + (n / 10000000).toFixed(2) + 'Cr' : n >= 100000 ? '\u20B9' + (n / 100000).toFixed(1) + 'L' : '\u20B9' + n.toLocaleString();
   const sectorColors = ['#4f46e5','#0891b2','#059669','#d97706','#dc2626','#7c3aed','#be185d','#64748b'];
 
-  // Single panel — hide middle and right, expand left and push to right
+  // Single panel — hide middle and right, shrink container to panel width
   panelMiddle.style.display = 'none';
   document.getElementById('panel-right').style.display = 'none';
   panelLeft.style.width = '400px';
-  panelLeft.style.marginLeft = 'auto';
+  panelContainer.style.width = '400px';
 
   panelLeft.innerHTML = `
     <div class="ph-section">
@@ -5488,7 +5489,7 @@ function openParkPanel() {
   `;
 
   panelContainer.classList.add('open');
-  panelOverlay.classList.add('open');
+  // No overlay for park overview — 3D stays visible and clickable
 
 }
 
@@ -5773,7 +5774,7 @@ function closePanel() {
   panelMiddle.style.display = '';
   document.getElementById('panel-right').style.display = '';
   panelLeft.style.width = '';
-  panelLeft.style.marginLeft = '';
+  panelContainer.style.width = '';
 }
 
 panelCloseBtn.addEventListener('click', closePanel);
@@ -7505,7 +7506,11 @@ if (currentView === 'park') dtWrap.style.display = 'block';
 document.addEventListener('keydown', (e) => {
   if (e.key === 't' || e.key === 'T') {
     if (currentView !== 'park' || editorMode) return;
-    dtWrap.style.display = dtWrap.style.display === 'none' ? 'block' : 'none';
+    var showing = dtWrap.style.display === 'none';
+    dtWrap.style.display = showing ? 'block' : 'none';
+    // Toggle: show deal timeline OR time-of-day, not both
+    var tsWrap = document.getElementById('time-slider-wrap');
+    if (tsWrap) tsWrap.style.display = showing ? 'none' : '';
   }
 });
 
