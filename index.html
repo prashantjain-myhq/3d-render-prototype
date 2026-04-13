@@ -4554,6 +4554,7 @@ function updateEditorPanel() {
 
 document.addEventListener('keydown', (e) => {
   if (currentView !== 'park') return;
+  if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT')) return;
   // Mode switching
   if (e.key === 'b' || e.key === 'B' || e.key === '9') { editorMode = editorMode === 'buildings' ? null : 'buildings'; selectedIdx = 0; updateEditorPanel(); return; }
   if (e.key === '8') { editorMode = editorMode === 'gates' ? null : 'gates'; selectedIdx = 0; updateEditorPanel(); return; }
@@ -7768,6 +7769,7 @@ let dtInterval = null;
 
 // Keyboard shortcut T to toggle timeline
 document.addEventListener('keydown', (e) => {
+  if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT')) return;
   if (e.key === 't' || e.key === 'T') {
     if (currentView !== 'park' || editorMode) return;
     var showing = dtWrap.style.display === 'none';
@@ -8864,6 +8866,7 @@ cityRotateLoop();
 
 document.addEventListener('keydown', (e) => {
   if (currentView !== 'city') return;
+  if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT')) return;
   if (e.key === 'r' || e.key === 'R') { cityAutoRotate = !cityAutoRotate; return; }
   const step = 10;
   if (e.key === 'ArrowLeft') { mapboxMap.easeTo({ bearing: mapboxMap.getBearing() - step, duration: 200 }); e.preventDefault(); }
