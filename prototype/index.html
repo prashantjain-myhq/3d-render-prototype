@@ -5169,7 +5169,7 @@ function renderFloorCards(building, highlightFloorIndex) {
                 (minEff ? '<div class="fd-item"><div class="fd-label" data-tip="Range of effective rents from CREMatrix across all tenants">Effective Range</div><div class="fd-value">\u20B9' + minEff + (minEff !== maxEff ? ' \u2013 \u20B9' + maxEff : '') + '/sqft <span style="font-size:9px;color:#6366f1">CRE</span></div></div>' : '') +
                 (f.monthlyRevenue ? '<div class="fd-item"><div class="fd-label" data-tip="Total monthly revenue from all tenants combined">Monthly Revenue</div><div class="fd-value">' + formatCurrency(f.monthlyRevenue) + '</div></div>' : '') +
                 (f.annualRevenue ? '<div class="fd-item"><div class="fd-label" data-tip="Total annual revenue from all tenants combined">Annual Revenue</div><div class="fd-value">' + formatCurrency(f.annualRevenue) + '</div></div>' : '') +
-                '<div class="fd-item"><div class="fd-label" data-tip="Common Area Maintenance \u2014 same for all tenants on this floor">CAM Charges</div><div class="fd-value">\u20B9' + building.camCharges + '/sqft</div></div>' +
+                '<div class="fd-item"><div class="fd-label" data-tip="Common Area Maintenance \u2014 from Sales Team">CAM Charges</div><div class="fd-value">\u20B9' + building.camCharges + '/sqft <span style="font-size:9px;color:#d97706">Sales Team</span></div></div>' +
                 (minEsc ? '<div class="fd-item"><div class="fd-label" data-tip="Range of escalation rates across tenants">Escalation Range</div><div class="fd-value">' + minEsc + (minEsc !== maxEsc ? ' \u2013 ' + maxEsc : '') + '%</div></div>' : '') +
               '</div>';
             })() : `<div class="fd-grid">
@@ -5179,7 +5179,7 @@ function renderFloorCards(building, highlightFloorIndex) {
               ${f.annualRevenue ? '<div class="fd-item"><div class="fd-label" data-tip="Annual rental income = Monthly Revenue x 12">Annual Revenue</div><div class="fd-value">' + formatCurrency(f.annualRevenue) + '</div></div>' : ''}
               ${f.rentalYield && building.capitalValuePerSqft ? '<div class="fd-item"><div class="fd-label" data-tip="Annual rental income as % of capital value">Rental Yield</div><div class="fd-value">' + f.rentalYield + '%</div></div>' : ''}
               ${f.securityDeposit && f.occupancy > 0 ? '<div class="fd-item"><div class="fd-label" data-tip="Refundable deposit, typically 6-12 months rent">Security Deposit</div><div class="fd-value">' + f.securityDeposit + ' months</div></div>' : ''}
-              <div class="fd-item"><div class="fd-label" data-tip="Common Area Maintenance \u2014 monthly charge for shared facilities">CAM Charges</div><div class="fd-value">\u20B9${building.camCharges}/sqft</div></div>
+              <div class="fd-item"><div class="fd-label" data-tip="Common Area Maintenance \u2014 from Sales Team">CAM Charges</div><div class="fd-value">\u20B9${building.camCharges}/sqft <span style="font-size:9px;color:#d97706">Sales Team</span></div></div>
               ${f.rentEscalation && f.occupancy > 0 ? '<div class="fd-item"><div class="fd-label" data-tip="Periodic rent increase as per lease agreement">Escalation</div><div class="fd-value">' + f.rentEscalation + '% every ' + (f.escalationPeriod ? f.escalationPeriod + ' months' : '\u2014') + ' <span style="font-size:9px;color:#6366f1">CRE</span></div></div>' : ''}
               ${f.propertyTaxPayer ? '<div class="fd-item"><div class="fd-label" data-tip="Who bears the property tax — affects total occupancy cost">Property Tax</div><div class="fd-value">' + f.propertyTaxPayer + ' pays <span style="font-size:9px;color:#6366f1">CRE</span></div></div>' : ''}
               ${f.currentRentCarpet && f.occupancy > 0 ? '<div class="fd-item"><div class="fd-label" data-tip="Rent calculated on carpet (usable) area instead of chargeable area">Rent/Carpet sqft</div><div class="fd-value">\u20B9' + f.currentRentCarpet + '/sqft <span style="font-size:9px;color:#6366f1">CRE</span></div></div>' : ''}
@@ -5542,19 +5542,19 @@ function openPanel(building, highlightFloorIndex) {
 
     <div class="ph-section">
       <div class="ph-stats">
-        <div class="ph-stat"><div class="ph-stat-label" data-tip="Average occupancy across all floors">Occupancy</div><div class="ph-stat-value">${avgOcc}%</div></div>
-        <div class="ph-stat"><div class="ph-stat-label" data-tip="Average asking rent across occupied floors">Avg Rent</div><div class="ph-stat-value">\u20B9${avgRent}</div></div>
-        ${building.capitalValuePerSqft ? '<div class="ph-stat"><div class="ph-stat-label" data-tip="Annual rental return on capital value">Yield</div><div class="ph-stat-value">' + avgYield + '%</div></div>' : '<div class="ph-stat"><div class="ph-stat-label" data-tip="Common Area Maintenance charges">CAM</div><div class="ph-stat-value">\u20B9' + building.camCharges + '</div></div>'}
-        ${building.capitalValuePerSqft ? '<div class="ph-stat"><div class="ph-stat-label" data-tip="Common Area Maintenance charges">CAM</div><div class="ph-stat-value">\u20B9' + building.camCharges + '</div></div>' : ''}
-        <div class="ph-stat"><div class="ph-stat-label" data-tip="Car parking per 1000 sqft">Parking</div><div class="ph-stat-value">${building.parkingRatio}/1K</div></div>
-        <div class="ph-stat"><div class="ph-stat-label" data-tip="Carpet area as % of super built-up">Efficiency</div><div class="ph-stat-value">${building.efficiencyRatio}%</div></div>
-        <div class="ph-stat full-width"><div class="ph-stat-label" data-tip="Rent escalation clause">Escalation</div><div class="ph-stat-value">${building.escalation}</div></div>
-        <div class="ph-stat full-width"><div class="ph-stat-label" data-tip="Power backup provision">Power</div><div class="ph-stat-value">${building.powerBackup}</div></div>
+        <div class="ph-stat"><div class="ph-stat-label" data-tip="Average occupancy — derived from CRE lease data">Occupancy</div><div class="ph-stat-value">${avgOcc}%</div></div>
+        <div class="ph-stat"><div class="ph-stat-label" data-tip="Average effective rent — from CRE Matrix">Avg Rent</div><div class="ph-stat-value">\u20B9${avgRent}</div></div>
+        ${building.capitalValuePerSqft ? '<div class="ph-stat"><div class="ph-stat-label" data-tip="Annual rental return on capital value">Yield</div><div class="ph-stat-value">' + avgYield + '%</div></div>' : ''}
+        <div class="ph-stat"><div class="ph-stat-label" data-tip="Common Area Maintenance — from Sales Team">CAM <span style="font-size:7px;color:#d97706">ST</span></div><div class="ph-stat-value">\u20B9${building.camCharges}</div></div>
+        <div class="ph-stat"><div class="ph-stat-label" data-tip="Car parking per 1000 sqft — from Sales Team">Parking <span style="font-size:7px;color:#d97706">ST</span></div><div class="ph-stat-value">${building.parkingRatio}/1K</div></div>
+        <div class="ph-stat"><div class="ph-stat-label" data-tip="Carpet/super built-up ratio — from Sales Team">Efficiency <span style="font-size:7px;color:#d97706">ST</span></div><div class="ph-stat-value">${building.efficiencyRatio}%</div></div>
+        <div class="ph-stat full-width"><div class="ph-stat-label" data-tip="Rent escalation clause — from Sales Team">Escalation <span style="font-size:7px;color:#d97706">ST</span></div><div class="ph-stat-value">${building.escalation}</div></div>
+        <div class="ph-stat full-width"><div class="ph-stat-label" data-tip="Power backup — from Sales Team">Power <span style="font-size:7px;color:#d97706">ST</span></div><div class="ph-stat-value">${building.powerBackup}</div></div>
       </div>
     </div>
 
     ${building.amenities && building.amenities.length > 0 ? `<div class="ph-section">
-      <div style="font-size:9px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Amenities</div>
+      <div style="font-size:9px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Amenities <span style="font-size:7px;color:#d97706;text-transform:none">Sales Team</span></div>
       <div class="ph-amenities">
         ${building.amenities.map(a => '<span class="ph-amenity-tag">' + a + '</span>').join('')}
       </div>
@@ -5562,7 +5562,7 @@ function openPanel(building, highlightFloorIndex) {
 
     ${building.microMarketAvgRent ? `<div class="ph-section" style="padding:8px 10px;background:#f8fafc;border:1px solid #f1f5f9;border-radius:8px">
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <span style="font-size:9px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px">Market Avg Rent</span>
+        <span style="font-size:9px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px">Market Avg Rent <span style="font-size:7px;color:#6366f1;text-transform:none">CRE</span></span>
         <span style="font-size:12px;font-weight:700;color:#1e293b">\u20B9${building.microMarketAvgRent}/sqft</span>
       </div>
     </div>` : ''}
@@ -5704,7 +5704,7 @@ function openPanel(building, highlightFloorIndex) {
         <option value="floor-asc">Sort: Floor &#8593;</option>
         <option value="occ-desc">Occupancy &#8595;</option>
         <option value="rent-desc">Rent &#8595;</option>
-        <option value="yield-desc">Yield &#8595;</option>
+        ${building.capitalValuePerSqft ? '<option value="yield-desc">Yield &#8595;</option>' : ''}
       </select>
       <div class="psf-pills">
         <span class="psf-pill active" data-filter="All">All</span>
