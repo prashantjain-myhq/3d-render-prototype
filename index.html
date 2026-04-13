@@ -6132,8 +6132,8 @@ function getHeatmapColor(mode, floorData) {
   if (mode === 'expiry') {
     // Green=safe (>12mo), Yellow=expiring soon (6-12mo), Red=expired or <6mo
     const now = new Date();
-    const expiry = floorData.leaseExpiryDate;
-    if (!expiry) return new THREE.Color(0x475569); // grey = no data
+    const expiry = floorData.leaseExpiryDate || floorData.leaseEnd;
+    if (!expiry || expiry === '-') return new THREE.Color(0x475569); // grey = no data
     const parts = expiry.match(/(\d{4})-(\d{2})/);
     if (!parts) return new THREE.Color(0x475569);
     const expiryDate = new Date(parseInt(parts[1]), parseInt(parts[2]) - 1);
