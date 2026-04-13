@@ -651,7 +651,7 @@ def build_floor_object(entry, floor_plate, all_entries, txn_lookup=None):
 
     # CRE lease expired → mark as vacant regardless of CSV
     lease_expiry = entry.get('leaseExpiryDate') or entry.get('leaseEnd')
-    if lease_expiry and lease_expiry not in ('-', 'null', '') and has_cre:
+    if lease_expiry and lease_expiry not in ('-', 'null', ''):
         try:
             exp_parts = lease_expiry.split('-')
             if len(exp_parts) >= 2:
@@ -660,7 +660,8 @@ def build_floor_object(entry, floor_plate, all_entries, txn_lookup=None):
                 now = datetime(2026, 4, 1)
                 if exp_date < now and not is_vacant:
                     is_vacant = True
-                    entry['vacancyReason'] = f'Lease expired {lease_expiry} (CRE Matrix)'
+                    source = 'CRE Matrix' if has_cre else 'Sales Team CSV'
+                    entry['vacancyReason'] = f'Lease expired {lease_expiry} ({source})'
         except: pass
 
     if is_vacant:
