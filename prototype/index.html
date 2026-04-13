@@ -5494,7 +5494,12 @@ function openParkPanel() {
       e.stopPropagation();
       const bid = row.dataset.bid;
       const bldg = ACTIVE_DATA.buildings.find(b => b.id === bid);
-      if (bldg) { closePanel(); setTimeout(() => openPanel(bldg, 0), 300); }
+      if (bldg) {
+        panelOpen = false;
+        renderer.domElement.style.pointerEvents = '';
+        controls.enabled = true;
+        openPanel(bldg, 0);
+      }
     });
   });
 }
