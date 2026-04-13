@@ -2950,6 +2950,11 @@ if (activeCity === 'gurgaon') {
     if (_hyd) _hyd.style.display = 'none';
     const _sys = document.getElementById('sp-yield-section');
     if (_sys) _sys.style.display = 'none';
+    // Hide yield sort option
+    document.querySelectorAll('option[value="yield-desc"]').forEach(o => o.style.display = 'none');
+    // Update shortcut hint to remove yield
+    const _sh = document.getElementById('shortcut-hint');
+    if (_sh) _sh.textContent = _sh.textContent.replace(' · 3 Yield', '');
   }
   // Replace entire Location & Connectivity panel for Gurgaon
   const _mpBody = document.querySelector('#map-panel .mp-body');
@@ -6581,7 +6586,7 @@ window.addEventListener('keydown', (e) => {
 
   if (e.key === '1') { setHeatmapMode(currentHeatmapMode === 'occupancy' ? 'default' : 'occupancy'); }
   if (e.key === '2') { setHeatmapMode(currentHeatmapMode === 'rent' ? 'default' : 'rent'); }
-  if (e.key === '3') { setHeatmapMode(currentHeatmapMode === 'yield' ? 'default' : 'yield'); }
+  if (e.key === '3' && ACTIVE_DATA.buildings.some(b => b.capitalValuePerSqft)) { setHeatmapMode(currentHeatmapMode === 'yield' ? 'default' : 'yield'); }
   if (e.key === '4') { setHeatmapMode(currentHeatmapMode === 'expiry' ? 'default' : 'expiry'); }
   if (e.key === '5') { setHeatmapMode(currentHeatmapMode === 'sector' ? 'default' : 'sector'); }
   if (e.key === '0') { setHeatmapMode('default'); }
