@@ -5524,6 +5524,17 @@ function openParkPanel() {
       })()}
     </div>
 
+    <div class="ph-section" style="padding:12px;background:#fff;border:1px solid #e2e8f0;border-radius:10px">
+      <div style="font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">True Cost Calculator</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <span style="font-size:11px;color:#475569;font-weight:500">Team Size:</span>
+        <input type="number" id="tcc-team-size" value="50" min="1" max="2000" style="width:70px;padding:4px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;font-weight:700;color:#0f172a;font-family:inherit;text-align:center">
+        <span style="font-size:10px;color:#94a3b8">people</span>
+        <span style="font-size:10px;color:#64748b;margin-left:auto" id="tcc-area-needed"></span>
+      </div>
+      <div id="tcc-results" style="font-size:11px;color:#475569"></div>
+    </div>
+
     <div class="ph-section" style="padding:8px 10px;background:#f0f4ff;border:1px solid #c7d2fe;border-radius:8px">
       <div style="font-size:9px;font-weight:700;color:#4338ca;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Data Sources</div>
       <div style="font-size:10px;color:#64748b;line-height:1.6">
@@ -5538,6 +5549,59 @@ function openParkPanel() {
   panelContainer.classList.add('open');
   // No overlay for park overview — 3D stays visible and clickable
 
+  // True Cost Calculator logic
+  function updateTCC() {
+    const teamSize = parseInt(document.getElementById('tcc-team-size').value) || 1;
+    const sqftPerPerson = 100;
+    const needed = teamSize * sqftPerPerson;
+    document.getElementById('tcc-area-needed').textContent = '~' + needed.toLocaleString() + ' sqft needed';
+
+    // Find matching vacant/available floors across all buildings
+    const matches = [];
+    ACTIVE_DATA.buildings.forEach(b => {
+      b.floors.forEach(f => {
+        if (f.occupancy > 0) return; // only vacant floors
+        const carpet = f.carpetArea || Math.round((f.area || 0) * 0.7);
+        if (carpet < needed * 0.5) return; // at least 50% of needed
+        const rent = getFloorRent(f);
+        const cam = b.camCharges || 0;
+        const monthlyRent = rent * carpet;
+        const monthlyCAM = cam * carpet;
+        const monthlyTotal = monthlyRent + monthlyCAM;
+        const costPerSeat = teamSize > 0 ? Math.round(monthlyTotal / teamSize) : 0;
+        matches.push({
+          building: b.name, floor: f.floor, carpet, rent, cam,
+          monthlyRent, monthlyCAM, monthlyTotal, costPerSeat,
+          estimated: f.rentEstimated || false,
+          deposit: f.securityDeposit || 0,
+        });
+      });
+    });
+    matches.sort((a, b) => a.costPerSeat - b.costPerSeat);
+
+    const fc = (n) => n >= 10000000 ? '\u20B9'+(n/10000000).toFixed(2)+'Cr' : n >= 100000 ? '\u20B9'+(n/100000).toFixed(1)+'L' : '\u20B9'+n.toLocaleString();
+    let html = '';
+    if (matches.length === 0) {
+      html = '<div style="padding:12px;text-align:center;color:#94a3b8;font-size:10px">No vacant floors large enough. Consider splitting across multiple floors.</div>';
+    } else {
+      html += '<div style="font-size:9px;color:#94a3b8;margin-bottom:6px">' + matches.length + ' vacant floor' + (matches.length > 1 ? 's' : '') + ' available</div>';
+      matches.slice(0, 5).forEach(m => {
+        html += '<div style="padding:8px;background:#f8fafc;border:1px solid #f1f5f9;border-radius:8px;margin-bottom:6px">';
+        html += '<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:700;color:#0f172a">' + m.building + ' F' + m.floor + '</span><span style="font-size:10px;color:#64748b">' + m.carpet.toLocaleString() + ' sqft</span></div>';
+        html += '<div style="display:flex;gap:12px;font-size:10px;color:#475569">';
+        html += '<span>Rent: ' + (m.rent > 0 ? '\u20B9' + m.rent + (m.estimated ? ' <span style="color:#d97706;font-size:8px">Est.</span>' : '') : '\u2014') + '</span>';
+        html += '<span>Monthly: <b style="color:#0f172a">' + fc(m.monthlyTotal) + '</b></span>';
+        html += '<span>Per seat: <b style="color:#4f46e5">\u20B9' + m.costPerSeat.toLocaleString() + '</b></span>';
+        html += '</div>';
+        if (m.deposit) html += '<div style="font-size:9px;color:#94a3b8;margin-top:2px">Deposit: ' + m.deposit + ' months \u00b7 CAM: \u20B9' + m.cam + '/sqft <span style="color:#d97706;font-size:8px">ST</span></div>';
+        html += '</div>';
+      });
+    }
+    document.getElementById('tcc-results').innerHTML = html;
+  }
+
+  document.getElementById('tcc-team-size').addEventListener('input', updateTCC);
+  updateTCC();
 }
 
 function openPanel(building, highlightFloorIndex) {
@@ -5665,6 +5729,75 @@ function openPanel(building, highlightFloorIndex) {
         </tbody>
       </table>
     </div>` : ''}
+
+    <!-- Rent Trend Chart -->
+    ${(() => {
+      const rentByYear = {};
+      ACTIVE_DATA.buildings.forEach(b => {
+        (b.dealHistory || []).forEach(h => {
+          if (!rentByYear[h.year]) rentByYear[h.year] = { rents: [], deals: 0 };
+          if (h.avgRent) rentByYear[h.year].rents.push(h.avgRent);
+          rentByYear[h.year].deals += h.deals;
+        });
+      });
+      const td = Object.entries(rentByYear)
+        .map(([yr, d]) => ({ year: +yr, rent: d.rents.length ? Math.round(d.rents.reduce((s,r)=>s+r,0)/d.rents.length) : 0, deals: d.deals }))
+        .filter(d => d.rent > 0).sort((a,b) => a.year - b.year);
+      if (td.length < 3) return '';
+
+      const W = 290, H = 110, pad = 30, padR = 10, padT = 10, padB = 22;
+      const minY = Math.min(...td.map(d=>d.rent)), maxY = Math.max(...td.map(d=>d.rent));
+      const minX = td[0].year, maxX = td[td.length-1].year;
+      const maxDeals = Math.max(...td.map(d=>d.deals));
+      const sx = (yr) => pad + (yr - minX) / (maxX - minX) * (W - pad - padR);
+      const sy = (r) => padT + (1 - (r - minY) / (maxY - minY || 1)) * (H - padT - padB);
+
+      let svg = '<div class="ph-section" style="padding:12px;background:#fff;border:1px solid #e2e8f0;border-radius:10px">';
+      svg += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px">Rent Trend</span><span style="font-size:8px;color:#6366f1;font-weight:600">' + minX + '\u2013' + maxX + '</span></div>';
+      svg += '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" style="display:block">';
+
+      // Deal volume bars (faint background)
+      td.forEach(d => {
+        const bh = maxDeals > 0 ? (d.deals / maxDeals) * (H - padT - padB) * 0.6 : 0;
+        svg += '<rect x="' + (sx(d.year)-3) + '" y="' + (H - padB - bh) + '" width="6" height="' + bh + '" fill="#e0e7ff" rx="1"/>';
+      });
+
+      // Grid lines
+      for (let i = 0; i < 3; i++) {
+        const gy = padT + i * (H - padT - padB) / 2;
+        svg += '<line x1="' + pad + '" y1="' + gy + '" x2="' + (W-padR) + '" y2="' + gy + '" stroke="#f1f5f9" stroke-width="0.5"/>';
+      }
+
+      // Gradient fill under line
+      const pts = td.map(d => sx(d.year) + ',' + sy(d.rent)).join(' ');
+      svg += '<defs><linearGradient id="rtg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6366f1" stop-opacity="0.15"/><stop offset="100%" stop-color="#6366f1" stop-opacity="0.01"/></linearGradient></defs>';
+      svg += '<polygon points="' + sx(td[0].year) + ',' + (H-padB) + ' ' + pts + ' ' + sx(td[td.length-1].year) + ',' + (H-padB) + '" fill="url(#rtg)"/>';
+
+      // Line
+      svg += '<polyline points="' + pts + '" fill="none" stroke="#6366f1" stroke-width="2" stroke-linejoin="round"/>';
+
+      // Dots + tooltips
+      td.forEach(d => {
+        svg += '<circle cx="' + sx(d.year) + '" cy="' + sy(d.rent) + '" r="3" fill="#fff" stroke="#6366f1" stroke-width="1.5" data-tip="' + d.year + ': \u20B9' + d.rent + '/sqft (' + d.deals + ' deals)"/>';
+      });
+
+      // Y-axis labels
+      svg += '<text x="2" y="' + (padT + 4) + '" font-size="8" fill="#94a3b8">\u20B9' + maxY + '</text>';
+      svg += '<text x="2" y="' + (H - padB) + '" font-size="8" fill="#94a3b8">\u20B9' + minY + '</text>';
+
+      // X-axis labels
+      svg += '<text x="' + sx(minX) + '" y="' + (H-4) + '" text-anchor="middle" font-size="8" fill="#94a3b8">' + minX + '</text>';
+      svg += '<text x="' + sx(maxX) + '" y="' + (H-4) + '" text-anchor="middle" font-size="8" fill="#94a3b8">' + maxX + '</text>';
+      if (maxX - minX > 6) {
+        const mid = Math.round((minX + maxX) / 2);
+        svg += '<text x="' + sx(mid) + '" y="' + (H-4) + '" text-anchor="middle" font-size="8" fill="#94a3b8">' + mid + '</text>';
+      }
+
+      svg += '</svg>';
+      svg += '<div style="display:flex;gap:12px;margin-top:4px"><span style="font-size:8px;color:#94a3b8"><span style="display:inline-block;width:8px;height:2px;background:#6366f1;border-radius:1px;vertical-align:middle;margin-right:3px"></span>Avg Rent</span><span style="font-size:8px;color:#94a3b8"><span style="display:inline-block;width:8px;height:6px;background:#e0e7ff;border-radius:1px;vertical-align:middle;margin-right:3px"></span>Deal Volume</span></div>';
+      svg += '</div>';
+      return svg;
+    })()}
 
     <!-- Lease Expiry Summary -->
     ${(() => {
