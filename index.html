@@ -6332,29 +6332,27 @@ let walkthroughActive = false; // hoisted for onClick guard
 let originalEmissives = new Map();
 
 function saveOriginalEmissive(mesh) {
-  if (!originalEmissives.has(mesh)) {
-    if (Array.isArray(mesh.material)) {
-      originalEmissives.set(mesh, mesh.material.map(m => m.emissive ? m.emissive.clone() : null));
-    } else {
-      originalEmissives.set(mesh, mesh.material.emissive ? mesh.material.emissive.clone() : null);
-    }
+  // Save current color + emissive — captures heatmap state
+  if (Array.isArray(mesh.material)) {
+    originalEmissives.set(mesh, mesh.material.map(m => ({
+      color: m.color ? m.color.clone() : null,
+      emissive: m.emissive ? m.emissive.clone() : null,
+      emissiveIntensity: m.emissiveIntensity
+    })));
   }
 }
 
 function setFloorHighlight(mesh, on) {
   if (Array.isArray(mesh.material)) {
-    mesh.material.forEach(m => {
-      if (m.emissive) {
-        if (on) {
-          m.emissive.set(0x818cf8);
-          m.emissiveIntensity = 2.0;
-        } else {
-          const saved = originalEmissives.get(mesh);
-          if (saved) {
-            const idx = mesh.material.indexOf(m);
-            if (saved[idx]) m.emissive.copy(saved[idx]);
-            m.emissiveIntensity = 0.5;
-          }
+    mesh.material.forEach((m, idx) => {
+      if (on) {
+        if (m.emissive) { m.emissive.set(0x818cf8); m.emissiveIntensity = 2.0; }
+      } else {
+        const saved = originalEmissives.get(mesh);
+        if (saved && saved[idx]) {
+          if (saved[idx].color && m.color) m.color.copy(saved[idx].color);
+          if (saved[idx].emissive && m.emissive) m.emissive.copy(saved[idx].emissive);
+          m.emissiveIntensity = saved[idx].emissiveIntensity || 0.5;
         }
       }
     });
