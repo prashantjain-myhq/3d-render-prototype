@@ -2397,6 +2397,7 @@
   <button class="cb-btn" id="cb-cityview" data-tip="City View" style="font-size:11px;font-weight:800;letter-spacing:-0.5px">MAP</button>
   <button class="cb-btn" id="cb-city-toggle" data-tip="Toggle 3D / Cards" style="font-size:14px">&#127970;</button>
   <button class="cb-btn" id="cb-park-overview" data-tip="Park Overview"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></button>
+  <button class="cb-btn" id="cb-cost-calc" data-tip="Cost Calculator"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="10" y2="14"/><line x1="14" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="16" y2="18"/></svg></button>
   <button class="cb-btn" id="cb-search" data-tip="Search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></button>
   <button class="cb-btn" id="cb-compare" data-tip="Compare"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="18" rx="1"/></svg></button>
   <button class="cb-btn" id="cb-heatmap" data-tip="Heat Map"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></button>
@@ -7671,6 +7672,13 @@ document.getElementById('sp-clear-btn').addEventListener('click', () => {
 });
 
 spCloseBtn.addEventListener('click', () => searchPanel.classList.remove('open'));
+
+document.getElementById('cb-cost-calc').addEventListener('click', (e) => {
+  e.stopPropagation();
+  closeAllDropdowns();
+  openParkPanel();
+  setTimeout(() => { const el = document.getElementById('tcc-team-size'); if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.focus(); } }, 300);
+});
 
 document.getElementById('cb-park-overview').addEventListener('click', (e) => {
   e.stopPropagation();
