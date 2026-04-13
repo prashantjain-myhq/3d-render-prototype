@@ -2921,7 +2921,7 @@ function fmtDate(d) {
   if (!d) return '';
   const p = d.match(/(\d{4})-(\d{2})/);
   if (!p) return d;
-  return (_months[parseInt(p[2])-1] || '') + ' ' + p[1];
+  return p[1] + '-' + (_months[parseInt(p[2])-1] || p[2]);
 }
 
 // Utility: title case for ALL CAPS names from CSV
@@ -5236,7 +5236,7 @@ function renderFloorCards(building, highlightFloorIndex) {
                 const typeBg = h.type === 'New' ? '#dcfce7' : h.type === 'Renewal' ? '#dbeafe' : '#f1f5f9';
                 const isLatest = idx === 0;
                 return '<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:' + (isLatest ? '#fafbff' : '#fff') + ';border:1px solid ' + (isLatest ? '#c7d2fe' : '#f1f5f9') + ';border-radius:8px;border-left:3px solid ' + typeColor + '">' +
-                  '<div style="min-width:52px;font-size:10px;color:#64748b;font-weight:600">' + (h.date ? (() => { const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; const p = h.date.split('-'); return (mo[parseInt(p[1])-1]||'') + ' ' + p[0]; })() : '\u2014') + '</div>' +
+                  '<div style="min-width:52px;font-size:10px;color:#64748b;font-weight:600">' + (h.date ? fmtDate(h.date) : '\u2014') + '</div>' +
                   '<div style="flex:1;min-width:0">' +
                     '<div style="font-size:11px;font-weight:600;color:#1e293b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + titleCase(h.tenant) + '</div>' +
                     '<div style="font-size:9px;color:#94a3b8">' + (h.sector ? h.sector + ' \u00b7 ' : '') + (h.area ? (h.area/1000).toFixed(1) + 'K sqft' : '') + (h.expiry ? ' \u00b7 Exp: ' + h.expiry : '') + '</div>' +
