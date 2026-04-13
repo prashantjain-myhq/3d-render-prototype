@@ -2924,6 +2924,20 @@ function fmtDate(d) {
   return p[1] + '-' + (_months[parseInt(p[2])-1] || p[2]);
 }
 
+// Shared metric utilities — single source of truth for all panels/modals
+function getFloorRent(f) {
+  // Returns the best available rent for a floor. Priority: effectiveRent > rentPerSqft
+  return f.effectiveRent || f.rentPerSqft || 0;
+}
+function calcAvgRent(floors) {
+  // Average rent across occupied floors with rent data only
+  const valid = floors.filter(f => f.occupancy > 0 && getFloorRent(f) > 0);
+  return valid.length ? Math.round(valid.reduce((s, f) => s + getFloorRent(f), 0) / valid.length) : 0;
+}
+function calcAvgOcc(floors) {
+  return floors.length ? Math.round(floors.reduce((s, f) => s + (f.occupancy || 0), 0) / floors.length) : 0;
+}
+
 // Utility: title case for ALL CAPS names from CSV
 function titleCase(s) {
   if (!s) return '';
@@ -5392,9 +5406,8 @@ function openParkPanel() {
   const totalArea = buildings.reduce((s, b) => s + b.totalArea, 0);
   const occupiedFloors = allFloors.filter(f => f.occupancy > 0);
   const vacantFloors = allFloors.filter(f => f.occupancy === 0);
-  const avgOcc = Math.round(allFloors.reduce((s, f) => s + f.occupancy, 0) / allFloors.length);
-  const rentsArr = occupiedFloors.map(f => f.effectiveRent || f.rentPerSqft).filter(r => r);
-  const avgRent = rentsArr.length ? Math.round(rentsArr.reduce((s, r) => s + r, 0) / rentsArr.length) : 0;
+  const avgOcc = calcAvgOcc(allFloors);
+  const avgRent = calcAvgRent(allFloors);
   const totalRevenue = allFloors.reduce((s, f) => s + (f.monthlyRevenue || 0), 0);
   const vacantArea = vacantFloors.reduce((s, f) => s + (f.carpetArea || 0), 0);
 
@@ -5469,9 +5482,8 @@ function openParkPanel() {
         </tr></thead>
         <tbody>
           ${buildings.map(b => {
-            const bOcc = Math.round(b.floors.reduce((s, f) => s + f.occupancy, 0) / b.floors.length);
-            const bRents = b.floors.filter(f => f.occupancy > 0 && (f.effectiveRent || f.rentPerSqft));
-            const bRent = bRents.length ? Math.round(bRents.reduce((s, f) => s + (f.effectiveRent || f.rentPerSqft), 0) / bRents.length) : 0;
+            const bOcc = calcAvgOcc(b.floors);
+            const bRent = calcAvgRent(b.floors);
             const bVacant = b.floors.filter(f => f.occupancy === 0).length;
             return '<tr style="border-bottom:1px solid #f1f5f9">' +
               '<td style="padding:5px 4px;font-weight:600;color:' + b.color + '">' + b.name + '</td>' +
@@ -5539,9 +5551,8 @@ function openPanel(building, highlightFloorIndex) {
   renderer.domElement.style.pointerEvents = 'none';
   controls.enabled = false;
 
-  const avgOcc = Math.round(building.floors.reduce((s, f) => s + f.occupancy, 0) / building.floors.length);
-  const _rentFloors = building.floors.filter(f => f.occupancy > 0 && (f.effectiveRent || f.rentPerSqft));
-  const avgRent = _rentFloors.length ? Math.round(_rentFloors.reduce((s, f) => s + (f.effectiveRent || f.rentPerSqft), 0) / _rentFloors.length) : 0;
+  const avgOcc = calcAvgOcc(building.floors);
+  const avgRent = calcAvgRent(building.floors);
   const avgYield = (building.floors.reduce((s, f) => s + f.rentalYield, 0) / building.floors.length).toFixed(1);
 
   // --- LEFT PANEL: Building Overview + Floor Stack ---
@@ -5900,8 +5911,7 @@ function renderBuildingComparison() {
 
   function bMetrics(b) {
     const avgOcc = Math.round(b.floors.reduce((s,f) => s + (f.occupancy||0), 0) / b.floors.length);
-    const floorsWithRent = b.floors.filter(f => f.occupancy > 0 && (f.effectiveRent || f.rentPerSqft));
-    const avgRent = floorsWithRent.length ? Math.round(floorsWithRent.reduce((s,f) => s + (f.effectiveRent || f.rentPerSqft), 0) / floorsWithRent.length) : 0;
+    const avgRent = calcAvgRent(b.floors);
     const floorsWithYield = b.floors.filter(f => f.rentalYield);
     const avgYield = floorsWithYield.length ? +(floorsWithYield.reduce((s,f) => s + f.rentalYield, 0) / floorsWithYield.length).toFixed(1) : 0;
     const vacantFloors = b.floors.filter(f => f.tenant === 'Vacant' || f.occupancy === 0).length;
@@ -7718,9 +7728,8 @@ enquiryOverlay.addEventListener('click', (e) => {
 // FEATURE 3: Downloadable Floor Report
 // ============================================================
 function generateFloorReport(building, floor) {
-  const avgOcc = Math.round(building.floors.reduce((s, f) => s + f.occupancy, 0) / building.floors.length);
-  const _rentFloors = building.floors.filter(f => f.occupancy > 0 && (f.effectiveRent || f.rentPerSqft));
-  const avgRent = _rentFloors.length ? Math.round(_rentFloors.reduce((s, f) => s + (f.effectiveRent || f.rentPerSqft), 0) / _rentFloors.length) : 0;
+  const avgOcc = calcAvgOcc(building.floors);
+  const avgRent = calcAvgRent(building.floors);
   const capVal = building.capitalValuePerSqft || 0;
   const totalInv = capVal * floor.area;
   const grossYield = totalInv > 0 ? (floor.annualRevenue / totalInv * 100).toFixed(1) : '—';
@@ -7998,7 +8007,7 @@ function openTenantAnalysis() {
         tenantMap[name].floors.push({ floor: f, building: b });
         tenantMap[name].buildings.add(b.name);
         tenantMap[name].totalArea += (t.area || 0);
-        if (t.rentPerSqft || f.effectiveRent) tenantMap[name].rents.push(f.effectiveRent || t.rentPerSqft || f.rentPerSqft);
+        const _tr = getFloorRent(f); if (_tr > 0) tenantMap[name].rents.push(_tr);
         if (t.sector || f.sector) tenantMap[name].sectors.add(t.sector || f.sector);
         if (f.leaseExpiryDate) tenantMap[name].expiries.push(f.leaseExpiryDate);
         if (f.rentEscalation) tenantMap[name].escalations.push(f.rentEscalation);
@@ -8252,7 +8261,7 @@ function openTransactions() {
   ACTIVE_DATA.buildings.forEach(b => {
     b.floors.forEach(f => {
       if (f.tenant === 'Vacant' || f.occupancy === 0) return;
-      const rent = f.effectiveRent || f.startingRent || f.rentPerSqft || 0;
+      const rent = getFloorRent(f);
       const area = f.carpetArea || f.area || 0;
       const annualDeal = rent * area * 12;
       // Clean tenant name — show primary tenant only, not "+7 more"
@@ -8296,8 +8305,7 @@ function openTransactions() {
   const renewals = transactions.filter(t => t.type === 'Renewal').length;
   const totalArea = transactions.reduce((s, t) => s + t.area, 0);
   const totalAnnual = transactions.reduce((s, t) => s + t.annualDeal, 0);
-  const txnsWithRent = transactions.filter(t => t.rent > 0);
-  const avgRent = txnsWithRent.length ? Math.round(txnsWithRent.reduce((s,t) => s + t.rent, 0) / txnsWithRent.length) : 0;
+  const avgRent = calcAvgRent(ACTIVE_DATA.buildings.flatMap(b => b.floors));
   const fc = (n) => n >= 10000000 ? '₹'+(n/10000000).toFixed(2)+'Cr' : n >= 100000 ? '₹'+(n/100000).toFixed(1)+'L' : '₹'+n.toLocaleString();
 
   const typeStyles = {
