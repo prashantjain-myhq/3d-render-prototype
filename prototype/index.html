@@ -6695,12 +6695,12 @@ function onClick(e) {
   raycaster.setFromCamera(pointer, camera);
   const intersects = raycaster.intersectObjects(floorMeshes);
 
-  if (intersects.length > 0) {
+  if (panelOpen && !currentPanelBuilding) {
+    // Park overview is open — any click dismisses it
+    closePanel();
+  } else if (intersects.length > 0) {
     const data = floorDataMap.get(intersects[0].object);
     openPanel(data.building, data.floorIndex);
-  } else if (panelOpen) {
-    // Clicked empty space — dismiss park overview panel
-    closePanel();
   }
 }
 
