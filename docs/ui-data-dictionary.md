@@ -95,7 +95,7 @@ Each entry follows this format:
 
 | Label | Calculation | Source |
 |-------|------------|--------|
-| X floors expired | Count where `leaseExpiryDate < today` | `leaseExpiryDate` from CRE `dt-lease-expiry-date` |
+| X floors expired | Count where `leaseExpiryDate < today` | `leaseExpiryDate` from CRE `dt-lease-expiry-date`, falls back to `leaseEnd` from CSV when CRE is null |
 | X floors expiring <6mo | Count where `0 < months_until_expiry <= 6` | Same source |
 | X floors expiring 6-12mo | Count where `6 < months_until_expiry <= 12` | Same source |
 
@@ -239,7 +239,7 @@ Each entry follows this format:
 |------|-----|-------------|--------|
 | Occupancy | 1 | Red (0%) → Yellow (50%) → Green (100%) | `floor.occupancy` |
 | Rent | 2 | Green (low) → Yellow (mid) → Red (high), relative to building | `floor.rentPerSqft` |
-| Lease Expiry | 4 | Red (expired/< 6mo) → Yellow (6-12mo) → Green (>12mo) | `floor.leaseExpiryDate` vs today |
+| Lease Expiry | 4 | Red (expired/< 6mo) → Yellow (6-12mo) → Green (>12mo) | `floor.leaseExpiryDate` (CRE) or `floor.leaseEnd` (CSV fallback) vs today. Grey = no date available |
 | Sector | 5 | Unique color per sector from preset palette | `floor.sector` mapped to `sectorHeatColors` |
 | Reset | 0 | Original building phase colors | `originalMaterialColors` stored at creation |
 

@@ -695,7 +695,7 @@ def build_floor_object(entry, floor_plate, all_entries, txn_lookup=None):
         'rentEscalation': entry.get('rentEscalation'),
         'escalationPeriod': entry.get('escalationPeriod'),
         'nextEscalationDue': entry.get('nextEscalationDue'),
-        'leaseExpiryDate': entry.get('leaseExpiryDate'),
+        'leaseExpiryDate': entry.get('leaseExpiryDate') or entry.get('leaseEnd'),
         'efficiencyRatio': entry.get('efficiencyRatio', 70),
         # Conflict detection + multi-landlord
         'dataConflict': entry.get('dataConflict'),
