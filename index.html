@@ -5488,19 +5488,8 @@ function openParkPanel() {
   panelContainer.classList.add('open');
   panelOverlay.classList.add('open');
 
-  // Wire up scoreboard row clicks via event delegation
-  var _parkScoreHandler = function(e) {
-    var row = e.target.closest('.park-score-row');
-    if (!row) return;
-    e.stopPropagation();
-    var bid = row.dataset.bid;
-    var bldg = ACTIVE_DATA.buildings.find(function(b) { return b.id === bid; });
-    if (bldg) {
-      panelMiddle.removeEventListener('click', _parkScoreHandler);
-      // Keep panel open — just call openPanel to replace all content
-      panelOpen = false;
-      openPanel(bldg, 0);
-    }
+  // Scoreboard rows are display-only — click buildings in 3D view for details
+  // (removed: click-to-open was unreliable across panel state transitions)
   };
   panelMiddle.addEventListener('click', _parkScoreHandler);
 }
