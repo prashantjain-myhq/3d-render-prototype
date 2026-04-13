@@ -649,7 +649,13 @@ def build_floor_object(entry, floor_plate, all_entries, txn_lookup=None):
         tenant_name = 'Vacant'
         entry['tenant'] = 'Vacant'
         entry['status'] = 'Vacant'
-        entry['propertyCondition'] = 'Bare Shell'  # vacant = bare shell regardless of CRE history
+        entry['propertyCondition'] = 'Bare Shell'
+        rent = None  # don't show stale rent from expired leases
+        entry['effectiveRent'] = None
+        entry['startingRent'] = None
+        entry['leaseExpiryRent'] = None
+        entry['sector'] = None
+        entry['dealType'] = None
     raw_occ = entry.get('occupancy', 0) or 0
 
     obj = {
@@ -852,6 +858,7 @@ def generate_building_js(building_info, floors, transactions, all_transactions, 
     bldg_txns = [t for t in all_transactions if t.get('building') == full_name or t.get('buildingShort') == full_name]
     first_txn = bldg_txns[0] if bldg_txns else {}
     cre_developer = first_txn.get('developer')
+    cre_grade = first_txn.get('grade')
     cre_building_category = first_txn.get('buildingCategory')
     cre_micro_market = first_txn.get('microMarket')
     cre_market = first_txn.get('market')
@@ -873,7 +880,7 @@ def generate_building_js(building_info, floors, transactions, all_transactions, 
     lines.append(f'      width: {cfg["width"]}, depth: {cfg["depth"]}, height: {cfg["height"]},')
     lines.append(f'      rotation: {cfg.get("rotation", 0)},')
     lines.append(f'      buildingShape: "{cfg.get("buildingShape", "box")}",')
-    lines.append(f'      grade: "{building_info.get("grade") or cfg.get("grade", "")}",')
+    lines.append(f'      grade: "{cre_grade or building_info.get("grade") or cfg.get("grade", "")}",')
 
     cert = building_info.get("certification")
     lines.append(f'      certification: {js_value(cert)},')
