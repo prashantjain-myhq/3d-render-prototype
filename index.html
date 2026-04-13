@@ -5488,19 +5488,19 @@ function openParkPanel() {
   panelContainer.classList.add('open');
   panelOverlay.classList.add('open');
 
-  // Wire up scoreboard row clicks
-  panelMiddle.querySelectorAll('.park-score-row').forEach(row => {
-    row.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const bid = row.dataset.bid;
-      const bldg = ACTIVE_DATA.buildings.find(b => b.id === bid);
-      if (bldg) {
-        panelOpen = false;
-        renderer.domElement.style.pointerEvents = '';
-        controls.enabled = true;
-        openPanel(bldg, 0);
-      }
-    });
+  // Wire up scoreboard row clicks via event delegation
+  panelMiddle.addEventListener('click', function(e) {
+    const row = e.target.closest('.park-score-row');
+    if (!row) return;
+    e.stopPropagation();
+    const bid = row.dataset.bid;
+    const bldg = ACTIVE_DATA.buildings.find(function(b) { return b.id === bid; });
+    if (bldg) {
+      panelOpen = false;
+      renderer.domElement.style.pointerEvents = '';
+      controls.enabled = true;
+      openPanel(bldg, 0);
+    }
   });
 }
 
