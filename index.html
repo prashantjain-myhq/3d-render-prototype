@@ -5488,10 +5488,6 @@ function openParkPanel() {
   panelContainer.classList.add('open');
   panelOverlay.classList.add('open');
 
-  // Scoreboard rows are display-only — click buildings in 3D view for details
-  // (removed: click-to-open was unreliable across panel state transitions)
-  };
-  panelMiddle.addEventListener('click', _parkScoreHandler);
 }
 
 function openPanel(building, highlightFloorIndex) {
