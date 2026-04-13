@@ -6833,8 +6833,8 @@ function miniSkyline(color, heights) {
 }
 
 const parks = activeCity === 'gurgaon' ? [
-  { name: 'Unitech Cyber Park', sub: 'Sector 39, Gurugram', color: '#e97320', active: true, skyline: [14,24,24,16] },
-  { name: 'Vatika Business Park', sub: 'Sector 49, Sohna Road', color: '#2563eb', active: false, skyline: [14,22,14] },
+  { name: 'Unitech Cyber Park', sub: 'Sector 39, Gurugram', color: '#e97320', active: !activePark.includes('vatika'), parkUrl: '?city=gurgaon', skyline: [14,24,24,16] },
+  { name: 'Vatika Business Park', sub: 'Sector 49, Sohna Road', color: '#2563eb', active: activePark.includes('vatika'), parkUrl: '?city=gurgaon&park=vatika', skyline: [14,22,14] },
   { name: 'DLF Cyber City', sub: 'DLF Phase III', color: '#16a34a', active: false, skyline: [26,22,18] },
   { name: 'Udyog Vihar', sub: 'Phase I-V', color: '#94a3b8', active: false, skyline: [12,12,14] },
 ] : [
@@ -6860,7 +6860,11 @@ parks.forEach(p => {
       <div class="ps-sub">${p.sub}</div>
     </div>
   `;
-  if (!p.active) {
+  if (!p.active && p.parkUrl) {
+    card.addEventListener('click', () => {
+      window.location.href = p.parkUrl;
+    });
+  } else if (!p.active) {
     card.addEventListener('click', () => {
       showParkToast(`Coming Soon \u2014 ${p.name} model is under development`);
     });
@@ -7059,7 +7063,7 @@ const buildingThemes = {
   },
 };
 
-let currentTheme = 'default';
+let currentTheme = (ACTIVE_DATA.name === 'Vatika Business Park') ? 'corporate' : 'default';
 
 function createThemedWindowTexture(theme, widthPx, heightPx, cols, rows) {
   const t = buildingThemes[theme];

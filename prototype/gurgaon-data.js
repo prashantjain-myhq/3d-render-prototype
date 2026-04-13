@@ -2270,6 +2270,10 @@ const VATIKA_TECH_PARK_DATA = {
     { name: "CRE Matrix", url: "crematrix.com", type: "CRE Database" }
   ],
   lastUpdated: "April 2026",
+  campus: {
+    boundary: [], gates: [], mainRoad: null, roads: [], center: null,
+    parking: [], amenities: [], signs: [], roadSigns: [],
+  },
   buildings: [
     {
       id: "vatika-bldg-1",
