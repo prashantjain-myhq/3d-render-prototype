@@ -5118,7 +5118,7 @@ function generateFloorPlanSVG(floor, building) {
     // Multi-tenant: proportional treemap blocks + vacant area
     var tenants = floor.tenants.filter(function(t) { return t.name !== 'Vacant'; });
     var totalOcc = tenants.reduce(function(s,t) { return s + (t.occupancy||0); }, 0);
-    var vacantPct = Math.max(0, 100 - totalOcc);
+    var vacantPct = Math.round(Math.max(0, 100 - totalOcc));
     var pad = 4, gap = 3;
     var areaW = w - pad*2, areaH = h - 28;
     var x = pad;
