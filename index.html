@@ -4956,9 +4956,9 @@ function sortFloors(floors, sortKey) {
 
 function filterFloors(floors, filter) {
   if (filter === 'All') return floors;
-  if (filter === 'Occupied') return floors.filter(f => f.status === 'Fully Occupied');
-  if (filter === 'Partial') return floors.filter(f => f.status === 'Partially Vacant');
-  if (filter === 'Vacant') return floors.filter(f => f.status === 'Vacant');
+  if (filter === 'Occupied') return floors.filter(f => f.occupancy >= 100);
+  if (filter === 'Partial') return floors.filter(f => f.occupancy > 0 && f.occupancy < 100);
+  if (filter === 'Vacant') return floors.filter(f => f.occupancy === 0);
   return floors;
 }
 
