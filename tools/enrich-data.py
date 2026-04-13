@@ -641,16 +641,34 @@ def build_floor_object(entry, floor_plate, all_entries, txn_lookup=None):
     rent = entry.get('rentPerSqft')
     efficiency = entry.get('efficiencyRatio', 70) or 70
 
-    # Force 0% occupancy for vacant floors regardless of CSV value
+    # Determine data source — did CRE enrich this floor or is it CSV-only?
+    has_cre = bool(entry.get('effectiveRent') or entry.get('landlord') or entry.get('sector'))
+    data_source = 'CRE' if has_cre else 'Sales Team'
+
+    # Force vacancy based on lease expiry (CRE is source of truth)
     tenant_name = entry.get('tenant', '') or ''
-    # Clean "(vacant)" from tenant names — if name contains "vacant", it's just vacant
     is_vacant = 'vacant' in tenant_name.lower()
+
+    # CRE lease expired → mark as vacant regardless of CSV
+    lease_expiry = entry.get('leaseExpiryDate') or entry.get('leaseEnd')
+    if lease_expiry and lease_expiry not in ('-', 'null', '') and has_cre:
+        try:
+            exp_parts = lease_expiry.split('-')
+            if len(exp_parts) >= 2:
+                from datetime import datetime
+                exp_date = datetime(int(exp_parts[0]), int(exp_parts[1]), 1)
+                now = datetime(2026, 4, 1)
+                if exp_date < now and not is_vacant:
+                    is_vacant = True
+                    entry['vacancyReason'] = f'Lease expired {lease_expiry} (CRE Matrix)'
+        except: pass
+
     if is_vacant:
         tenant_name = 'Vacant'
         entry['tenant'] = 'Vacant'
         entry['status'] = 'Vacant'
-        entry['propertyCondition'] = 'Bare Shell'
-        rent = None  # don't show stale rent from expired leases
+        entry['propertyCondition'] = entry.get('propertyCondition') or 'Bare Shell'
+        rent = None
         entry['effectiveRent'] = None
         entry['startingRent'] = None
         entry['leaseExpiryRent'] = None
@@ -697,7 +715,9 @@ def build_floor_object(entry, floor_plate, all_entries, txn_lookup=None):
         'nextEscalationDue': entry.get('nextEscalationDue'),
         'leaseExpiryDate': entry.get('leaseExpiryDate') or entry.get('leaseEnd'),
         'efficiencyRatio': entry.get('efficiencyRatio', 70),
-        # Conflict detection + multi-landlord
+        # Data source + conflict detection
+        'dataSource': data_source,
+        'vacancyReason': entry.get('vacancyReason'),
         'dataConflict': entry.get('dataConflict'),
         'allLandlords': entry.get('allLandlords'),
         # New CRE fields (Session 3 — 11 additions)
@@ -988,7 +1008,10 @@ def generate_floor_js(floor):
     if floor.get('rentEstimated'):
         lines.append(f'          rentEstimated: true,')
 
-    # Data conflict flag (CSV vs CREMatrix mismatch)
+    # Data source + conflict flags
+    lines.append(f'          dataSource: {js_value(floor.get("dataSource", "Sales Team"))},')
+    if floor.get('vacancyReason'):
+        lines.append(f'          vacancyReason: {js_value(floor["vacancyReason"])},')
     if floor.get('dataConflict'):
         lines.append(f'          dataConflict: {js_value(floor["dataConflict"])},')
 
