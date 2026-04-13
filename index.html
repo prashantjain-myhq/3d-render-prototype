@@ -5489,19 +5489,25 @@ function openParkPanel() {
   panelOverlay.classList.add('open');
 
   // Wire up scoreboard row clicks via event delegation
-  panelMiddle.addEventListener('click', function(e) {
-    const row = e.target.closest('.park-score-row');
+  var _parkScoreHandler = function(e) {
+    var row = e.target.closest('.park-score-row');
     if (!row) return;
     e.stopPropagation();
-    const bid = row.dataset.bid;
-    const bldg = ACTIVE_DATA.buildings.find(function(b) { return b.id === bid; });
+    var bid = row.dataset.bid;
+    var bldg = ACTIVE_DATA.buildings.find(function(b) { return b.id === bid; });
     if (bldg) {
+      // Remove this handler so it doesn't interfere with building panel
+      panelMiddle.removeEventListener('click', _parkScoreHandler);
+      // Close park panel fully, then open building panel
+      panelContainer.classList.remove('open');
+      panelOverlay.classList.remove('open');
       panelOpen = false;
       renderer.domElement.style.pointerEvents = '';
       controls.enabled = true;
-      openPanel(bldg, 0);
+      setTimeout(function() { openPanel(bldg, 0); }, 450);
     }
-  });
+  };
+  panelMiddle.addEventListener('click', _parkScoreHandler);
 }
 
 function openPanel(building, highlightFloorIndex) {
@@ -6722,6 +6728,12 @@ setTimeout(() => {
     }
   }, 400);
 }, 1500); // loading screen shows for 1.5s
+
+// Auto-navigate to park view if ?park= parameter present
+const urlPark = new URLSearchParams(window.location.search).get('park');
+if (urlPark) {
+  setTimeout(() => { transitionToView('park'); }, 2500);
+}
 
 // ============================================================
 // VISITOR COUNTER (simulated)
