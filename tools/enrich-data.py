@@ -859,6 +859,12 @@ def generate_building_js(building_info, floors, transactions, all_transactions, 
     first_txn = bldg_txns[0] if bldg_txns else {}
     cre_developer = first_txn.get('developer')
     cre_grade = first_txn.get('grade')
+
+    # Calculate microMarketAvgRent from all CRE transactions in same micro-market
+    mm = first_txn.get('microMarket') or cfg.get('microMarket', '')
+    mm_rents = [t.get('effectiveRent') or t.get('currentRent') for t in all_transactions
+                if (t.get('microMarket') or '') == mm and (t.get('effectiveRent') or t.get('currentRent'))]
+    cre_micro_market_avg_rent = round(sum(mm_rents) / len(mm_rents)) if mm_rents else cfg.get('microMarketAvgRent', 0)
     cre_building_category = first_txn.get('buildingCategory')
     cre_micro_market = first_txn.get('microMarket')
     cre_market = first_txn.get('market')
@@ -893,7 +899,7 @@ def generate_building_js(building_info, floors, transactions, all_transactions, 
     lines.append(f'      efficiencyRatio: {building_info.get("efficiencyRatio") or 70},')
     lines.append(f'      amenities: {js_value(cfg.get("amenities", []))},')
     lines.append(f'      microMarket: "{cfg.get("microMarket", "")}",')
-    lines.append(f'      microMarketAvgRent: {building_info.get("microMarketAvgRent") or cfg.get("microMarketAvgRent", 0)},')
+    lines.append(f'      microMarketAvgRent: {cre_micro_market_avg_rent},')
     lines.append(f'      absorptionRate: {cfg.get("absorptionRate", 70)},')
     lines.append(f'      upcomingSupply: "{cfg.get("upcomingSupply", "Limited")}",')
     lines.append(f'      capitalValuePerSqft: 0,')
@@ -910,6 +916,17 @@ def generate_building_js(building_info, floors, transactions, all_transactions, 
     lines.append(f'      market: {js_value(cre_market)},')
     lines.append(f'      macroMarket: {js_value(cre_macro_market)},')
     lines.append(f'      pincode: {js_value(cre_pincode)},')
+
+    # Calculate building avg effective rent for vacant floor estimates
+    occupied_rents = [f.get('effectiveRent') or f.get('rentPerSqft') for f in floors
+                      if f.get('occupancy', 0) > 0 and (f.get('effectiveRent') or f.get('rentPerSqft'))]
+    bldg_avg_eff_rent = round(sum(occupied_rents) / len(occupied_rents), 1) if occupied_rents else None
+
+    # Set vacant floor rentPerSqft to building average (estimated asking rent)
+    for f in floors:
+        if f.get('occupancy', 0) == 0 and not f.get('rentPerSqft') and bldg_avg_eff_rent:
+            f['rentPerSqft'] = bldg_avg_eff_rent
+            f['rentEstimated'] = True  # flag so UI can label it as estimated
 
     # Floors
     lines.append('      floors: [')
@@ -968,6 +985,8 @@ def generate_floor_js(floor):
     lines.append(f'          nextEscalationDue: {js_value(floor.get("nextEscalationDue"))},')
     lines.append(f'          leaseExpiryDate: {js_value(floor.get("leaseExpiryDate"))},')
     lines.append(f'          efficiencyRatio: {js_value(floor.get("efficiencyRatio"))},')
+    if floor.get('rentEstimated'):
+        lines.append(f'          rentEstimated: true,')
 
     # Data conflict flag (CSV vs CREMatrix mismatch)
     if floor.get('dataConflict'):
