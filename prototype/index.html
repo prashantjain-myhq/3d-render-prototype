@@ -1886,134 +1886,176 @@
 </div>
 <script>if(window.innerWidth<768)document.getElementById('mobile-notice').style.display='flex';</script>
 
-<!-- Cinematic Intro — shown when no ?city= param -->
+<!-- Cinematic Intro v2 — Blown Away Edition -->
 <style>
-@keyframes introGlow { 0%,100%{text-shadow:0 0 20px rgba(99,102,241,0.3)} 50%{text-shadow:0 0 60px rgba(99,102,241,0.8),0 0 120px rgba(99,102,241,0.3)} }
-@keyframes introSlam { 0%{opacity:0;transform:scale(1.8) translateY(-20px);filter:blur(8px)} 100%{opacity:1;transform:scale(1) translateY(0);filter:blur(0)} }
-@keyframes introSlide { 0%{opacity:0;transform:translateX(-60px)} 100%{opacity:1;transform:translateX(0)} }
-@keyframes introSlideR { 0%{opacity:0;transform:translateX(60px)} 100%{opacity:1;transform:translateX(0)} }
-@keyframes introFadeUp { 0%{opacity:0;transform:translateY(40px)} 100%{opacity:1;transform:translateY(0)} }
-@keyframes introFlare { 0%{left:-100%} 100%{left:200%} }
-@keyframes counterPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
-@keyframes dataRain { 0%{transform:translateY(-100%);opacity:0} 10%{opacity:0.6} 90%{opacity:0.6} 100%{transform:translateY(100vh);opacity:0} }
-@keyframes gridPulse { 0%,100%{opacity:0.04} 50%{opacity:0.12} }
-@keyframes sheetFall { 0%{transform:translateY(0) rotate(0deg);opacity:1} 100%{transform:translateY(100vh) rotate(45deg);opacity:0} }
-.intro-word{display:inline-block;opacity:0;animation:introSlam 0.6s ease forwards}
-.data-stream{position:absolute;font-family:monospace;font-size:11px;color:#818cf8;opacity:0;animation:dataRain 4s linear infinite;white-space:nowrap}
-.sheet-cell{position:absolute;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:2px;font-size:9px;color:rgba(255,255,255,0.3);padding:4px 8px;font-family:monospace;animation:sheetFall 3s ease-in forwards}
+@keyframes introGlitch { 0%,100%{transform:translate(0)} 20%{transform:translate(-2px,1px)} 40%{transform:translate(2px,-1px)} 60%{transform:translate(-1px,-2px)} 80%{transform:translate(1px,2px)} }
+@keyframes introGlow { 0%,100%{text-shadow:0 0 20px rgba(99,102,241,0.3)} 50%{text-shadow:0 0 80px rgba(99,102,241,0.9),0 0 160px rgba(99,102,241,0.4)} }
+@keyframes introSlam { 0%{opacity:0;transform:scale(2.5) translateY(-20px);filter:blur(12px)} 100%{opacity:1;transform:scale(1) translateY(0);filter:blur(0)} }
+@keyframes introSlide { 0%{opacity:0;transform:translateX(-80px)} 100%{opacity:1;transform:translateX(0)} }
+@keyframes introSlideR { 0%{opacity:0;transform:translateX(80px)} 100%{opacity:1;transform:translateX(0)} }
+@keyframes introFlare { 0%{left:-100%;opacity:0} 20%{opacity:1} 80%{opacity:1} 100%{left:200%;opacity:0} }
+@keyframes counterPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+@keyframes sheetFall { 0%{transform:translateY(0) rotate(0deg) scale(1);opacity:1} 100%{transform:translateY(100vh) rotate(60deg) scale(0.5);opacity:0} }
+@keyframes dataRain { 0%{transform:translateY(-100%);opacity:0} 10%{opacity:0.7} 90%{opacity:0.7} 100%{transform:translateY(100vh);opacity:0} }
+@keyframes glowBorder { 0%,100%{border-color:rgba(99,102,241,0.15);box-shadow:0 0 0 rgba(99,102,241,0)} 50%{border-color:rgba(99,102,241,0.5);box-shadow:0 0 20px rgba(99,102,241,0.15)} }
+@keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+@keyframes typewriter { from{width:0} to{width:100%} }
+@keyframes blink { 0%,100%{border-color:transparent} 50%{border-color:#818cf8} }
+@keyframes shakeIt { 0%,100%{transform:translate(0)} 25%{transform:translate(-3px,2px)} 50%{transform:translate(3px,-2px)} 75%{transform:translate(-2px,-3px)} }
+@keyframes gradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+@keyframes ringFill { from{stroke-dashoffset:283} to{stroke-dashoffset:0} }
+@keyframes floatUp { 0%{opacity:0;transform:translateY(30px)} 100%{opacity:1;transform:translateY(0)} }
+@keyframes redPulse { 0%,100%{background:transparent} 50%{background:rgba(239,68,68,0.05)} }
+.intro-word{display:inline-block;opacity:0;animation:introSlam 0.5s ease forwards}
+.data-stream{position:absolute;font-family:monospace;font-size:11px;color:#818cf8;opacity:0;animation:dataRain 3s linear infinite;white-space:nowrap}
+.sheet-cell{position:absolute;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:3px;font-size:12px;color:rgba(239,68,68,0.5);padding:6px 14px;font-family:monospace;font-weight:600;animation:sheetFall 2.5s ease-in forwards}
+.feat-card-v2{opacity:0;border:1px solid rgba(99,102,241,0.15);border-radius:16px;padding:24px 20px;text-align:left;backdrop-filter:blur(4px);transition:all 0.3s}
+.feat-card-v2.visible{opacity:1;animation:glowBorder 3s ease infinite}
 </style>
 
-<div id="intro-overlay" style="position:fixed;inset:0;z-index:1001;background:#050810;display:none;overflow:hidden">
+<div id="intro-overlay" style="position:fixed;inset:0;z-index:1001;background:#030712;display:none;overflow:hidden">
   <canvas id="intro-canvas" style="position:absolute;inset:0;z-index:0"></canvas>
   <audio id="intro-music" loop preload="auto"><source src="intro-music.mp3" type="audio/mpeg"><source src="intro-music.wav" type="audio/wav"></audio>
   <div style="position:fixed;top:20px;right:20px;z-index:1010;display:flex;gap:8px">
     <button id="intro-pause-btn" style="padding:8px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:system-ui;backdrop-filter:blur(8px);display:flex;align-items:center;gap:6px;transition:all 0.3s" onmouseover="this.style.borderColor='#818cf8'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)'"><span id="intro-pause-icon">&#9646;&#9646;</span> <span id="intro-pause-label">Pause</span></button>
-    <button id="intro-sound-btn" style="padding:8px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:system-ui;backdrop-filter:blur(8px);display:flex;align-items:center;gap:6px;transition:all 0.3s" onmouseover="this.style.borderColor='#f59e0b'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)'"><span id="intro-sound-icon">&#9835;</span> <span id="intro-sound-label">Play Music</span></button>
+    <button id="intro-sound-btn" style="padding:8px 16px;border-radius:10px;border:1px solid rgba(245,158,11,0.3);background:rgba(245,158,11,0.08);color:#f59e0b;font-size:12px;font-weight:600;cursor:pointer;font-family:system-ui;backdrop-filter:blur(8px);display:flex;align-items:center;gap:6px;transition:all 0.3s" onmouseover="this.style.borderColor='#f59e0b'" onmouseout="this.style.borderColor='rgba(245,158,11,0.3)'"><span id="intro-sound-icon">&#9835;</span> <span id="intro-sound-label">Enable Sound</span></button>
   </div>
-  <button id="intro-skip" style="position:fixed;bottom:24px;right:24px;z-index:1010;padding:8px 20px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:#64748b;font-size:11px;font-weight:600;cursor:pointer;font-family:system-ui;backdrop-filter:blur(4px);transition:all 0.3s" onmouseover="this.style.borderColor='#818cf8';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='#64748b'">Skip Intro →</button>
+  <button id="intro-skip" style="position:fixed;bottom:24px;right:24px;z-index:1010;padding:8px 20px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:#64748b;font-size:11px;font-weight:600;cursor:pointer;font-family:system-ui;backdrop-filter:blur(4px);transition:all 0.3s" onmouseover="this.style.borderColor='#818cf8';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='#64748b'">Skip Intro &rarr;</button>
 
-  <!-- Scene 1: The Problem — Spreadsheets falling apart -->
+  <!-- Scene 0: Logo Reveal -->
+  <div class="intro-scene" id="scene-0" style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 1s">
+    <div style="text-align:center">
+      <div id="logo-reveal" style="font-size:72px;font-weight:900;color:#fff;letter-spacing:-3px;font-family:system-ui;overflow:hidden">
+        <span style="display:inline-block;opacity:0" id="logo-m">m</span><span style="display:inline-block;opacity:0" id="logo-y">y</span><span style="display:inline-block;opacity:0;color:#818cf8" id="logo-h">H</span><span style="display:inline-block;opacity:0;color:#818cf8" id="logo-q">Q</span>
+      </div>
+      <div id="logo-subtitle" style="font-size:14px;letter-spacing:6px;text-transform:uppercase;margin-top:16px;overflow:hidden;white-space:nowrap;width:0;border-right:2px solid #818cf8;font-family:system-ui;background:linear-gradient(90deg,#94a3b8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:600;animation:blink 1s step-end infinite">Commercial Intelligence Platform</div>
+    </div>
+  </div>
+
+  <!-- Scene 0.5: Spreadsheet Shatter -->
+  <div class="intro-scene" id="scene-sheet" style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.8s">
+    <div id="sheet-grid" style="position:relative;transform:scale(0.85)"></div>
+  </div>
+
+  <!-- Scene 1: The Problem -->
   <div class="intro-scene" id="scene-1" style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 1.2s">
     <div id="sheet-rain" style="position:absolute;inset:0;overflow:hidden;z-index:0"></div>
     <div style="text-align:center;max-width:750px;padding:0 20px;position:relative;z-index:1">
       <div style="font-size:11px;color:#818cf8;font-weight:700;letter-spacing:4px;margin-bottom:32px;opacity:0.5">my<span style="color:#fff">HQ</span></div>
       <div style="font-size:13px;color:#ef4444;font-weight:800;letter-spacing:8px;text-transform:uppercase;margin-bottom:24px">The Problem</div>
-      <div style="font-size:48px;font-weight:900;color:#fff;line-height:1.15;margin-bottom:24px;font-family:system-ui">Office leasing is still done on<br><span style="color:#ef4444;text-decoration:line-through;text-decoration-thickness:3px">spreadsheets</span> and <span style="color:#ef4444;text-decoration:line-through;text-decoration-thickness:3px">broker calls</span></div>
+      <div id="scene1-title" style="font-size:48px;font-weight:900;color:#fff;line-height:1.15;margin-bottom:24px;font-family:system-ui">Office leasing is still done on<br><span id="s1-strike1" style="color:#ef4444;text-decoration:line-through;text-decoration-thickness:3px;opacity:0">spreadsheets</span> and <span id="s1-strike2" style="color:#ef4444;text-decoration:line-through;text-decoration-thickness:3px;opacity:0">broker calls</span></div>
       <div style="font-size:19px;color:#94a3b8;line-height:1.7;font-weight:500">No verified data. No visual context.<br>No way to compare floors without visiting 10 sites.</div>
     </div>
   </div>
 
-  <!-- Scene 2: The Vision — Wireframe city rising -->
+  <!-- Scene 2: The Vision -->
   <div class="intro-scene" id="scene-2" style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 1.2s">
-    <div style="text-align:center;max-width:750px;padding:0 20px">
+    <div style="text-align:center;max-width:900px;padding:0 20px">
       <div style="font-size:11px;color:#818cf8;font-weight:700;letter-spacing:4px;margin-bottom:32px;opacity:0.5">my<span style="color:#fff">HQ</span> <span style="color:#475569">presents</span></div>
       <div style="font-size:13px;color:#818cf8;font-weight:800;letter-spacing:8px;text-transform:uppercase;margin-bottom:24px">What If</div>
-      <div style="font-size:48px;font-weight:900;color:#fff;line-height:1.15;margin-bottom:24px;font-family:system-ui">You could <span style="color:#818cf8;animation:introGlow 2s ease infinite">explore</span> any tech park<br>from your browser?</div>
+      <div style="font-size:48px;font-weight:900;color:#fff;line-height:1.15;margin-bottom:24px;font-family:system-ui">You could <span style="color:#818cf8;animation:introGlow 2s ease infinite">explore</span> any tech park from your browser?</div>
       <div style="font-size:19px;color:#94a3b8;line-height:1.7;font-weight:500">Every floor. Every tenant. Every deal.<br>Verified. Visualized. Interactive.</div>
-      <!-- Animated wireframe skyline -->
-      <svg viewBox="0 0 800 120" style="width:100%;max-width:700px;margin-top:24px;opacity:0.6" id="skyline-svg">
-        <g stroke="#818cf8" fill="none" stroke-width="1">
-          <rect x="50" y="60" width="40" height="60" class="sky-bldg" style="stroke-dasharray:200;stroke-dashoffset:200"/>
-          <rect x="100" y="30" width="50" height="90" class="sky-bldg" style="stroke-dasharray:280;stroke-dashoffset:280"/>
-          <rect x="160" y="45" width="35" height="75" class="sky-bldg" style="stroke-dasharray:220;stroke-dashoffset:220"/>
-          <rect x="205" y="20" width="60" height="100" class="sky-bldg" style="stroke-dasharray:320;stroke-dashoffset:320"/>
-          <rect x="275" y="50" width="45" height="70" class="sky-bldg" style="stroke-dasharray:230;stroke-dashoffset:230"/>
-          <rect x="330" y="10" width="55" height="110" class="sky-bldg" style="stroke-dasharray:330;stroke-dashoffset:330"/>
-          <rect x="395" y="35" width="40" height="85" class="sky-bldg" style="stroke-dasharray:250;stroke-dashoffset:250"/>
-          <rect x="445" y="25" width="65" height="95" class="sky-bldg" style="stroke-dasharray:320;stroke-dashoffset:320"/>
-          <rect x="520" y="55" width="35" height="65" class="sky-bldg" style="stroke-dasharray:200;stroke-dashoffset:200"/>
-          <rect x="565" y="15" width="50" height="105" class="sky-bldg" style="stroke-dasharray:310;stroke-dashoffset:310"/>
-          <rect x="625" y="40" width="45" height="80" class="sky-bldg" style="stroke-dasharray:250;stroke-dashoffset:250"/>
-          <rect x="680" y="55" width="55" height="65" class="sky-bldg" style="stroke-dasharray:240;stroke-dashoffset:240"/>
-          <line x1="30" y1="120" x2="770" y2="120" stroke-width="2" style="stroke-dasharray:740;stroke-dashoffset:740" class="sky-bldg"/>
-        </g>
-      </svg>
+      <!-- Building Construction Animation -->
+      <div id="build-construct" style="margin-top:32px;height:200px;display:flex;align-items:flex-end;justify-content:center;gap:10px"></div>
     </div>
   </div>
 
-  <!-- Scene 3: Data Power — Streaming numbers + counters -->
+  <!-- Scene 3: Data Counters -->
   <div class="intro-scene" id="scene-3" style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 1.2s">
     <div id="data-streams" style="position:absolute;inset:0;overflow:hidden;z-index:0"></div>
-    <div style="text-align:center;max-width:800px;padding:0 20px;position:relative;z-index:1">
-      <div style="font-size:11px;color:#818cf8;font-weight:700;letter-spacing:4px;margin-bottom:24px;opacity:0.5">my<span style="color:#fff">HQ</span> <span style="color:#475569">×</span> <span style="color:#22c55e">CRE Matrix</span></div>
-      <div style="font-size:13px;color:#22c55e;font-weight:800;letter-spacing:8px;text-transform:uppercase;margin-bottom:32px">Real Data. Real Intelligence.</div>
-      <div style="display:flex;gap:48px;justify-content:center;flex-wrap:wrap;margin-bottom:28px">
-        <div><div class="counter" data-target="341" style="font-size:72px;font-weight:900;color:#818cf8;font-family:system-ui;animation:counterPulse 2s ease infinite">0</div><div style="font-size:12px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:3px">Verified Deals</div></div>
-        <div><div class="counter" data-target="80" style="font-size:72px;font-weight:900;color:#22c55e;font-family:system-ui;animation:counterPulse 2s ease 0.3s infinite">0</div><div style="font-size:12px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:3px">Floors Mapped</div></div>
-        <div><div class="counter" data-target="23" style="font-size:72px;font-weight:900;color:#f59e0b;font-family:system-ui;animation:counterPulse 2s ease 0.6s infinite">0</div><div style="font-size:12px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:3px">Buildings</div></div>
-        <div><div class="counter" data-target="2" style="font-size:72px;font-weight:900;color:#ef4444;font-family:system-ui;animation:counterPulse 2s ease 0.9s infinite">0</div><div style="font-size:12px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:3px">Cities Live</div></div>
+    <div style="text-align:center;max-width:900px;padding:0 20px;position:relative;z-index:1">
+      <div style="font-size:11px;color:#818cf8;font-weight:700;letter-spacing:4px;margin-bottom:24px;opacity:0.5">my<span style="color:#fff">HQ</span> <span style="color:#475569">&times;</span> <span style="color:#22c55e">CRE Matrix</span></div>
+      <div style="font-size:13px;color:#22c55e;font-weight:800;letter-spacing:8px;text-transform:uppercase;margin-bottom:36px">Real Data. Real Intelligence.</div>
+      <div style="display:flex;gap:40px;justify-content:center;flex-wrap:wrap;margin-bottom:28px">
+        <div style="position:relative">
+          <svg width="100" height="100" style="position:absolute;top:-10px;left:50%;transform:translateX(-50%)"><circle cx="50" cy="50" r="45" fill="none" stroke="rgba(99,102,241,0.1)" stroke-width="2"/><circle class="counter-ring" cx="50" cy="50" r="45" fill="none" stroke="#818cf8" stroke-width="2" stroke-dasharray="283" stroke-dashoffset="283" stroke-linecap="round" transform="rotate(-90 50 50)"/></svg>
+          <div class="counter" data-target="341" style="font-size:80px;font-weight:900;color:#818cf8;font-family:system-ui;animation:counterPulse 2s ease infinite;line-height:1;padding-top:12px">0</div>
+          <div style="font-size:11px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:3px;margin-top:4px">Verified Deals</div>
+        </div>
+        <div style="position:relative">
+          <svg width="100" height="100" style="position:absolute;top:-10px;left:50%;transform:translateX(-50%)"><circle cx="50" cy="50" r="45" fill="none" stroke="rgba(34,197,94,0.1)" stroke-width="2"/><circle class="counter-ring" cx="50" cy="50" r="45" fill="none" stroke="#22c55e" stroke-width="2" stroke-dasharray="283" stroke-dashoffset="283" stroke-linecap="round" transform="rotate(-90 50 50)"/></svg>
+          <div class="counter" data-target="80" style="font-size:80px;font-weight:900;color:#22c55e;font-family:system-ui;animation:counterPulse 2s ease 0.3s infinite;line-height:1;padding-top:12px">0</div>
+          <div style="font-size:11px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:3px;margin-top:4px">Floors Mapped</div>
+        </div>
+        <div style="position:relative">
+          <svg width="100" height="100" style="position:absolute;top:-10px;left:50%;transform:translateX(-50%)"><circle cx="50" cy="50" r="45" fill="none" stroke="rgba(245,158,11,0.1)" stroke-width="2"/><circle class="counter-ring" cx="50" cy="50" r="45" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="283" stroke-dashoffset="283" stroke-linecap="round" transform="rotate(-90 50 50)"/></svg>
+          <div class="counter" data-target="7" style="font-size:80px;font-weight:900;color:#f59e0b;font-family:system-ui;animation:counterPulse 2s ease 0.6s infinite;line-height:1;padding-top:12px">0</div>
+          <div style="font-size:11px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:3px;margin-top:4px">Buildings</div>
+        </div>
+        <div style="position:relative">
+          <svg width="100" height="100" style="position:absolute;top:-10px;left:50%;transform:translateX(-50%)"><circle cx="50" cy="50" r="45" fill="none" stroke="rgba(239,68,68,0.1)" stroke-width="2"/><circle class="counter-ring" cx="50" cy="50" r="45" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="283" stroke-dashoffset="283" stroke-linecap="round" transform="rotate(-90 50 50)"/></svg>
+          <div class="counter" data-target="2" style="font-size:80px;font-weight:900;color:#ef4444;font-family:system-ui;animation:counterPulse 2s ease 0.9s infinite;line-height:1;padding-top:12px">0</div>
+          <div style="font-size:11px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:3px;margin-top:4px">Cities Live</div>
+        </div>
       </div>
-      <div style="font-size:13px;color:#334155;letter-spacing:3px;text-transform:uppercase">CRE Matrix Verified · myHQ Built</div>
+      <div style="font-size:13px;color:#334155;letter-spacing:3px;text-transform:uppercase">CRE Matrix Verified &middot; myHQ Built</div>
     </div>
   </div>
 
-  <!-- Scene 4: Features — Sliding cards -->
+  <!-- Scene 4: Features -->
   <div class="intro-scene" id="scene-4" style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 1.2s">
-    <div style="text-align:center;max-width:950px;padding:0 20px">
-      <div style="font-size:11px;color:#818cf8;font-weight:700;letter-spacing:4px;margin-bottom:20px;opacity:0.5">my<span style="color:#fff">HQ</span> <span style="color:#475569">did the unthinkable</span></div>
-      <div style="font-size:13px;color:#818cf8;font-weight:800;letter-spacing:6px;text-transform:uppercase;margin-bottom:28px">Capabilities</div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
-        <div class="feat-card" style="opacity:0;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.15);border-radius:16px;padding:28px 20px;text-align:left">
-          <div style="width:44px;height:44px;border-radius:12px;background:rgba(99,102,241,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:14px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="1.5"><rect x="2" y="4" width="8" height="16" rx="1"/><rect x="14" y="8" width="8" height="12" rx="1"/><path d="M5 8h2M5 12h2M5 16h2M17 12h2M17 16h2" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-          <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:6px">3D Tech Parks</div>
-          <div style="font-size:11px;color:#94a3b8;line-height:1.6">L-shaped buildings on satellite imagery. Floor-by-floor interaction. 6 heatmap modes.</div>
+    <div style="text-align:center;max-width:950px;padding:0 20px;position:relative">
+      <!-- Faint UI mockup background -->
+      <div style="position:absolute;inset:-40px;opacity:0.04;pointer-events:none;display:flex;gap:8px;justify-content:center;align-items:center">
+        <div style="width:200px;height:300px;border:1px solid #818cf8;border-radius:12px"></div>
+        <div style="width:250px;height:300px;border:1px solid #818cf8;border-radius:12px;display:flex;flex-direction:column;gap:4px;padding:8px">
+          <div style="height:20px;background:rgba(99,102,241,0.3);border-radius:4px"></div>
+          <div style="height:40px;background:rgba(99,102,241,0.15);border-radius:4px"></div>
+          <div style="height:40px;background:rgba(99,102,241,0.15);border-radius:4px"></div>
+          <div style="flex:1;background:rgba(99,102,241,0.1);border-radius:4px"></div>
         </div>
-        <div class="feat-card" style="opacity:0;background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.15);border-radius:16px;padding:28px 20px;text-align:left">
-          <div style="width:44px;height:44px;border-radius:12px;background:rgba(34,197,94,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:14px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="1.5"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 5-8"/><circle cx="7" cy="16" r="1.5" fill="#22c55e" opacity="0.5"/><circle cx="11" cy="8" r="1.5" fill="#22c55e" opacity="0.5"/><circle cx="20" cy="8" r="1.5" fill="#22c55e" opacity="0.5"/></svg></div>
-          <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:6px">CRE Matrix Intel</div>
-          <div style="font-size:11px;color:#94a3b8;line-height:1.6">Rent tiers, escalation, landlord contacts, deal memos. Every data point verified.</div>
+        <div style="width:300px;height:300px;border:1px solid #818cf8;border-radius:12px;display:flex;flex-direction:column;gap:4px;padding:8px">
+          <div style="height:12px;background:rgba(99,102,241,0.2);border-radius:4px;width:60%"></div>
+          <div style="height:30px;background:rgba(99,102,241,0.1);border-radius:4px"></div>
+          <div style="height:30px;background:rgba(99,102,241,0.1);border-radius:4px"></div>
+          <div style="height:30px;background:rgba(99,102,241,0.1);border-radius:4px"></div>
         </div>
-        <div class="feat-card" style="opacity:0;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);border-radius:16px;padding:28px 20px;text-align:left">
-          <div style="width:44px;height:44px;border-radius:12px;background:rgba(245,158,11,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:14px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.5"><rect x="2" y="3" width="8" height="18" rx="1"/><rect x="14" y="3" width="8" height="18" rx="1"/><path d="M6 7h0M6 11h0M6 15h0M18 7h0M18 11h0M18 15h0" stroke-width="2.5" stroke-linecap="round"/></svg></div>
-          <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:6px">Floor Comparison</div>
-          <div style="font-size:11px;color:#94a3b8;line-height:1.6">Shortlist across buildings. Cost of occupancy side-by-side. Zero assumptions.</div>
-        </div>
-        <div class="feat-card" style="opacity:0;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);border-radius:16px;padding:28px 20px;text-align:left">
-          <div style="width:44px;height:44px;border-radius:12px;background:rgba(239,68,68,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:14px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/><circle cx="12" cy="12" r="3" fill="none" stroke-dasharray="2 2"/></svg></div>
-          <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:6px">Satellite + 3D Map</div>
-          <div style="font-size:11px;color:#94a3b8;line-height:1.6">Mapbox GL city view with 3D buildings, distance analysis, landmark context.</div>
-        </div>
-        <div class="feat-card" style="opacity:0;background:rgba(168,85,247,0.06);border:1px solid rgba(168,85,247,0.15);border-radius:16px;padding:28px 20px;text-align:left">
-          <div style="width:44px;height:44px;border-radius:12px;background:rgba(168,85,247,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:14px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
-          <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:6px">Tenant Analysis</div>
-          <div style="font-size:11px;color:#94a3b8;line-height:1.6">Sector diversity, lease portfolio, landlord concentration, deal flow trends.</div>
-        </div>
-        <div class="feat-card" style="opacity:0;background:rgba(236,72,153,0.06);border:1px solid rgba(236,72,153,0.15);border-radius:16px;padding:28px 20px;text-align:left">
-          <div style="width:44px;height:44px;border-radius:12px;background:rgba(236,72,153,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:14px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="1.5"><path d="M12 5v14M5 12h14"/><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1" fill="#ec4899" opacity="0.4"/><circle cx="16" cy="16" r="1" fill="#ec4899" opacity="0.4"/></svg></div>
-          <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:6px">Visual Builder</div>
-          <div style="font-size:11px;color:#94a3b8;line-height:1.6">In-browser editor to add buildings, gates, roads. No code. Instant 3D preview.</div>
+      </div>
+      <div style="position:relative;z-index:1">
+        <div style="font-size:11px;color:#818cf8;font-weight:700;letter-spacing:4px;margin-bottom:20px;opacity:0.5">my<span style="color:#fff">HQ</span> <span style="color:#475569">did the unthinkable</span></div>
+        <div style="font-size:13px;color:#818cf8;font-weight:800;letter-spacing:6px;text-transform:uppercase;margin-bottom:28px">Capabilities</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+          <div class="feat-card-v2" style="background:rgba(99,102,241,0.04)">
+            <div style="width:44px;height:44px;border-radius:12px;background:rgba(99,102,241,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:14px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="1.5"><rect x="2" y="4" width="8" height="16" rx="1"/><rect x="14" y="8" width="8" height="12" rx="1"/><path d="M5 8h2M5 12h2M5 16h2M17 12h2M17 16h2" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+            <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:6px">3D Tech Parks</div>
+            <div style="font-size:11px;color:#94a3b8;line-height:1.6">L-shaped buildings on satellite imagery. Floor-by-floor interaction. 6 heatmap modes.</div>
+          </div>
+          <div class="feat-card-v2" style="background:rgba(34,197,94,0.04)">
+            <div style="width:44px;height:44px;border-radius:12px;background:rgba(34,197,94,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:14px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="1.5"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 5-8"/><circle cx="7" cy="16" r="1.5" fill="#22c55e" opacity="0.5"/><circle cx="11" cy="8" r="1.5" fill="#22c55e" opacity="0.5"/><circle cx="20" cy="8" r="1.5" fill="#22c55e" opacity="0.5"/></svg></div>
+            <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:6px">CRE Matrix Intel</div>
+            <div style="font-size:11px;color:#94a3b8;line-height:1.6">Rent tiers, escalation, landlord contacts, deal memos. Every data point verified.</div>
+          </div>
+          <div class="feat-card-v2" style="background:rgba(245,158,11,0.04)">
+            <div style="width:44px;height:44px;border-radius:12px;background:rgba(245,158,11,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:14px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.5"><rect x="2" y="3" width="8" height="18" rx="1"/><rect x="14" y="3" width="8" height="18" rx="1"/><path d="M6 7h0M6 11h0M6 15h0M18 7h0M18 11h0M18 15h0" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+            <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:6px">Floor Comparison</div>
+            <div style="font-size:11px;color:#94a3b8;line-height:1.6">Shortlist across buildings. Cost of occupancy side-by-side. Zero assumptions.</div>
+          </div>
+          <div class="feat-card-v2" style="background:rgba(239,68,68,0.04)">
+            <div style="width:44px;height:44px;border-radius:12px;background:rgba(239,68,68,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:14px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></div>
+            <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:6px">Satellite + 3D Map</div>
+            <div style="font-size:11px;color:#94a3b8;line-height:1.6">Mapbox GL city view with 3D buildings, distance analysis, landmark context.</div>
+          </div>
+          <div class="feat-card-v2" style="background:rgba(168,85,247,0.04)">
+            <div style="width:44px;height:44px;border-radius:12px;background:rgba(168,85,247,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:14px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+            <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:6px">Tenant Analysis</div>
+            <div style="font-size:11px;color:#94a3b8;line-height:1.6">Sector diversity, lease portfolio, landlord concentration, deal flow trends.</div>
+          </div>
+          <div class="feat-card-v2" style="background:rgba(236,72,153,0.04)">
+            <div style="width:44px;height:44px;border-radius:12px;background:rgba(236,72,153,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:14px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="1.5"><path d="M12 5v14M5 12h14"/><rect x="3" y="3" width="18" height="18" rx="3"/></svg></div>
+            <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:6px">Cost Calculator</div>
+            <div style="font-size:11px;color:#94a3b8;line-height:1.6">Input team size, get matching floors with monthly cost breakdown per seat.</div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Scene 5: Tagline — Word slam -->
+  <!-- Scene 5: Tagline Slam -->
   <div class="intro-scene" id="scene-5" style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 1.2s">
     <div style="text-align:center;padding:0 20px;position:relative">
-      <div id="slam-text" style="font-size:64px;font-weight:900;color:#fff;line-height:1.15;font-family:system-ui;margin-bottom:20px"></div>
-      <div id="slam-sub" style="font-size:20px;color:#64748b;font-weight:500;opacity:0;transition:opacity 1s">is already here.</div>
-      <!-- Lens flare -->
-      <div style="position:absolute;top:50%;left:0;width:100%;height:4px;overflow:hidden;pointer-events:none"><div id="intro-flare" style="position:absolute;top:0;width:100px;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.6),transparent);left:-100%;filter:blur(2px)"></div></div>
+      <div id="slam-text" style="font-size:72px;font-weight:900;color:#fff;line-height:1.1;font-family:system-ui;margin-bottom:20px"></div>
+      <div id="slam-sub" style="font-size:22px;color:#64748b;font-weight:500;opacity:0;transition:opacity 1s">is already here.</div>
+      <div style="position:absolute;top:50%;left:0;width:100%;height:4px;margin-top:-2px;overflow:hidden;pointer-events:none"><div id="intro-flare" style="position:absolute;top:0;width:250px;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.7),transparent);left:-100%;filter:blur(2px)"></div></div>
     </div>
   </div>
 
@@ -2023,30 +2065,28 @@
     <div style="font-size:12px;color:#475569;letter-spacing:5px;text-transform:uppercase;margin-bottom:48px">3D Commercial Intelligence</div>
     <div style="font-size:14px;color:#818cf8;font-weight:700;text-transform:uppercase;letter-spacing:4px;margin-bottom:24px">Select Your City</div>
     <div style="display:flex;gap:28px;flex-wrap:wrap;justify-content:center">
-      <div onclick="window.location.href='?city=gurgaon'" style="cursor:pointer;width:300px;background:linear-gradient(135deg,rgba(30,41,59,0.95),rgba(15,23,42,0.98));border:1px solid rgba(99,102,241,0.2);border-radius:24px;padding:36px 28px;text-align:center;transition:all 0.4s;backdrop-filter:blur(12px)" onmouseover="this.style.borderColor='#6366f1';this.style.transform='translateY(-8px) scale(1.02)';this.style.boxShadow='0 20px 60px rgba(99,102,241,0.3)'" onmouseout="this.style.borderColor='rgba(99,102,241,0.2)';this.style.transform='';this.style.boxShadow=''">
+      <div onclick="window.location.href='?city=gurgaon'" style="cursor:pointer;width:300px;background:linear-gradient(135deg,rgba(30,41,59,0.95),rgba(15,23,42,0.98));border:1px solid rgba(99,102,241,0.2);border-radius:24px;padding:36px 28px;text-align:center;transition:all 0.4s;backdrop-filter:blur(12px);opacity:0;animation:floatUp 0.8s ease 0.3s forwards" onmouseover="this.style.borderColor='#6366f1';this.style.transform='translateY(-8px) scale(1.02)';this.style.boxShadow='0 20px 60px rgba(99,102,241,0.3)'" onmouseout="this.style.borderColor='rgba(99,102,241,0.2)';this.style.transform='';this.style.boxShadow=''">
         <div style="font-size:28px;font-weight:900;color:#fff;margin-bottom:6px">Gurgaon</div>
-        <div style="font-size:12px;color:#94a3b8;margin-bottom:16px">NCR · Sector 39–49 · NH-48 Corridor</div>
+        <div style="font-size:12px;color:#94a3b8;margin-bottom:16px">NCR &middot; Sector 39&ndash;49 &middot; NH-48 Corridor</div>
         <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:16px">
-          <span style="padding:4px 12px;background:rgba(99,102,241,0.1);border-radius:8px;font-size:10px;font-weight:600;color:#818cf8">4 Tech Parks</span>
+          <span style="padding:4px 12px;background:rgba(99,102,241,0.1);border-radius:8px;font-size:10px;font-weight:600;color:#818cf8">2 Tech Parks</span>
           <span style="padding:4px 12px;background:rgba(99,102,241,0.1);border-radius:8px;font-size:10px;font-weight:600;color:#818cf8">7 Buildings</span>
-          <span style="padding:4px 12px;background:rgba(99,102,241,0.1);border-radius:8px;font-size:10px;font-weight:600;color:#818cf8">24L+ sqft</span>
           <span style="padding:4px 12px;background:rgba(34,197,94,0.1);border-radius:8px;font-size:10px;font-weight:700;color:#22c55e">CRE Verified</span>
         </div>
-        <div style="padding:12px 28px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;border-radius:14px;font-size:15px;font-weight:800;display:inline-block;box-shadow:0 6px 20px rgba(99,102,241,0.4)">Explore Gurgaon →</div>
+        <div style="padding:12px 28px;background:linear-gradient(135deg,#6366f1,#4f46e5);background-size:200% auto;animation:shimmer 3s linear infinite;color:#fff;border-radius:14px;font-size:15px;font-weight:800;display:inline-block;box-shadow:0 6px 20px rgba(99,102,241,0.4)">Explore Gurgaon &rarr;</div>
       </div>
-      <div onclick="window.location.href='?city=bangalore'" style="cursor:pointer;width:300px;background:linear-gradient(135deg,rgba(30,41,59,0.95),rgba(15,23,42,0.98));border:1px solid rgba(99,102,241,0.2);border-radius:24px;padding:36px 28px;text-align:center;transition:all 0.4s;backdrop-filter:blur(12px)" onmouseover="this.style.borderColor='#6366f1';this.style.transform='translateY(-8px) scale(1.02)';this.style.boxShadow='0 20px 60px rgba(99,102,241,0.3)'" onmouseout="this.style.borderColor='rgba(99,102,241,0.2)';this.style.transform='';this.style.boxShadow=''">
+      <div onclick="window.location.href='?city=bangalore'" style="cursor:pointer;width:300px;background:linear-gradient(135deg,rgba(30,41,59,0.95),rgba(15,23,42,0.98));border:1px solid rgba(99,102,241,0.2);border-radius:24px;padding:36px 28px;text-align:center;transition:all 0.4s;backdrop-filter:blur(12px);opacity:0;animation:floatUp 0.8s ease 0.6s forwards" onmouseover="this.style.borderColor='#6366f1';this.style.transform='translateY(-8px) scale(1.02)';this.style.boxShadow='0 20px 60px rgba(99,102,241,0.3)'" onmouseout="this.style.borderColor='rgba(99,102,241,0.2)';this.style.transform='';this.style.boxShadow=''">
         <div style="font-size:28px;font-weight:900;color:#fff;margin-bottom:6px">Bangalore</div>
-        <div style="font-size:12px;color:#94a3b8;margin-bottom:16px">Karnataka · ORR · Whitefield · Electronic City</div>
+        <div style="font-size:12px;color:#94a3b8;margin-bottom:16px">Karnataka &middot; ORR &middot; Whitefield &middot; Electronic City</div>
         <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:16px">
           <span style="padding:4px 12px;background:rgba(99,102,241,0.1);border-radius:8px;font-size:10px;font-weight:600;color:#818cf8">6 Tech Parks</span>
           <span style="padding:4px 12px;background:rgba(99,102,241,0.1);border-radius:8px;font-size:10px;font-weight:600;color:#818cf8">19 Buildings</span>
-          <span style="padding:4px 12px;background:rgba(99,102,241,0.1);border-radius:8px;font-size:10px;font-weight:600;color:#818cf8">60M+ sqft</span>
           <span style="padding:4px 12px;background:rgba(245,158,11,0.1);border-radius:8px;font-size:10px;font-weight:700;color:#f59e0b">Demo Data</span>
         </div>
-        <div style="padding:12px 28px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;border-radius:14px;font-size:15px;font-weight:800;display:inline-block;box-shadow:0 6px 20px rgba(99,102,241,0.4)">Explore Bangalore →</div>
+        <div style="padding:12px 28px;background:linear-gradient(135deg,#6366f1,#4f46e5);background-size:200% auto;animation:shimmer 3s linear infinite;color:#fff;border-radius:14px;font-size:15px;font-weight:800;display:inline-block;box-shadow:0 6px 20px rgba(99,102,241,0.4)">Explore Bangalore &rarr;</div>
       </div>
     </div>
-    <div style="margin-top:32px;font-size:10px;color:#1e293b">Best on desktop · Three.js + Mapbox GL + CRE Matrix</div>
+    <div style="margin-top:32px;font-size:10px;color:#1e293b">Best on desktop &middot; Three.js + Mapbox GL + CRE Matrix</div>
   </div>
 </div>
 
@@ -2059,139 +2099,553 @@
     var ls = document.getElementById('loading-screen');
     if (ls) ls.style.display = 'none';
 
-    // === BACKGROUND CANVAS: Tron grid + data fragments + glow bursts ===
+    // === PARTICLE CONSTELLATION BACKGROUND ===
     var cv = document.getElementById('intro-canvas');
     var ctx = cv.getContext('2d');
     cv.width = window.innerWidth; cv.height = window.innerHeight;
-    var t = 0;
-    var bursts = [];
-    function addBurst() { bursts.push({ x: Math.random()*cv.width, y: Math.random()*cv.height, r: 0, maxR: 100+Math.random()*200, speed: 2+Math.random()*3 }); }
-    setInterval(addBurst, 2000);
+    var particles = [];
+    var sceneColor = { r: 99, g: 102, b: 241 }; // indigo default
+    for (var i = 0; i < 120; i++) {
+      particles.push({ x: Math.random()*cv.width, y: Math.random()*cv.height, vx: (Math.random()-0.5)*0.5, vy: (Math.random()-0.5)*0.5, r: Math.random()*2+0.5 });
+    }
+    var burstParticles = [];
+    function addBurst() {
+      for (var i = 0; i < 20; i++) {
+        var angle = Math.random() * Math.PI * 2;
+        var speed = 1 + Math.random() * 3;
+        burstParticles.push({ x: cv.width/2, y: cv.height/2, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed, life: 1.0 });
+      }
+    }
 
     function drawBg() {
-      t += 0.004;
-      ctx.fillStyle = 'rgba(5,8,16,0.12)';
+      ctx.fillStyle = 'rgba(3,7,18,0.08)';
       ctx.fillRect(0,0,cv.width,cv.height);
-
-      var cx = cv.width/2, cy = cv.height*0.55;
-      // Perspective grid floor (Tron-style)
-      var gridPulse = 0.06 + Math.sin(t*2)*0.03;
-      for (var i = -25; i <= 25; i++) {
-        ctx.strokeStyle = 'rgba(99,102,241,' + (gridPulse * (1-Math.abs(i)/25)) + ')';
-        ctx.lineWidth = 0.5;
-        ctx.beginPath();
-        ctx.moveTo(cx + i*50, cy - 180);
-        ctx.lineTo(cx + i*180, cv.height);
-        ctx.stroke();
+      var r = sceneColor.r, g = sceneColor.g, b = sceneColor.b;
+      // Particles
+      particles.forEach(function(p) {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > cv.width) p.vx *= -1;
+        if (p.y < 0 || p.y > cv.height) p.vy *= -1;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba('+r+','+g+','+b+',0.4)'; ctx.fill();
+      });
+      // Connections
+      for (var i = 0; i < particles.length; i++) {
+        for (var j = i+1; j < particles.length; j++) {
+          var dx = particles[i].x-particles[j].x, dy = particles[i].y-particles[j].y;
+          var dist = Math.sqrt(dx*dx+dy*dy);
+          if (dist < 100) {
+            ctx.beginPath(); ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y);
+            ctx.strokeStyle = 'rgba('+r+','+g+','+b+','+(0.12*(1-dist/100))+')'; ctx.lineWidth = 0.5; ctx.stroke();
+          }
+        }
       }
-      for (var j = 0; j < 15; j++) {
-        var gy = cy - 50 + j*40 + Math.sin(t*1.5+j*0.5)*3;
-        ctx.strokeStyle = 'rgba(99,102,241,' + (gridPulse * (1-j/15)) + ')';
-        ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(cv.width,gy); ctx.stroke();
-      }
-      // Floating data fragments
-      var frags = ['₹85/sqft','Tower B','BFSI','16 floors','Renewal','₹4.2Cr','IT/ITeS','Fitted Out','92%','CRE Matrix','Sector 39','₹19 CAM','Keysight','15% esc'];
-      for (var f = 0; f < 20; f++) {
-        var fx = (Math.sin(t*0.3+f*4.1)*0.5+0.5)*cv.width;
-        var fy = (Math.cos(t*0.2+f*3.3)*0.5+0.5)*cv.height;
-        ctx.font = '9px system-ui';
-        ctx.fillStyle = 'rgba(99,102,241,' + (0.12+Math.sin(t+f)*0.06) + ')';
-        ctx.fillText(frags[f%frags.length], fx, fy);
-      }
-      // Glow bursts
-      bursts.forEach(function(b,i) {
-        b.r += b.speed;
-        if (b.r > b.maxR) { bursts.splice(i,1); return; }
-        var alpha = 0.15*(1-b.r/b.maxR);
-        ctx.beginPath(); ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
-        ctx.strokeStyle = 'rgba(99,102,241,'+alpha+')';
-        ctx.lineWidth = 1; ctx.stroke();
+      // Burst particles
+      burstParticles = burstParticles.filter(function(bp) {
+        bp.x += bp.vx; bp.y += bp.vy; bp.life -= 0.015;
+        if (bp.life <= 0) return false;
+        ctx.beginPath(); ctx.arc(bp.x, bp.y, 2*bp.life, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba('+r+','+g+','+b+','+bp.life*0.5+')'; ctx.fill();
+        return true;
       });
       // Center glow
-      var grd = ctx.createRadialGradient(cx,cy-30,0,cx,cy-30,350);
-      grd.addColorStop(0,'rgba(99,102,241,0.05)'); grd.addColorStop(1,'rgba(99,102,241,0)');
+      var grd = ctx.createRadialGradient(cv.width/2,cv.height/2-30,0,cv.width/2,cv.height/2-30,300);
+      grd.addColorStop(0,'rgba('+r+','+g+','+b+',0.03)'); grd.addColorStop(1,'rgba('+r+','+g+','+b+',0)');
       ctx.fillStyle = grd; ctx.fillRect(0,0,cv.width,cv.height);
       requestAnimationFrame(drawBg);
     }
     drawBg();
 
-    // === SCENE 1: Spreadsheet rain ===
-    setTimeout(function() {
-      var rain = document.getElementById('sheet-rain');
-      var cells = ['₹80/sqft','Vacant','Tower A','F12','BFSI','Renewal','₹19 CAM','2024','Fitted','Lock-in 36mo','₹4.5Cr ARR','Sector 39','Grade B','15% esc'];
-      for (var i = 0; i < 30; i++) {
-        var cell = document.createElement('div');
-        cell.className = 'sheet-cell';
-        cell.textContent = cells[i%cells.length];
-        cell.style.left = (Math.random()*90+5)+'%';
-        cell.style.top = '-30px';
-        cell.style.animationDelay = (Math.random()*2)+'s';
-        cell.style.animationDuration = (2+Math.random()*2)+'s';
-        rain.appendChild(cell);
-      }
-    }, 600);
+    // === AUTO-PLAY MUSIC ===
+    var musicPlaying = false;
+    var mp3 = document.getElementById('intro-music');
+    mp3.currentTime = 8;
+    mp3.volume = 0.3;
+    mp3.play().then(function() {
+      musicPlaying = true;
+      document.getElementById('intro-sound-icon').textContent = '\u23F8';
+      document.getElementById('intro-sound-label').textContent = 'Pause Music';
+    }).catch(function() {
+      // Autoplay blocked — user will need to click the button
+    });
 
-    // === SCENE 2: Skyline draw (triggered by timeline at 6000) ===
-    setTimeout(function() {
-      document.querySelectorAll('.sky-bldg').forEach(function(el,i) {
-        setTimeout(function() { el.style.transition='stroke-dashoffset 1.2s ease'; el.style.strokeDashoffset='0'; }, i*120);
-      });
-    }, 6500);
-
-    // === SCENE 3: Data streams ===
-    setTimeout(function() {
-      var container = document.getElementById('data-streams');
-      var terms = ['₹85.4/sqft','₹102.2/sqft','₹66.4/sqft','Keysight Technologies','HDFC Bank','Gunnebo India','Renewal 2024','New Lease','₹3.8Cr','₹12.4L/mo','Sector 39','IT/ITeS','BFSI','15% escalation','36 months','Fitted Out','Tower B F14','Tower C F8','Grade B'];
-      for (var s = 0; s < 15; s++) {
-        var el = document.createElement('div');
-        el.className = 'data-stream';
-        el.textContent = terms[s%terms.length];
-        el.style.left = (5+s*6.5)+'%';
-        el.style.animationDelay = (Math.random()*3)+'s';
-        el.style.animationDuration = (3+Math.random()*2)+'s';
-        container.appendChild(el);
-      }
-    }, 12000);
-
-    // Scene 4 + 5 triggers moved to introTimeline — no duplicate setTimeouts here
-
-    // === PAUSABLE SCENE SEQUENCER ===
+    // === SCENE TIMELINE ===
+    // Scene 0: Logo         0.2s →  4.3s  (4.1s — logo + subtitle + hold)
+    // Scene 1: Problem      4.8s → 11.2s  (6.4s — text + strikethrough + read subtext)
+    // Sheet:  Spreadsheet  11.5s → 17.0s  (5.5s — build, scan, verdict, red, shake, shatter)
+    // Scene 2: Vision      17.5s → 24.5s  (7.0s — buildings + cursor click + panel)
+    // Scene 3: Data        25.0s → 30.5s  (5.5s)
+    // Scene 4: Features    31.0s → 38.0s  (7.0s)
+    // Scene 5: Tagline     38.5s → 44.0s  (5.5s)
+    // Final: Cities        44.5s
+    // Total: ~46 seconds
     var introTimeline = [
-      { at: 500, action: function() { document.getElementById('scene-1').style.opacity='1'; }},
-      { at: 5500, action: function() { document.getElementById('scene-1').style.opacity='0'; }},
-      { at: 6000, action: function() { document.getElementById('scene-2').style.opacity='1'; }},
-      { at: 11000, action: function() { document.getElementById('scene-2').style.opacity='0'; }},
-      { at: 11500, action: function() { document.getElementById('scene-3').style.opacity='1'; }},
-      { at: 11800, action: function() {
+      // Scene 0: Logo reveal (0.2 → 3.5)
+      { at: 200, action: function() { document.getElementById('scene-0').style.opacity='1'; }},
+      { at: 500, action: function() {
+        ['logo-m','logo-y','logo-h','logo-q'].forEach(function(id,i) {
+          setTimeout(function() {
+            var el = document.getElementById(id);
+            el.style.opacity='1'; el.style.animation='introGlitch 0.3s ease'; el.style.transition='opacity 0.3s';
+          }, i*180);
+        });
+      }},
+      { at: 1600, action: function() {
+        var sub = document.getElementById('logo-subtitle');
+        sub.style.animation = 'typewriter 1.2s steps(38) forwards, blink 1s step-end infinite';
+        sub.style.width = '100%';
+      }},
+      { at: 4300, action: function() { document.getElementById('scene-0').style.opacity='0'; addBurst(); }},
+
+      // Scene 1: The Problem (4.8 → 11.2 = 6.4s)
+      { at: 4800, action: function() {
+        document.getElementById('scene-1').style.opacity='1';
+        sceneColor = { r: 239, g: 68, b: 68 }; // red
+        document.getElementById('scene-1').style.animation = 'redPulse 2s ease';
+        var rain = document.getElementById('sheet-rain');
+        var cells = ['\u20B980/sqft','Vacant','Tower A','F12','BFSI','Renewal','\u20B919 CAM','2024','Fitted','Lock-in 36mo','\u20B94.5Cr','Sector 39','Grade A','15% esc'];
+        for (var ci = 0; ci < 35; ci++) {
+          var cell = document.createElement('div');
+          cell.className = 'sheet-cell';
+          cell.textContent = cells[ci%cells.length];
+          cell.style.left = (Math.random()*90+5)+'%'; cell.style.top = '-30px';
+          cell.style.animationDelay = (Math.random()*2)+'s'; cell.style.animationDuration = (1.5+Math.random()*2.5)+'s';
+          rain.appendChild(cell);
+        }
+      }},
+      { at: 6200, action: function() {
+        var s1 = document.getElementById('s1-strike1');
+        s1.style.opacity='1'; s1.style.transition='opacity 0.4s, transform 0.4s, text-shadow 0.4s';
+        s1.style.transform='scale(1.15)'; s1.style.textShadow='0 0 30px rgba(239,68,68,0.8), 0 0 60px rgba(239,68,68,0.4)';
+        setTimeout(function(){ s1.style.transform='scale(1)'; },500);
+        setTimeout(function(){
+          var s2 = document.getElementById('s1-strike2');
+          s2.style.opacity='1'; s2.style.transition='opacity 0.4s, transform 0.4s, text-shadow 0.4s';
+          s2.style.transform='scale(1.15)'; s2.style.textShadow='0 0 30px rgba(239,68,68,0.8), 0 0 60px rgba(239,68,68,0.4)';
+          setTimeout(function(){ s2.style.transform='scale(1)'; },500);
+          document.getElementById('scene-1').style.background='radial-gradient(circle at center, rgba(239,68,68,0.08) 0%, transparent 70%)';
+        },500);
+      }},
+      { at: 11200, action: function() { document.getElementById('scene-1').style.opacity='0'; addBurst(); }},
+
+      // Spreadsheet: build → scan → verdict → red → shake → shatter (11.5 → 17.0)
+      { at: 11500, action: function() {
+        document.getElementById('scene-sheet').style.opacity='1';
+        sceneColor = { r: 100, g: 116, b: 139 }; // slate grey
+        var grid = document.getElementById('sheet-grid');
+        var headers = ['Tower','Floor','Tenant','Area (sqft)','Rent (\u20B9/sqft)','Status','Lease Expiry','CAM','Escalation'];
+        var rows = [
+          ['Tower A','F3','Gameskraft','12,400','85.4','Occupied','Mar 2027','\u20B919/sqft','15%'],
+          ['Tower A','F7','—','8,200','—','Vacant','Expired','—','—'],
+          ['Tower B','F2','HDFC Bank','15,600','102.2','Occupied','Jun 2026','\u20B922/sqft','12%'],
+          ['Tower B','F5','Gunnebo India','9,800','78.5','Occupied','Dec 2025','\u20B918/sqft','10%'],
+          ['Tower B','F9','—','7,100','—','Vacant','Expired','—','—'],
+          ['Tower C','F1','Regus','22,000','95.0','Partial','Sep 2026','\u20B921/sqft','15%'],
+          ['Tower C','F4','HCL Technologies','14,200','88.7','Occupied','Jan 2028','\u20B920/sqft','12%'],
+          ['Tower C','F8','Fujifilm India','16,800','92.3','Occupied','Aug 2026','\u20B919/sqft','10%'],
+          ['Tower D','F2','WeWork','18,500','110.0','Occupied','Apr 2027','\u20B924/sqft','15%'],
+          ['Tower D','F6','—','11,500','—','Vacant','Expired','—','—'],
+        ];
+        var tbl = document.createElement('table');
+        tbl.id = 'sheet-table';
+        tbl.style.cssText = 'border-collapse:collapse;font-family:"Courier New",monospace;font-size:11px';
+        // Title bar mimicking Excel
+        var titleBar = document.createElement('div');
+        titleBar.style.cssText = 'background:rgba(34,100,60,0.3);padding:6px 14px;border-radius:6px 6px 0 0;display:flex;align-items:center;gap:8px;margin-bottom:0';
+        titleBar.innerHTML = '<div style="display:flex;gap:4px"><div style="width:8px;height:8px;border-radius:50%;background:#ef4444"></div><div style="width:8px;height:8px;border-radius:50%;background:#f59e0b"></div><div style="width:8px;height:8px;border-radius:50%;background:#22c55e"></div></div><div style="font-size:10px;color:rgba(255,255,255,0.4);font-family:system-ui">CRE_Leasing_Data_2026_FINAL_v3_updated_COPY.xlsx</div>';
+        grid.appendChild(titleBar);
+        // Row number column + headers
+        var thead = document.createElement('tr');
+        var rnH = document.createElement('td');
+        rnH.style.cssText = 'padding:5px 8px;background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.06);font-size:9px;text-align:center';
+        thead.appendChild(rnH);
+        headers.forEach(function(h, hi) {
+          var th = document.createElement('td');
+          th.textContent = h;
+          th.style.cssText = 'padding:6px 14px;background:rgba(34,197,94,0.12);color:#22c55e;font-weight:700;border:1px solid rgba(255,255,255,0.08);white-space:nowrap;font-size:10px;letter-spacing:0.5px';
+          thead.appendChild(th);
+        });
+        tbl.appendChild(thead);
+        rows.forEach(function(row, ri) {
+          var tr = document.createElement('tr');
+          // Row number
+          var rn = document.createElement('td');
+          rn.textContent = ri+1;
+          rn.style.cssText = 'padding:4px 8px;background:rgba(255,255,255,0.02);color:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.04);font-size:9px;text-align:center';
+          tr.appendChild(rn);
+          row.forEach(function(val) {
+            var td = document.createElement('td');
+            td.textContent = val;
+            var isVacant = val === 'Vacant' || val === '—' || val === 'Expired';
+            var isPartial = val === 'Partial';
+            td.style.cssText = 'padding:5px 14px;border:1px solid rgba(255,255,255,0.05);white-space:nowrap;font-size:10.5px;color:'+(isVacant?'rgba(239,68,68,0.6)':isPartial?'rgba(245,158,11,0.7)':'rgba(255,255,255,0.45)')+';background:rgba(255,255,255,'+(ri%2===0?'0.015':'0.035')+');transition:all 0.4s';
+            tr.appendChild(td);
+          });
+          tbl.appendChild(tr);
+        });
+        grid.appendChild(tbl);
+      }},
+      // Scanning cursor — highlight rows one by one
+      { at: 12500, action: function() {
+        var tbl = document.getElementById('sheet-table');
+        var trs = tbl.querySelectorAll('tr');
+        for (var ri = 1; ri < trs.length; ri++) {
+          (function(tr, delay) {
+            setTimeout(function() {
+              var tds = tr.querySelectorAll('td');
+              tds.forEach(function(td, ci) {
+                if (ci > 0) td.style.background = 'rgba(99,102,241,0.08)';
+              });
+              setTimeout(function() {
+                tds.forEach(function(td, ci) {
+                  if (ci > 0) td.style.background = '';
+                });
+              }, 180);
+            }, delay);
+          })(trs[ri], (ri-1)*150);
+        }
+      }},
+      // Verdict text overlays the spreadsheet
+      { at: 13700, action: function() {
+        var scene = document.getElementById('scene-sheet');
+        var verdict = document.createElement('div');
+        verdict.id = 'sheet-verdict';
+        verdict.style.cssText = 'position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none';
+        verdict.innerHTML = '<div style="font-size:36px;font-weight:900;color:#fff;font-family:system-ui;text-align:center;text-shadow:0 0 40px rgba(0,0,0,0.8);opacity:0;transform:scale(0.9);transition:all 0.5s ease" id="verdict-line1">Spreadsheets are old school.</div>'
+          + '<div style="display:flex;gap:16px;margin-top:12px" id="verdict-line2"></div>';
+        scene.appendChild(verdict);
+        // Line 1 fades in
+        requestAnimationFrame(function(){ requestAnimationFrame(function(){
+          document.getElementById('verdict-line1').style.opacity='1';
+          document.getElementById('verdict-line1').style.transform='scale(1)';
+        });});
+        // Line 2 words appear one by one
+        var words = ['Dull.','Boring.','Broken.'];
+        words.forEach(function(w, i) {
+          setTimeout(function() {
+            var span = document.createElement('span');
+            span.textContent = w;
+            span.style.cssText = 'font-size:22px;font-weight:700;color:#ef4444;font-family:system-ui;opacity:0;transform:translateY(8px);transition:all 0.35s ease;text-shadow:0 0 30px rgba(239,68,68,0.5)';
+            document.getElementById('verdict-line2').appendChild(span);
+            requestAnimationFrame(function(){ requestAnimationFrame(function(){
+              span.style.opacity='1'; span.style.transform='translateY(0)';
+            });});
+          }, 400 + i*350);
+        });
+      }},
+      // Cells turn red — data is overwhelming
+      { at: 14500, action: function() {
+        sceneColor = { r: 239, g: 68, b: 68 }; // shift particles red
+        var tbl = document.getElementById('sheet-table');
+        var allCells = tbl.querySelectorAll('td');
+        var cellArr = Array.prototype.slice.call(allCells);
+        // Randomize order
+        cellArr.sort(function() { return Math.random()-0.5; });
+        cellArr.forEach(function(td, i) {
+          setTimeout(function() {
+            td.style.borderColor = 'rgba(239,68,68,0.3)';
+            td.style.color = 'rgba(239,68,68,0.5)';
+            td.style.background = 'rgba(239,68,68,0.04)';
+          }, i*15);
+        });
+      }},
+      // Shake hard
+      { at: 15200, action: function() {
+        var grid = document.getElementById('sheet-grid');
+        grid.style.animation = 'shakeIt 0.6s ease';
+        // Red screen flash
+        document.getElementById('scene-sheet').style.background = 'radial-gradient(circle at center, rgba(239,68,68,0.12) 0%, transparent 70%)';
+      }},
+      // Fracture — cells crack apart from center, brief freeze
+      { at: 15500, action: function() {
+        var tbl = document.getElementById('sheet-table');
+        tbl.style.borderCollapse = 'separate';
+        tbl.style.borderSpacing = '2px';
+        tbl.style.transition = 'border-spacing 0.4s ease';
+        var allRows = tbl.querySelectorAll('tr');
+        allRows.forEach(function(tr) { tr.style.border = 'none'; });
+        var cells = tbl.querySelectorAll('td');
+        cells.forEach(function(td) {
+          td.style.transition = 'all 0.3s ease';
+          td.style.border = '1px solid rgba(239,68,68,0.4)';
+          td.style.borderRadius = '2px';
+          // Slight random offset — looks fractured
+          var jx = (Math.random()-0.5)*4, jy = (Math.random()-0.5)*3;
+          td.style.transform = 'translate('+jx+'px,'+jy+'px)';
+        });
+      }},
+      // Shatter — cells fly outward slowly
+      { at: 16000, action: function() {
+        var tbl = document.getElementById('sheet-table');
+        var cells = tbl.querySelectorAll('td');
+        var rect = tbl.getBoundingClientRect();
+        var cx = rect.left + rect.width/2;
+        var cy = rect.top + rect.height/2;
+        tbl.style.borderSpacing = '6px';
+        var cellArr = Array.prototype.slice.call(cells);
+        // Stagger from center outward
+        cellArr.sort(function(a,b) {
+          var ar = a.getBoundingClientRect(), br = b.getBoundingClientRect();
+          var da = Math.abs(ar.left+ar.width/2-cx)+Math.abs(ar.top+ar.height/2-cy);
+          var db = Math.abs(br.left+br.width/2-cx)+Math.abs(br.top+br.height/2-cy);
+          return da - db;
+        });
+        cellArr.forEach(function(td, i) {
+          var r = td.getBoundingClientRect();
+          var dx = (r.left + r.width/2) - cx;
+          var dy = (r.top + r.height/2) - cy;
+          var dist = Math.sqrt(dx*dx+dy*dy) || 1;
+          var force = 2 + Math.random()*3.5;
+          var tx = (dx/dist)*force*80 + (Math.random()-0.5)*100;
+          var ty = (dy/dist)*force*60 + (Math.random()-0.5)*80;
+          var rot = (Math.random()-0.5)*200;
+          setTimeout(function() {
+            td.style.transition = 'all 1.2s cubic-bezier(0.25,0.46,0.45,0.94)';
+            td.style.position = 'relative';
+            td.style.transform = 'translate('+tx+'px,'+ty+'px) rotate('+rot+'deg) scale(0.15)';
+            td.style.opacity = '0';
+            td.style.border = 'none';
+          }, i * 8);
+        });
+        // Title bar drifts away
+        var titleBar = document.getElementById('sheet-grid').querySelector('div');
+        if (titleBar) {
+          titleBar.style.transition = 'all 1s ease';
+          titleBar.style.transform = 'translateY(-80px) scale(0.4)';
+          titleBar.style.opacity = '0';
+        }
+      }},
+      // Scene 2 fades in AS cells fly — simultaneous transition
+      { at: 16200, action: function() {
+        // Fade out spreadsheet scene
+        document.getElementById('scene-sheet').style.transition = 'opacity 1.2s ease';
+        document.getElementById('scene-sheet').style.opacity = '0';
+        // Fade in What If simultaneously
+        document.getElementById('scene-2').style.transition = 'opacity 1.5s ease';
+        document.getElementById('scene-2').style.opacity = '1';
+        // Smooth color shift from red → indigo over 1s
+        var startR = 239, startG = 68, startB = 68;
+        var endR = 99, endG = 102, endB = 241;
+        var dur = 1000, startT = performance.now();
+        (function shiftColor() {
+          var t = Math.min((performance.now() - startT) / dur, 1);
+          var ease = t * t * (3 - 2 * t); // smoothstep
+          sceneColor.r = Math.round(startR + (endR - startR) * ease);
+          sceneColor.g = Math.round(startG + (endG - startG) * ease);
+          sceneColor.b = Math.round(startB + (endB - startB) * ease);
+          if (t < 1) requestAnimationFrame(shiftColor);
+        })();
+        addBurst();
+      }},
+      { at: 18000, action: function() {
+        var container = document.getElementById('build-construct');
+        var buildings = [
+          { w: 36, floors: 7, color: '99,102,241', wins: 2, startDelay: 150 },
+          { w: 44, floors: 10, color: '99,102,241', wins: 3, startDelay: 0 },
+          { w: 56, floors: 14, color: '129,140,248', wins: 4, startDelay: 80 },
+          { w: 48, floors: 12, color: '99,102,241', wins: 3, startDelay: 40 },
+          { w: 40, floors: 8, color: '99,102,241', wins: 2, startDelay: 120 },
+          { w: 32, floors: 5, color: '79,70,229', wins: 2, startDelay: 220 }
+        ];
+        buildings.forEach(function(b) {
+          var col = document.createElement('div');
+          col.style.cssText = 'width:'+b.w+'px;display:flex;flex-direction:column-reverse;gap:1px;position:relative';
+          container.appendChild(col);
+          for (var fi = 0; fi < b.floors; fi++) {
+            (function(col, fi, b) {
+              var delay = b.startDelay + fi * 120;
+              setTimeout(function() {
+                var block = document.createElement('div');
+                var isTop = fi === b.floors - 1;
+                block.style.cssText = 'height:12px;background:rgba('+b.color+',0.06);border:1px solid rgba('+b.color+',0.3);display:flex;gap:2px;padding:1px 3px;align-items:center;opacity:0;transform:translateY(15px) scale(0.7);transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1)'+(isTop?';border-top:2px solid rgba('+b.color+',0.5)':'');
+                for (var w = 0; w < b.wins; w++) {
+                  var win = document.createElement('div');
+                  var lit = Math.random() > 0.4;
+                  win.style.cssText = 'flex:1;height:100%;background:rgba('+b.color+','+(lit?0.25+Math.random()*0.15:0.06)+');border-radius:1px'+(lit?';box-shadow:0 0 3px rgba('+b.color+',0.2)':'');
+                  block.appendChild(win);
+                }
+                col.appendChild(block);
+                requestAnimationFrame(function(){ requestAnimationFrame(function(){
+                  block.style.opacity='1'; block.style.transform='translateY(0) scale(1)';
+                });});
+              }, delay);
+            })(col, fi, b);
+          }
+          var finishTime = b.startDelay + b.floors * 120 + 400;
+          (function(col, b, finishTime) {
+            setTimeout(function() {
+              col.style.transition = 'box-shadow 0.6s ease';
+              col.style.boxShadow = '0 0 20px rgba('+b.color+',0.15), 0 -10px 30px rgba('+b.color+',0.08)';
+            }, finishTime);
+          })(col, b, finishTime);
+        });
+      }},
+      // Cursor clicks a floor → mini panel slides in (21.0 → 24.0)
+      { at: 21000, action: function() {
+        var container = document.getElementById('build-construct');
+        // Find the tallest building (3rd one, index 2 — the 56px wide one)
+        var cols = container.children;
+        var tallCol = cols[2]; // tallest building
+        if (!tallCol) return;
+        var floors = tallCol.children;
+        var targetFloor = floors[Math.min(9, floors.length-1)]; // pick floor ~9 from bottom
+        if (!targetFloor) return;
+        // Create animated cursor
+        var cursor = document.createElement('div');
+        cursor.style.cssText = 'position:absolute;width:18px;height:22px;pointer-events:none;z-index:10;opacity:0;transition:all 0.8s cubic-bezier(0.4,0,0.2,1);filter:drop-shadow(0 0 6px rgba(99,102,241,0.5))';
+        cursor.innerHTML = '<svg width="18" height="22" viewBox="0 0 16 20"><path d="M1 1l12 8.5-5.5 1.5 3 6.5-2.5 1-3-6.5L1 15V1z" fill="#818cf8" stroke="rgba(99,102,241,0.8)" stroke-width="0.5"/></svg>';
+        container.style.position = 'relative';
+        // Start cursor from bottom-right, animate to the floor
+        cursor.style.left = (container.offsetWidth - 20) + 'px';
+        cursor.style.bottom = '10px';
+        container.appendChild(cursor);
+        requestAnimationFrame(function() {
+          cursor.style.opacity = '1';
+          // Move cursor to the target floor
+          var floorRect = targetFloor.getBoundingClientRect();
+          var contRect = container.getBoundingClientRect();
+          cursor.style.left = (floorRect.left - contRect.left + floorRect.width/2) + 'px';
+          cursor.style.bottom = (contRect.bottom - floorRect.bottom + floorRect.height/2) + 'px';
+        });
+        // After cursor arrives, "click" the floor
+        setTimeout(function() {
+          // Highlight the clicked floor
+          targetFloor.style.background = 'rgba(99,102,241,0.3)';
+          targetFloor.style.borderColor = '#818cf8';
+          targetFloor.style.boxShadow = '0 0 12px rgba(99,102,241,0.5)';
+          // Cursor click effect
+          cursor.style.transform = 'scale(0.85)';
+          setTimeout(function() { cursor.style.transform = 'scale(1)'; }, 150);
+          // Slide in 3 widgets — attached to scene-2 for viewport positioning
+          var scene2 = document.getElementById('scene-2');
+          var wBase = 'position:absolute;background:rgba(15,23,42,0.92);border:1px solid rgba(99,102,241,0.2);border-radius:14px;font-family:system-ui;opacity:0;transition:all 0.6s cubic-bezier(0.22,1,0.36,1);backdrop-filter:blur(16px);box-shadow:0 8px 32px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.05)';
+
+          // Widget 1: Floor Detail — LEFT side, vertically centered
+          var w1 = document.createElement('div');
+          w1.style.cssText = wBase + ';left:4%;top:50%;transform:translateY(-50%) translateX(-30px);width:220px;padding:18px';
+          w1.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div style="display:flex;align-items:center;gap:6px"><div style="width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px rgba(34,197,94,0.5)"></div><div style="font-size:9px;color:#818cf8;font-weight:700;letter-spacing:2px;text-transform:uppercase">Floor 9 \u00B7 Tower C</div></div><div style="font-size:8px;color:#475569;padding:2px 8px;border:1px solid rgba(99,102,241,0.15);border-radius:6px">Grade A</div></div>'
+            + '<div style="font-size:16px;font-weight:800;color:#fff;margin-bottom:2px">Gameskraft</div>'
+            + '<div style="font-size:10px;color:#64748b;margin-bottom:14px">Gaming \u00B7 Occupied \u00B7 12,400 sqft</div>'
+            + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'
+            + '<div style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.1);border-radius:8px;padding:8px 10px"><div style="font-size:7px;color:#64748b;letter-spacing:1px;margin-bottom:3px">RENT</div><div style="font-size:14px;color:#22c55e;font-weight:800">\u20B985.4<span style="font-size:9px;color:#64748b;font-weight:400">/sqft</span></div></div>'
+            + '<div style="background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.1);border-radius:8px;padding:8px 10px"><div style="font-size:7px;color:#64748b;letter-spacing:1px;margin-bottom:3px">OCCUPANCY</div><div style="font-size:14px;color:#818cf8;font-weight:800">100%</div></div>'
+            + '<div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.1);border-radius:8px;padding:8px 10px"><div style="font-size:7px;color:#64748b;letter-spacing:1px;margin-bottom:3px">LEASE EXPIRY</div><div style="font-size:14px;color:#f59e0b;font-weight:700">Mar 2027</div></div>'
+            + '<div style="background:rgba(148,163,184,0.06);border:1px solid rgba(148,163,184,0.1);border-radius:8px;padding:8px 10px"><div style="font-size:7px;color:#64748b;letter-spacing:1px;margin-bottom:3px">ESCALATION</div><div style="font-size:14px;color:#94a3b8;font-weight:700">15%<span style="font-size:9px;font-weight:400"> p.a.</span></div></div>'
+            + '</div>';
+          scene2.appendChild(w1);
+
+          // Widget 2: Rent Trend — RIGHT side, upper
+          var w2 = document.createElement('div');
+          w2.style.cssText = wBase + ';right:4%;top:38%;transform:translateX(30px);width:240px;padding:16px';
+          w2.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="font-size:9px;color:#818cf8;font-weight:700;letter-spacing:1.5px;text-transform:uppercase">Rent Trend</div><div style="font-size:9px;color:#22c55e;font-weight:700;background:rgba(34,197,94,0.08);padding:2px 8px;border-radius:6px">\u2191 42% in 5yr</div></div>'
+            + '<svg width="210" height="60" viewBox="0 0 210 60" style="display:block;width:100%">'
+            + '<defs><linearGradient id="rentGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#818cf8" stop-opacity="0.25"/><stop offset="100%" stop-color="#818cf8" stop-opacity="0.02"/></linearGradient></defs>'
+            + '<path d="M0 52 L35 46 L70 44 L105 38 L140 28 L175 18 L210 10" fill="none" stroke="rgba(99,102,241,0.15)" stroke-width="1" stroke-dasharray="4 4"/>'
+            + '<path d="M0 50 L35 44 L70 40 L105 34 L140 24 L175 16 L210 8" fill="none" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'
+            + '<path d="M0 50 L35 44 L70 40 L105 34 L140 24 L175 16 L210 8 L210 60 L0 60Z" fill="url(#rentGrad)"/>'
+            + '<circle cx="210" cy="8" r="4" fill="#818cf8" stroke="#030712" stroke-width="2"/><circle cx="210" cy="8" r="2" fill="#fff"/>'
+            + '<circle cx="0" cy="50" r="2.5" fill="rgba(99,102,241,0.4)"/>'
+            + '</svg>'
+            + '<div style="display:flex;justify-content:space-between;margin-top:6px;padding:0 2px"><span style="font-size:9px;color:#475569">2020</span><span style="font-size:9px;color:#475569">2022</span><span style="font-size:9px;color:#475569">2024</span><span style="font-size:10px;color:#fff;font-weight:700">\u20B985.4</span></div>';
+          scene2.appendChild(w2);
+
+          // Widget 3: Recent Deals — RIGHT side, below rent trend
+          var w3 = document.createElement('div');
+          w3.style.cssText = wBase + ';right:4%;top:63%;transform:translateX(30px);width:240px;padding:16px';
+          w3.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="font-size:9px;color:#818cf8;font-weight:700;letter-spacing:1.5px;text-transform:uppercase">Recent Transactions</div><div style="font-size:8px;color:#475569">Last 3 deals</div></div>'
+            + '<div style="display:flex;flex-direction:column;gap:6px">'
+            + '<div style="display:flex;align-items:center;padding:8px 10px;background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.08);border-radius:8px;gap:10px"><div style="width:6px;height:24px;border-radius:3px;background:#22c55e;flex-shrink:0"></div><div style="flex:1"><div style="font-size:11px;color:#fff;font-weight:600">Gameskraft</div><div style="font-size:8px;color:#475569">Mar 2024 \u00B7 Renewal</div></div><div style="text-align:right"><div style="font-size:12px;color:#22c55e;font-weight:700">\u20B985</div><div style="font-size:8px;color:#475569">/sqft</div></div></div>'
+            + '<div style="display:flex;align-items:center;padding:8px 10px;background:rgba(99,102,241,0.04);border:1px solid rgba(99,102,241,0.08);border-radius:8px;gap:10px"><div style="width:6px;height:24px;border-radius:3px;background:#818cf8;flex-shrink:0"></div><div style="flex:1"><div style="font-size:11px;color:#fff;font-weight:600">HDFC Bank</div><div style="font-size:8px;color:#475569">Jan 2024 \u00B7 New Lease</div></div><div style="text-align:right"><div style="font-size:12px;color:#22c55e;font-weight:700">\u20B9102</div><div style="font-size:8px;color:#475569">/sqft</div></div></div>'
+            + '<div style="display:flex;align-items:center;padding:8px 10px;background:rgba(245,158,11,0.04);border:1px solid rgba(245,158,11,0.08);border-radius:8px;gap:10px"><div style="width:6px;height:24px;border-radius:3px;background:#f59e0b;flex-shrink:0"></div><div style="flex:1"><div style="font-size:11px;color:#fff;font-weight:600">Gunnebo India</div><div style="font-size:8px;color:#475569">Sep 2023 \u00B7 Renewal</div></div><div style="text-align:right"><div style="font-size:12px;color:#22c55e;font-weight:700">\u20B979</div><div style="font-size:8px;color:#475569">/sqft</div></div></div>'
+            + '</div>';
+          scene2.appendChild(w3);
+
+          // Stagger the 3 widgets sliding in
+          [w1, w2, w3].forEach(function(w, i) {
+            setTimeout(function() {
+              requestAnimationFrame(function(){ requestAnimationFrame(function(){
+                w.style.opacity = '1';
+                w.style.transform = w.style.transform.replace(/translateX\([^)]+\)/,'translateX(0)');
+              });});
+            }, i * 350);
+          });
+        }, 900);
+      }},
+      { at: 24500, action: function() { document.getElementById('scene-2').style.opacity='0'; addBurst(); }},
+
+      // Scene 3: Data Counters (25.0 → 30.5 = 5.5s)
+      { at: 25000, action: function() {
+        document.getElementById('scene-3').style.opacity='1';
+        sceneColor = { r: 34, g: 197, b: 94 }; // green
+        var container = document.getElementById('data-streams');
+        var terms = ['\u20B985.4/sqft','\u20B9102.2/sqft','Gameskraft','HDFC Bank','Gunnebo India','Renewal 2024','New Lease','\u20B93.8Cr','IT/ITeS','BFSI','15% escalation','Fitted Out','Tower B F14'];
+        for (var s = 0; s < 15; s++) {
+          var el = document.createElement('div');
+          el.className = 'data-stream';
+          el.textContent = terms[s%terms.length];
+          el.style.left = (3+s*6.5)+'%'; el.style.animationDelay = (Math.random()*2)+'s'; el.style.animationDuration = (2+Math.random()*2)+'s';
+          container.appendChild(el);
+        }
+      }},
+      { at: 25500, action: function() {
         document.querySelectorAll('.counter').forEach(function(el) {
           var target = parseInt(el.dataset.target), current = 0;
           var step = Math.max(1, Math.floor(target/50));
           var iv = setInterval(function() { current+=step; if(current>=target){current=target;clearInterval(iv);} el.textContent=current; },40);
         });
-      }},
-      { at: 16500, action: function() { document.getElementById('scene-3').style.opacity='0'; }},
-      { at: 17000, action: function() { document.getElementById('scene-4').style.opacity='1'; }},
-      { at: 17500, action: function() {
-        document.querySelectorAll('.feat-card').forEach(function(c,i) {
-          setTimeout(function() { c.style.opacity='1'; c.style.animation=(i%2===0?'introSlide':'introSlideR')+' 0.8s ease forwards'; }, i*400);
+        document.querySelectorAll('.counter-ring').forEach(function(ring) {
+          ring.style.transition = 'stroke-dashoffset 2s ease';
+          ring.style.strokeDashoffset = '0';
         });
       }},
-      { at: 22500, action: function() { document.getElementById('scene-4').style.opacity='0'; }},
-      { at: 23000, action: function() { document.getElementById('scene-5').style.opacity='1'; }},
-      { at: 23500, action: function() {
-        var words = ['The','Future','of','<br>','<span style="background:linear-gradient(135deg,#818cf8,#6366f1,#4f46e5);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Office</span>','<span style="background:linear-gradient(135deg,#818cf8,#6366f1,#4f46e5);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Leasing</span>'];
+      { at: 30500, action: function() { document.getElementById('scene-3').style.opacity='0'; addBurst(); }},
+
+      // Scene 4: Features (31.0 → 38.0 = 7.0s)
+      { at: 31000, action: function() {
+        document.getElementById('scene-4').style.opacity='1';
+        sceneColor = { r: 99, g: 102, b: 241 }; // indigo
+      }},
+      { at: 31500, action: function() {
+        document.querySelectorAll('.feat-card-v2').forEach(function(c,i) {
+          setTimeout(function() {
+            c.classList.add('visible');
+            c.style.animation = (i%2===0?'introSlide':'introSlideR') + ' 0.8s ease forwards, glowBorder 3s ease ' + (i*0.2) + 's infinite';
+          }, i*350);
+        });
+      }},
+      { at: 38000, action: function() { document.getElementById('scene-4').style.opacity='0'; addBurst(); }},
+
+      // Scene 5: Tagline Slam (38.5 → 44.0 = 5.5s)
+      { at: 38500, action: function() {
+        document.getElementById('scene-5').style.opacity='1';
+        sceneColor = { r: 129, g: 140, b: 248 }; // light indigo
+      }},
+      { at: 39000, action: function() {
+        var words = ['The','Future','of','<br>','<span style="background:linear-gradient(135deg,#818cf8,#6366f1,#4f46e5);background-size:300% 300%;animation:gradientShift 3s ease infinite;-webkit-background-clip:text;-webkit-text-fill-color:transparent">Office</span>','<span style="background:linear-gradient(135deg,#818cf8,#6366f1,#4f46e5);background-size:300% 300%;animation:gradientShift 3s ease infinite;-webkit-background-clip:text;-webkit-text-fill-color:transparent">Leasing</span>'];
         var container = document.getElementById('slam-text');
         words.forEach(function(w,i) {
           setTimeout(function() {
             if(w==='<br>'){container.innerHTML+='<br>';return;}
             container.innerHTML+='<span class="intro-word" style="animation-delay:0s">'+w+' </span>';
-          }, i*400);
+            if (i === words.length - 1) {
+              document.getElementById('scene-5').style.animation = 'shakeIt 0.4s ease';
+            }
+          }, i*350);
         });
-        setTimeout(function(){document.getElementById('slam-sub').style.opacity='1';},3000);
-        setTimeout(function(){var f=document.getElementById('intro-flare');f.style.transition='left 1.5s ease';f.style.left='200%';},3200);
+        setTimeout(function(){document.getElementById('slam-sub').style.opacity='1';},2500);
+        setTimeout(function(){
+          var flare=document.getElementById('intro-flare');
+          flare.style.transition='left 1.5s ease';flare.style.left='200%';
+        },2800);
       }},
-      { at: 27500, action: function() { document.getElementById('scene-5').style.opacity='0'; }},
-      { at: 28000, action: function() { document.getElementById('intro-final').style.opacity='1'; document.getElementById('intro-pause-btn').style.display='none'; }},
+      { at: 44000, action: function() { document.getElementById('scene-5').style.opacity='0'; }},
+
+      // Final: City Selection (44.5)
+      { at: 44500, action: function() {
+        document.getElementById('intro-final').style.opacity='1';
+        document.getElementById('intro-pause-btn').style.display='none';
+        sceneColor = { r: 99, g: 102, b: 241 };
+      }},
     ];
 
     var introStartTime = performance.now();
@@ -2210,10 +2664,9 @@
     }
     requestAnimationFrame(introTick);
 
-    // Pause/Play intro button
+    // Pause/Play
     document.getElementById('intro-pause-btn').addEventListener('click', function() {
       if (introIsPaused) {
-        // Resume — shift start time forward by paused duration
         introStartTime += performance.now() - introPausedAt;
         introIsPaused = false;
         document.getElementById('intro-pause-icon').innerHTML = '&#9646;&#9646;';
@@ -2226,81 +2679,33 @@
       }
     });
 
-    // Music — Play/Pause with Web Audio (reliable)
-    var musicPlaying = false;
-    var musicCtx = null;
-    var musicGain = null;
-    var musicInterval = null;
-
-    function playBeat() {
-      if (!musicCtx || !musicPlaying) return;
-      // Deep boom
-      var osc = musicCtx.createOscillator();
-      var g = musicCtx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(55, musicCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(28, musicCtx.currentTime + 0.3);
-      g.gain.setValueAtTime(0.6, musicCtx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001, musicCtx.currentTime + 0.5);
-      osc.connect(g); g.connect(musicGain);
-      osc.start(); osc.stop(musicCtx.currentTime + 0.5);
-      // Sub bass pad
-      var pad = musicCtx.createOscillator();
-      var pg = musicCtx.createGain();
-      pad.type = 'sine'; pad.frequency.value = 40;
-      pg.gain.setValueAtTime(0.15, musicCtx.currentTime);
-      pg.gain.exponentialRampToValueAtTime(0.001, musicCtx.currentTime + 0.8);
-      pad.connect(pg); pg.connect(musicGain);
-      pad.start(); pad.stop(musicCtx.currentTime + 0.8);
-    }
-
+    // Music toggle (auto-play attempted above, button toggles)
     document.getElementById('intro-sound-btn').addEventListener('click', function() {
       if (!musicPlaying) {
-        // Try MP3 first
-        var mp3 = document.getElementById('intro-music');
+        mp3.currentTime = 8;
         mp3.volume = 0.3;
         mp3.play().then(function() {
           musicPlaying = true;
-          document.getElementById('intro-sound-icon').textContent = '⏸';
-          document.getElementById('intro-sound-label').textContent = 'Pause';
-        }).catch(function() {
-          // Web Audio fallback — guaranteed to work in click handler
-          if (!musicCtx) {
-            musicCtx = new (window.AudioContext || window.webkitAudioContext)();
-            musicGain = musicCtx.createGain();
-            musicGain.gain.value = 0.25;
-            musicGain.connect(musicCtx.destination);
-          }
-          if (musicCtx.state === 'suspended') musicCtx.resume();
-          musicPlaying = true;
-          playBeat();
-          musicInterval = setInterval(playBeat, 833); // ~72bpm
-          document.getElementById('intro-sound-icon').textContent = '⏸';
-          document.getElementById('intro-sound-label').textContent = 'Pause';
-        });
+          document.getElementById('intro-sound-icon').textContent = '\u23F8';
+          document.getElementById('intro-sound-label').textContent = 'Pause Music';
+        }).catch(function() {});
       } else {
-        // Pause
-        var mp3 = document.getElementById('intro-music');
         mp3.pause();
         musicPlaying = false;
-        if (musicInterval) { clearInterval(musicInterval); musicInterval = null; }
-        if (musicCtx) musicCtx.suspend();
-        document.getElementById('intro-sound-icon').textContent = '♫';
-        document.getElementById('intro-sound-label').textContent = 'Play Music';
+        document.getElementById('intro-sound-icon').textContent = '\u266B';
+        document.getElementById('intro-sound-label').textContent = 'Enable Sound';
       }
     });
 
     // Skip
-    // Prevent clicks on intro from reaching the 3D scene behind
     document.getElementById('intro-overlay').addEventListener('click', function(e) { e.stopPropagation(); });
-
     document.getElementById('intro-skip').addEventListener('click', function(e) {
       e.stopPropagation();
-      ['scene-1','scene-2','scene-3','scene-4','scene-5'].forEach(function(id) {
+      ['scene-0','scene-sheet','scene-1','scene-2','scene-3','scene-4','scene-5'].forEach(function(id) {
         var el = document.getElementById(id);
         if (el) { el.style.opacity = '0'; el.style.display = 'none'; }
       });
-      introIsPaused = true; // stop timeline
+      introIsPaused = true;
       document.getElementById('intro-final').style.opacity = '1';
       document.getElementById('intro-pause-btn').style.display = 'none';
       this.style.display = 'none';
@@ -2308,6 +2713,7 @@
   }
 })();
 </script>
+
 
 <!-- Loading Screen -->
 <div id="loading-screen" style="position:fixed;inset:0;z-index:999;background:#0f172a;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.6s">
