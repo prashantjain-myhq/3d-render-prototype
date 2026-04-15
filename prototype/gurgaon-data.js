@@ -2284,8 +2284,8 @@ const VATIKA_TECH_PARK_DATA = {
       yearBuilt: 2008,
       color: "#2563eb",
       position: { x: -3.5, z: -9.0 },
-      width: 12.0, depth: 7.9, height: 4.7,
-      rotation: 0,
+      width: 12.0, depth: 7.9, height: 7.7,
+      rotation: 0.00,
       buildingShape: "box",
       grade: "Grade A+",
       certification: "IGBC Platinum",
@@ -2669,7 +2669,7 @@ const VATIKA_TECH_PARK_DATA = {
       yearBuilt: 2008,
       color: "#0891b2",
       position: { x: 11.0, z: 0.5 },
-      width: 14.3, depth: 6.8, height: 6.2,
+      width: 14.3, depth: 6.8, height: 9.2,
       rotation: -1.55,
       buildingShape: "box",
       grade: "Grade A+",
@@ -3361,8 +3361,8 @@ const VATIKA_TECH_PARK_DATA = {
       yearBuilt: 2008,
       color: "#7c3aed",
       position: { x: -2.8, z: 9.8 },
-      width: 11.3, depth: 8.0, height: 4.7,
-      rotation: 0.0,
+      width: 11.3, depth: 8.0, height: 7.7,
+      rotation: 0.00,
       buildingShape: "L",
       grade: "Grade A+",
       certification: "IGBC Platinum",
@@ -3852,6 +3852,23 @@ const GURGAON_CITY_PARKS_DATA = {
         { w: 3, h: 3, d: 2, ox: -2, oz: 0 },
         { w: 3, h: 3, d: 2, ox: 2, oz: 0 },
         { w: 3, h: 4, d: 2, ox: 0, oz: 2 }
+      ]
+    },
+    {
+      id: 'myhq-hq',
+      name: 'myHQ HQ',
+      subLocation: 'Smartworks Golf View Tower B, Sector 42',
+      lat: 28.456847,
+      lng: 77.098321,
+      position: { x: 0, z: 0 },
+      color: '#6366f1',
+      hasDetailedView: false,
+      isHQ: true,
+      totalArea: '\u2014',
+      buildings: 1,
+      avgRent: '\u2014',
+      placeholderBuildings: [
+        { w: 3, h: 4, d: 2, ox: 0, oz: 0 }
       ]
     }
   ]

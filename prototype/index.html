@@ -2077,7 +2077,7 @@
       </div>
       <div onclick="window.location.href='?city=bangalore'" style="cursor:pointer;width:300px;background:linear-gradient(135deg,rgba(30,41,59,0.95),rgba(15,23,42,0.98));border:1px solid rgba(99,102,241,0.2);border-radius:24px;padding:36px 28px;text-align:center;transition:all 0.4s;backdrop-filter:blur(12px);opacity:0;animation:floatUp 0.8s ease 0.6s forwards" onmouseover="this.style.borderColor='#6366f1';this.style.transform='translateY(-8px) scale(1.02)';this.style.boxShadow='0 20px 60px rgba(99,102,241,0.3)'" onmouseout="this.style.borderColor='rgba(99,102,241,0.2)';this.style.transform='';this.style.boxShadow=''">
         <div style="font-size:28px;font-weight:900;color:#fff;margin-bottom:6px">Bangalore</div>
-        <div style="font-size:12px;color:#94a3b8;margin-bottom:16px">Karnataka &middot; ORR &middot; Whitefield &middot; Electronic City</div>
+        <div style="font-size:12px;color:#94a3b8;margin-bottom:16px">Karnataka &middot; ORR &middot; Whitefield</div>
         <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:16px">
           <span style="padding:4px 12px;background:rgba(99,102,241,0.1);border-radius:8px;font-size:10px;font-weight:600;color:#818cf8">6 Tech Parks</span>
           <span style="padding:4px 12px;background:rgba(99,102,241,0.1);border-radius:8px;font-size:10px;font-weight:600;color:#818cf8">19 Buildings</span>
@@ -2752,7 +2752,7 @@
 <div id="info-tooltip"></div>
 <div id="title-bar">
   <div class="tb-logo">
-    <span class="tb-logo-myhq">myHQ</span>
+    <span class="tb-logo-myhq" id="replay-intro-btn" title="Replay intro" style="cursor:pointer;pointer-events:auto;transition:all 0.2s;padding:4px 10px;border-radius:8px;border:1px solid transparent" onmouseover="this.style.borderColor='#818cf8';this.style.background='rgba(99,102,241,0.08)';this.querySelector('#replay-hint').style.opacity='1'" onmouseout="this.style.borderColor='transparent';this.style.background='transparent';this.querySelector('#replay-hint').style.opacity='0'">myHQ <span id="replay-hint" style="font-size:9px;opacity:0;transition:opacity 0.2s;color:#818cf8;font-weight:400">&#9654; intro</span></span>
     <span class="tb-logo-x">&times;</span>
     <span class="tb-logo-prestige">Prestige</span>
   </div>
@@ -3331,6 +3331,10 @@ import * as THREE from 'three';
 const MAPBOX_TOKEN = atob('cGsuZXlKMUlqb2ljSEpoYzJoaGJuUnFZV2x1TFcxNWFIRWlMQ0poSWpvaVkyMXVhSE16WWpadU1ERjJaekp5YzJKbFlXdzVjakp5TXlKOS5ZSnNtVk5Salg4WWZ0MGlTaWhpbU9R');
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 // Utility: format YYYY-MM dates to "Mon YYYY" (e.g. "2025-02" → "Feb 2025")
 const _months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -3545,9 +3549,16 @@ camera.lookAt(-3, 0, 0);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
-renderer.shadowMap.enabled = false;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.4;
+renderer.toneMappingExposure = 1.8;
+
+// Bloom post-processing
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.3, 0.3, 0.8));
+composer.addPass(new OutputPass());
 document.body.appendChild(renderer.domElement);
 
 const labelRenderer = new CSS2DRenderer();
@@ -3570,14 +3581,14 @@ controls.target.set(-2, 1, 0);
 // ============================================================
 // Lights
 // ============================================================
-const ambient = new THREE.AmbientLight(0x5a6a8b, 1.0);
+const ambient = new THREE.AmbientLight(0x8a9ab8, 1.4);
 scene.add(ambient);
 
-const dirLight = new THREE.DirectionalLight(0xffeedd, 1.5);
+const dirLight = new THREE.DirectionalLight(0xfff4e6, 2.2);
 dirLight.position.set(15, 22, 12);
 dirLight.castShadow = true;
-dirLight.shadow.mapSize.width = 1024;
-dirLight.shadow.mapSize.height = 1024;
+dirLight.shadow.mapSize.width = 2048;
+dirLight.shadow.mapSize.height = 2048;
 dirLight.shadow.camera.near = 0.5;
 dirLight.shadow.camera.far = 80;
 dirLight.shadow.camera.left = -40;
@@ -3586,7 +3597,7 @@ dirLight.shadow.camera.top = 40;
 dirLight.shadow.camera.bottom = -40;
 scene.add(dirLight);
 
-const fillLight = new THREE.DirectionalLight(0x6366f1, 0.4);
+const fillLight = new THREE.DirectionalLight(0x7a8aff, 0.6);
 fillLight.position.set(-15, 14, -12);
 scene.add(fillLight);
 
@@ -3600,6 +3611,24 @@ if (activeCity !== 'gurgaon') {
   warmPoint.position.set(-3, 4, 0);
   scene.add(warmPoint);
 }
+
+// Environment map for glass reflections
+(function() {
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  pmrem.compileEquirectangularShader();
+  const skyC = document.createElement('canvas');
+  skyC.width = 512; skyC.height = 256;
+  const sc = skyC.getContext('2d');
+  const g = sc.createLinearGradient(0,0,0,256);
+  g.addColorStop(0,'#0a1628'); g.addColorStop(0.3,'#1a2a4a');
+  g.addColorStop(0.5,'#2d4a6a'); g.addColorStop(0.65,'#8a6a4a');
+  g.addColorStop(0.75,'#c08050'); g.addColorStop(1,'#1a1a20');
+  sc.fillStyle = g; sc.fillRect(0,0,512,256);
+  const et = new THREE.CanvasTexture(skyC);
+  et.mapping = THREE.EquirectangularReflectionMapping;
+  scene.environment = pmrem.fromEquirectangular(et).texture;
+  et.dispose(); pmrem.dispose();
+})();
 
 // ============================================================
 // Ground — expanded to 80x80
@@ -3622,7 +3651,7 @@ groundTex.wrapS = groundTex.wrapT = THREE.RepeatWrapping;
 groundTex.repeat.set(4, 4);
 
 const groundGeo = new THREE.BoxGeometry(80, 0.3, 80);
-const groundMat = new THREE.MeshStandardMaterial({ color: 0x2a3a2e, map: groundTex, roughness: 0.95, metalness: 0 });
+const groundMat = new THREE.MeshStandardMaterial({ color: 0x2a3a2e, map: groundTex, roughness: 0.75, metalness: 0.05, envMapIntensity: 0.3 });
 const ground = new THREE.Mesh(groundGeo, groundMat);
 ground.position.y = -0.15;
 ground.receiveShadow = true;
@@ -3691,57 +3720,75 @@ function getPhaseVariant(phase) {
 // Window texture generator — blue-green glass curtain wall
 // ============================================================
 function createWindowTexture(phase, widthPx, heightPx, cols, rows) {
+  const s = 2; // 2x resolution
   const c = document.createElement('canvas');
-  c.width = widthPx;
-  c.height = heightPx;
+  c.width = widthPx * s; c.height = heightPx * s;
   const ctx = c.getContext('2d');
+  const W = c.width, H = c.height;
 
-  // Glass base color — teal for Unitech, dark blue-grey for Prestige
-  ctx.fillStyle = activeCity === 'gurgaon' ? '#1a4a55' : '#1e3340';
-  ctx.fillRect(0, 0, widthPx, heightPx);
+  // Glass base — medium blue-teal (NOT dark)
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  if (activeCity === 'gurgaon') {
+    bg.addColorStop(0, '#2a5a65'); bg.addColorStop(0.5, '#1f4a55'); bg.addColorStop(1, '#2a5560');
+  } else {
+    bg.addColorStop(0, '#2a3a50'); bg.addColorStop(0.5, '#1f3045'); bg.addColorStop(1, '#2a3a4a');
+  }
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
 
-  const gapY = heightPx / rows;
-  const gapX = widthPx / cols;
+  const gapY = H / rows, gapX = W / cols;
+  const mW = Math.max(3, 4 * s); // mullion width
 
-  // Floor separator bands — coral for Unitech, grey for Prestige
-  const bandColor = activeCity === 'gurgaon' ? '#b05540' : '#8a9098';
-  const pillarColor = activeCity === 'gurgaon' ? '#c4a070' : '#7a8490';
-  for (let r = 1; r < rows; r++) {
-    ctx.fillStyle = bandColor;
-    ctx.fillRect(0, r * gapY - 2, widthPx, 4);
+  // Spandrel bands — lighter so they're visible
+  for (let r = 0; r <= rows; r++) {
+    const y = r * gapY;
+    const sg = ctx.createLinearGradient(0, y - mW, 0, y + mW);
+    sg.addColorStop(0, activeCity === 'gurgaon' ? '#6a8590' : '#5a6a7a');
+    sg.addColorStop(0.5, activeCity === 'gurgaon' ? '#7a95a0' : '#6a7a8a');
+    sg.addColorStop(1, activeCity === 'gurgaon' ? '#5a7580' : '#4a5a6a');
+    ctx.fillStyle = sg; ctx.fillRect(0, y - mW * 0.7, W, mW * 1.4);
   }
 
-  // Structural pillar bands — beige for Unitech, grey for Prestige
-  for (let col = 1; col < cols; col++) {
-    ctx.fillStyle = pillarColor;
-    ctx.fillRect(col * gapX - 1.5, 0, 3, heightPx);
+  // Vertical mullions
+  for (let col = 0; col <= cols; col++) {
+    ctx.fillStyle = activeCity === 'gurgaon' ? '#5a7078' : '#4a5a68';
+    ctx.fillRect(col * gapX - mW * 0.4, 0, mW * 0.8, H);
   }
 
-  const winW = gapX * 0.72;
-  const winH = gapY * 0.58;
+  const winW = gapX - mW * 1.6, winH = gapY - mW * 2;
 
   for (let r = 0; r < rows; r++) {
     for (let col = 0; col < cols; col++) {
-      const lit = Math.random() > 0.25;
-      const x = col * gapX + (gapX - winW) / 2;
-      const y = r * gapY + (gapY - winH) / 2;
+      const lit = Math.random() > 0.28;
+      const x = col * gapX + mW * 0.8, y = r * gapY + mW;
 
       if (lit) {
-        // Warm white/yellow office light through glass
-        const R = 220 + Math.random() * 35;
-        const G = 200 + Math.random() * 40;
-        const B = 150 + Math.random() * 50;
-        ctx.fillStyle = `rgba(${R|0},${G|0},${B|0},0.85)`;
-        ctx.shadowColor = `rgba(${R|0},${G|0},${B|0},0.3)`;
-        ctx.shadowBlur = 3;
-      } else {
-        // Dark reflective blue glass (unlit)
-        const shade = 25 + Math.random() * 20;
-        ctx.fillStyle = `rgba(${shade + 10|0},${shade + 25|0},${shade + 40|0},0.92)`;
+        // BRIGHT warm window — high contrast
+        ctx.shadowColor = 'rgba(255,235,180,0.5)';
+        ctx.shadowBlur = 8 * s;
+        ctx.fillStyle = `rgb(${255},${230 + Math.random()*25|0},${175 + Math.random()*40|0})`;
+        ctx.fillRect(x, y, winW, winH);
         ctx.shadowBlur = 0;
+        // Hot center
+        ctx.fillStyle = 'rgba(255,255,230,0.25)';
+        ctx.fillRect(x + winW * 0.2, y + winH * 0.1, winW * 0.6, winH * 0.5);
+      } else {
+        // Reflective glass — medium blue-grey with gradient
+        const dg = ctx.createLinearGradient(x, y, x, y + winH);
+        if (activeCity === 'gurgaon') {
+          dg.addColorStop(0, '#3a7a8a'); dg.addColorStop(0.5, '#2a5a6a'); dg.addColorStop(1, '#3a6a7a');
+        } else {
+          dg.addColorStop(0, '#3a5a7a'); dg.addColorStop(0.5, '#2a4058'); dg.addColorStop(1, '#3a4a6a');
+        }
+        ctx.fillStyle = dg; ctx.fillRect(x, y, winW, winH);
+        // Sky reflection highlight
+        ctx.fillStyle = 'rgba(150,190,230,0.12)';
+        ctx.fillRect(x, y, winW, winH * 0.25);
       }
-      ctx.fillRect(x, y, winW, winH);
-      ctx.shadowBlur = 0;
+
+      // Pane frame
+      ctx.strokeStyle = activeCity === 'gurgaon' ? '#6a8a95' : '#5a6a7a';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x, y, winW, winH);
     }
   }
 
@@ -4702,7 +4749,7 @@ function createBuilding3D(b) {
 
   const lobbyH = floorHeight * 0.9;
   const lobbyColor = new THREE.Color(phaseColors.lobby);
-  const lobbyMat = new THREE.MeshStandardMaterial({ color: lobbyColor, roughness: 0.75, metalness: 0.1, emissive: lobbyColor.clone().multiplyScalar(0.05), emissiveIntensity: 0.3 });
+  const lobbyMat = new THREE.MeshStandardMaterial({ color: lobbyColor, roughness: 0.4, metalness: 0.15, emissive: lobbyColor.clone().multiplyScalar(0.08), emissiveIntensity: 0.4, envMapIntensity: 1.0 });
   const isCustomShape = ['L','T','U','C'].includes(bShape);
   const lobbyGeo = isCustomShape ? makeShapeGeo(bShape, b.width, lobbyH, b.depth, 0.15) : new THREE.BoxGeometry(b.width + 0.15, lobbyH, b.depth + 0.15);
   const lobby = new THREE.Mesh(lobbyGeo, lobbyMat);
@@ -4721,8 +4768,9 @@ function createBuilding3D(b) {
     else if (bShape === 'podium' && i < 2) geo = new THREE.BoxGeometry(b.width * 1.15, h, b.depth * 1.15);
     else geo = new THREE.BoxGeometry(b.width, h, b.depth);
 
-    const sideMat = (tex) => new THREE.MeshStandardMaterial({ map: tex, color: 0xffffff, roughness: 0.25, metalness: 0.2, emissive: glassColor.clone().multiplyScalar(0.12), emissiveIntensity: 0.6 });
-    const topBotMat = new THREE.MeshStandardMaterial({ color: concreteColor.clone(), roughness: 0.8, metalness: 0.03 });
+    const glassTint = activeCity === 'gurgaon' ? 0x5aaabb : 0x5a7aaa;
+    const sideMat = (tex) => new THREE.MeshStandardMaterial({ map: tex, color: glassTint, roughness: 0.15, metalness: 0.5, emissive: glassColor.clone().multiplyScalar(0.25), emissiveIntensity: 0.9, envMapIntensity: 1.5 });
+    const topBotMat = new THREE.MeshStandardMaterial({ color: concreteColor.clone(), roughness: 0.6, metalness: 0.1, emissive: concreteColor.clone().multiplyScalar(0.05), emissiveIntensity: 0.2 });
     let materials;
     if (isCustomShape) materials = [topBotMat, sideMat(winTexFB)];
     else materials = [sideMat(winTexLR), sideMat(winTexLR), topBotMat, topBotMat, sideMat(winTexFB), sideMat(winTexFB)];
@@ -4737,9 +4785,22 @@ function createBuilding3D(b) {
     originalMaterialColors.set(mesh, materials.map(m => ({ color: m.color.clone(), emissive: m.emissive.clone(), emissiveIntensity: m.emissiveIntensity, map: m.map })));
   });
 
-  const roofH = 0.12;
-  const roofGeo = isCustomShape ? makeShapeGeo(bShape, b.width - 0.3, roofH, b.depth - 0.3, 0) : new THREE.BoxGeometry(b.width - 0.3, roofH, b.depth - 0.3);
-  const roofMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(phaseColors.roof), roughness: 0.6, metalness: 0.2 });
+  // Edge highlighting — makes building silhouettes readable
+  if (!isCustomShape && b.floors.length > 0) {
+    const totalH = b.floors.length * floorHeight;
+    const baseY = lobbyH * 0.3;
+    const edgeMat = new THREE.LineBasicMaterial({ color: 0x8aaacc, transparent: true, opacity: 0.25 });
+    const wholeGeo = new THREE.BoxGeometry(b.width + 0.02, totalH, b.depth + 0.02);
+    const edges = new THREE.EdgesGeometry(wholeGeo);
+    const edgeLine = new THREE.LineSegments(edges, edgeMat);
+    edgeLine.position.y = baseY + totalH / 2;
+    group.add(edgeLine);
+  }
+
+  // Roof with parapet
+  const roofH = 0.15;
+  const roofGeo = isCustomShape ? makeShapeGeo(bShape, b.width - 0.2, roofH, b.depth - 0.2, 0) : new THREE.BoxGeometry(b.width - 0.2, roofH, b.depth - 0.2);
+  const roofMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(phaseColors.roof).multiplyScalar(0.8), roughness: 0.6, metalness: 0.15 });
   const roof = new THREE.Mesh(roofGeo, roofMat);
   const actualFloors = b.floors.length;
   const lastFloorTop = (actualFloors - 1) * floorHeight + (floorHeight - gap) + lobbyH * 0.3;
@@ -4747,10 +4808,29 @@ function createBuilding3D(b) {
   roof.castShadow = true;
   group.add(roof);
 
-  const ac = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.15, 0.4), new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.7 }));
-  ac.position.y = roof.position.y + 0.075 + roofH / 2;
-  ac.position.x = (b.width / 2 - 0.5) * (Math.random() > 0.5 ? 1 : -1) * 0.5;
-  group.add(ac);
+  // Parapet wall around roof
+  if (!isCustomShape) {
+    const pH = 0.15;
+    const pMat = new THREE.MeshStandardMaterial({ color: 0x4a5568, roughness: 0.5, metalness: 0.3 });
+    [{ w: b.width, d: 0.05, x: 0, z: b.depth/2 - 0.1 },
+     { w: b.width, d: 0.05, x: 0, z: -b.depth/2 + 0.1 },
+     { w: 0.05, d: b.depth - 0.15, x: b.width/2 - 0.1, z: 0 },
+     { w: 0.05, d: b.depth - 0.15, x: -b.width/2 + 0.1, z: 0 }
+    ].forEach(p => {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(p.w, pH, p.d), pMat);
+      m.position.set(p.x, roof.position.y + roofH/2 + pH/2, p.z);
+      group.add(m);
+    });
+  }
+
+  // Mechanical equipment cluster
+  const mechMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.6, metalness: 0.4 });
+  for (let mi = 0; mi < 3; mi++) {
+    const mw = 0.2 + Math.random() * 0.3, mh = 0.08 + Math.random() * 0.12, md = 0.2 + Math.random() * 0.3;
+    const mech = new THREE.Mesh(new THREE.BoxGeometry(mw, mh, md), mechMat);
+    mech.position.set((Math.random()-0.5)*b.width*0.4, roof.position.y + roofH/2 + 0.15 + mh/2, (Math.random()-0.5)*b.depth*0.4);
+    group.add(mech);
+  }
 
   const labelDiv = document.createElement('div');
   labelDiv.className = 'building-label';
@@ -7272,6 +7352,7 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix();
   if (cityCamera) { cityCamera.aspect = window.innerWidth / window.innerHeight; cityCamera.updateProjectionMatrix(); }
   renderer.setSize(window.innerWidth, window.innerHeight);
+  composer.setSize(window.innerWidth, window.innerHeight);
   labelRenderer.setSize(window.innerWidth, window.innerHeight);
 });
 
@@ -7308,8 +7389,18 @@ function animate() {
   if (currentView === 'city') {
     // Mapbox GL handles city view rendering — no Three.js needed
   } else {
+    // Sine wave auto-rotate — camera swoops up/down while orbiting
+    if (autoRotating) {
+      sineRotAngle += 0.008;
+      var r = sineRotBaseRadius + Math.sin(sineRotAngle * 3) * 5;
+      var y = sineRotBaseY + Math.sin(sineRotAngle * 2) * 8;
+      camera.position.x = controls.target.x + Math.cos(sineRotAngle) * r;
+      camera.position.z = controls.target.z + Math.sin(sineRotAngle) * r;
+      camera.position.y = Math.max(3, y); // don't go below ground
+      camera.lookAt(controls.target);
+    }
     controls.update();
-    renderer.render(scene, camera);
+    composer.render();
     if (frameCount % 3 === 0) labelRenderer.render(scene, camera);
   }
 }
@@ -7428,18 +7519,24 @@ setInterval(() => {
 // KEYBOARD SHORTCUTS (1=occupancy, 2=rent, 3=yield, 0=default, R=rotate)
 // ============================================================
 let autoRotating = false;
+let sineRotAngle = 0;
+let sineRotBaseRadius = 30;
+let sineRotBaseY = 15;
 window.addEventListener('keydown', (e) => {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
-  // R = auto-rotate (works in both park and city view)
+  // R = sine wave auto-rotate (park + building view)
   if (e.key === 'r' || e.key === 'R') {
-    if (currentView === 'city') {
-      // Auto-rotate not applicable for Mapbox GL city view
-      return;
-    } else if (currentView === 'park') {
-      autoRotating = !autoRotating;
-      controls.autoRotate = autoRotating;
-      controls.autoRotateSpeed = 1.5;
+    if (currentView === 'city') return;
+    autoRotating = !autoRotating;
+    controls.autoRotate = false; // we handle rotation manually
+    if (autoRotating) {
+      // Capture current orbit as starting point
+      var dx = camera.position.x - controls.target.x;
+      var dz = camera.position.z - controls.target.z;
+      sineRotAngle = Math.atan2(dz, dx);
+      sineRotBaseRadius = Math.sqrt(dx*dx + dz*dz);
+      sineRotBaseY = camera.position.y;
     }
     return;
   }
@@ -9267,6 +9364,11 @@ document.getElementById('tb-enquiry-btn').addEventListener('click', () => {
   if (floorInfo) floorInfo.textContent = 'General Enquiry — ' + ACTIVE_DATA.name + ', ' + ACTIVE_DATA.address;
 });
 
+// Replay intro when myHQ logo clicked
+document.getElementById('replay-intro-btn').addEventListener('click', () => {
+  window.location.href = window.location.pathname;
+});
+
 // ============================================================
 // CITY-LEVEL VIEW
 // ============================================================
@@ -9338,28 +9440,203 @@ function haversineKm(lat1, lng1, lat2, lng2) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 
+// myHQ HQ easter egg modal
+const hqQuotes = [
+  "This is where we're reimagining office leasing.",
+  "50 people. 1 mission. Make commercial real estate intelligent.",
+  "The office that's building the future for every other office.",
+  "Where data meets design. And chai meets deadlines.",
+  "Small team. Big vision. Unlimited chai.",
+  "We turned 'just find me an office' into a product.",
+  "If these walls could talk, they'd pitch a feature.",
+  "The only office where Slack notifications feel like applause.",
+  "Every great product starts with a whiteboard argument here.",
+  "We don't just fill offices. We reimagine them.",
+  "Home of the people who made office hunting less painful.",
+];
+let hqModal = null;
+let hqParticleRAF = null;
+function showHQModal() {
+  if (hqModal) hqModal.remove();
+  var currentQuote = hqQuotes[Math.floor(Math.random() * hqQuotes.length)];
+  hqModal = document.createElement('div');
+  hqModal.style.cssText = 'position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);animation:fadeIn 0.3s ease';
+  hqModal.innerHTML = `
+    <div id="hq-card" style="background:linear-gradient(135deg,#0f172a,#1e1b4b);border:1px solid rgba(99,102,241,0.3);border-radius:24px;padding:48px 40px;max-width:420px;text-align:center;position:relative;box-shadow:0 25px 80px rgba(99,102,241,0.25);animation:introFadeUp 0.5s ease;overflow:hidden;cursor:pointer">
+      <canvas id="hq-particles" style="position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:24px"></canvas>
+      <div style="position:relative;z-index:1">
+        <div style="position:absolute;top:-32px;right:-24px;width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#64748b;font-size:16px;transition:all 0.2s" id="hq-close" onmouseover="this.style.background='rgba(255,255,255,0.12)';this.style.color='#fff'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.color='#64748b'">&times;</div>
+        <div style="font-size:48px;font-weight:900;color:#fff;font-family:system-ui;margin-bottom:4px;letter-spacing:-2px">my<span style="color:#818cf8">HQ</span></div>
+        <div style="font-size:11px;color:#818cf8;font-weight:700;letter-spacing:4px;text-transform:uppercase;margin-bottom:32px">HEADQUARTERS</div>
+        <div style="width:60px;height:1px;background:linear-gradient(90deg,transparent,#818cf8,transparent);margin:0 auto 28px"></div>
+        <div id="hq-quote" style="font-size:26px;font-weight:800;color:#fff;line-height:1.5;margin-bottom:16px;font-style:italic;min-height:70px;text-shadow:0 0 30px rgba(99,102,241,0.3)">"${currentQuote}"</div>
+        <div style="font-size:12px;color:#64748b;line-height:1.6;margin-bottom:20px">Smartworks Golf View Tower B<br>Sector 42, Gurugram, Haryana</div>
+        <div style="border:1px solid rgba(99,102,241,0.15);border-radius:14px;padding:14px 18px;background:rgba(99,102,241,0.03)">
+          <div style="font-size:9px;color:#64748b;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">Our Business Lines</div>
+          <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+            <span style="padding:4px 12px;background:rgba(99,102,241,0.1);border-radius:8px;font-size:10px;font-weight:600;color:#818cf8">On Demand</span>
+            <span style="padding:4px 12px;background:rgba(34,197,94,0.1);border-radius:8px;font-size:10px;font-weight:600;color:#22c55e">Assisted Marketplace</span>
+            <span style="padding:4px 12px;background:rgba(245,158,11,0.1);border-radius:8px;font-size:10px;font-weight:600;color:#f59e0b">Virtual Office</span>
+            <span style="padding:4px 12px;background:rgba(168,85,247,0.1);border-radius:8px;font-size:10px;font-weight:600;color:#a855f7">Commercial Leasing</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(hqModal);
+
+  // === CLICK CARD TO CYCLE QUOTE ===
+  document.getElementById('hq-card').addEventListener('click', function(e) {
+    if (e.target.id === 'hq-close') return;
+    var newQuote = hqQuotes[Math.floor(Math.random() * hqQuotes.length)];
+    var qEl = document.getElementById('hq-quote');
+    qEl.style.transition = 'opacity 0.2s';
+    qEl.style.opacity = '0';
+    setTimeout(function() {
+      qEl.textContent = '"' + newQuote + '"';
+      qEl.style.opacity = '1';
+    }, 200);
+  });
+
+  // === PARTICLE CONSTELLATION — MODERATE ===
+  var pc = document.getElementById('hq-particles');
+  if (pc) {
+    var card = pc.parentElement;
+    pc.width = card.offsetWidth; pc.height = card.offsetHeight;
+    var pctx = pc.getContext('2d');
+    var dots = [];
+    for (var di = 0; di < 40; di++) dots.push({ x: Math.random()*pc.width, y: Math.random()*pc.height, vx: (Math.random()-0.5)*0.4, vy: (Math.random()-0.5)*0.4, r: 0.8+Math.random()*1.2 });
+    function drawHQParticles() {
+      pctx.clearRect(0, 0, pc.width, pc.height);
+      dots.forEach(function(d) {
+        d.x += d.vx; d.y += d.vy;
+        if (d.x < 0 || d.x > pc.width) d.vx *= -1;
+        if (d.y < 0 || d.y > pc.height) d.vy *= -1;
+        pctx.beginPath(); pctx.arc(d.x, d.y, d.r, 0, Math.PI*2);
+        pctx.fillStyle = 'rgba(99,102,241,0.35)'; pctx.fill();
+      });
+      for (var i = 0; i < dots.length; i++) for (var j = i+1; j < dots.length; j++) {
+        var dx = dots[i].x-dots[j].x, dy = dots[i].y-dots[j].y, dist = Math.sqrt(dx*dx+dy*dy);
+        if (dist < 70) { pctx.beginPath(); pctx.moveTo(dots[i].x,dots[i].y); pctx.lineTo(dots[j].x,dots[j].y); pctx.strokeStyle='rgba(99,102,241,'+(0.12*(1-dist/70))+')'; pctx.lineWidth=0.5; pctx.stroke(); }
+      }
+      hqParticleRAF = requestAnimationFrame(drawHQParticles);
+    }
+    drawHQParticles();
+  }
+
+  // === EMOJI RAIN — real estate themed, pile up at bottom ===
+  var reEmojis = ['\uD83C\uDFE2','\uD83C\uDFD7','\uD83C\uDFE0','\uD83C\uDFE1','\uD83C\uDFE3','\uD83C\uDFE4','\uD83C\uDFE5','\uD83C\uDFE6','\uD83C\uDFE8','\uD83C\uDFEA','\uD83D\uDDD3','\uD83D\uDCBC','\uD83D\uDD11','\uD83D\uDCB0','\uD83D\uDCC8','\uD83D\uDCCD','\u2B50','\uD83C\uDF1F','\uD83D\uDE80','\uD83C\uDFC6'];
+  // office, construction, house, house+garden, post office, bank, hospital, ATM, hotel, store, calendar, briefcase, key, money, chart, pin, star, sparkle, rocket, trophy
+  var emojiPile = []; // track for cleanup
+  var screenW = window.innerWidth;
+  var pileHeight = {}; // track pile height per column
+  var colWidth = 28;
+  var totalCols = Math.ceil(screenW / colWidth);
+  for (var c = 0; c < totalCols; c++) pileHeight[c] = 0;
+
+  for (var ei = 0; ei < 150; ei++) {
+    var em = document.createElement('div');
+    em.textContent = reEmojis[ei % reEmojis.length];
+    var col = Math.floor(Math.random() * totalCols);
+    var xPos = col * colWidth + Math.random() * 8;
+    var sz = 20 + Math.random() * 10;
+    var fallDuration = 1.5 + Math.random() * 2.5;
+    var delay = Math.random() * 3000;
+    // Land position: pile up from bottom
+    var landY = window.innerHeight - 30 - pileHeight[col];
+    pileHeight[col] += sz * 0.7;
+    em.style.cssText = 'position:fixed;top:-40px;left:'+xPos+'px;font-size:'+sz+'px;z-index:2002;pointer-events:none;opacity:1;transition:top '+fallDuration+'s cubic-bezier(0.4,0,0.65,1), transform '+fallDuration+'s ease';
+    em.className = 'hq-emoji-rain';
+    document.body.appendChild(em);
+    emojiPile.push(em);
+    var danceAnim = ['emojiDance1','emojiDance2','emojiDance3'][ei % 3];
+    var beatSpeed = (0.4 + Math.random() * 0.2).toFixed(2); // ~0.4-0.6s per cycle, syncs loosely with music
+    (function(el, landY, delay, danceAnim, beatSpeed, fallDuration) {
+      setTimeout(function() {
+        requestAnimationFrame(function(){
+          el.style.top = landY + 'px';
+        });
+        // Start dancing once landed
+        setTimeout(function() {
+          el.style.transition = 'none';
+          el.style.animation = danceAnim + ' ' + beatSpeed + 's ease-in-out infinite';
+          el.style.animationDelay = (Math.random() * 0.3) + 's';
+        }, fallDuration * 1000 + 100);
+      }, delay);
+    })(em, landY, delay, danceAnim, beatSpeed, fallDuration);
+  }
+
+  // Play Dhurandhar from 0:10
+  var hqAudio = document.getElementById('intro-music');
+  if (hqAudio) { hqAudio.currentTime = 10; hqAudio.volume = 0.3; hqAudio.play().catch(function(){}); }
+
+  // Close handlers
+  function closeHQ() {
+    // Whoosh sound via Web Audio
+    try {
+      var actx = new (window.AudioContext || window.webkitAudioContext)();
+      var osc = actx.createOscillator();
+      var gain = actx.createGain();
+      osc.connect(gain); gain.connect(actx.destination);
+      osc.frequency.setValueAtTime(800, actx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(200, actx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.08, actx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.15);
+      osc.start(); osc.stop(actx.currentTime + 0.15);
+    } catch(e){}
+    if (hqAudio) { hqAudio.pause(); hqAudio.currentTime = 0; }
+    if (hqParticleRAF) { cancelAnimationFrame(hqParticleRAF); hqParticleRAF = null; }
+    // Clean up emoji pile
+    emojiPile.forEach(function(el) { el.style.transition = 'opacity 0.5s'; el.style.opacity = '0'; setTimeout(function(){ el.remove(); }, 500); });
+    emojiPile = [];
+    if (hqModal) { hqModal.style.opacity = '0'; hqModal.style.transition = 'opacity 0.3s'; setTimeout(function(){ if(hqModal){hqModal.remove(); hqModal=null;} }, 300); }
+  }
+  document.getElementById('hq-close').addEventListener('click', closeHQ);
+  hqModal.addEventListener('click', function(e) { if (e.target === hqModal) closeHQ(); });
+}
+
 // Add park card markers to Mapbox GL map
 ACTIVE_CITY_PARKS.parks.forEach(park => {
   if (!park.lat || !park.lng) return;
   const el = document.createElement('div');
   el.style.cssText = 'cursor:pointer;font-family:system-ui';
   const isActive = park.hasDetailedView;
-  el.innerHTML = `
-    <div style="background:#fff;border-radius:14px;padding:12px 16px;box-shadow:0 4px 20px rgba(0,0,0,0.15);border:2px solid ${park.color};min-width:140px;text-align:center;position:relative">
-      <div style="font-size:14px;font-weight:800;color:#0f172a;margin-bottom:3px">${park.name}</div>
-      <div style="font-size:11px;color:#64748b;margin-bottom:6px">${park.subLocation}</div>
-      <div style="display:flex;gap:6px;justify-content:center;margin-bottom:6px">
-        <span style="padding:2px 8px;background:#f1f5f9;border-radius:6px;font-size:10px;font-weight:600;color:#475569">${park.buildings} bldgs</span>
-        <span style="padding:2px 8px;background:#f1f5f9;border-radius:6px;font-size:10px;font-weight:600;color:#475569">${park.totalArea}</span>
+
+  if (park.isHQ) {
+    // Special myHQ HQ marker — indigo badge style
+    el.innerHTML = `
+      <div style="background:linear-gradient(135deg,#1e1b4b,#312e81);border-radius:16px;padding:10px 18px;box-shadow:0 4px 24px rgba(99,102,241,0.35);border:2px solid #6366f1;text-align:center;position:relative;min-width:100px;animation:hqPulse 2s ease-in-out infinite">
+      <style>
+      @keyframes hqPulse{0%,100%{box-shadow:0 4px 24px rgba(99,102,241,0.35)}50%{box-shadow:0 4px 24px rgba(99,102,241,0.35),0 0 25px rgba(99,102,241,0.5),0 0 50px rgba(99,102,241,0.2)}}
+      @keyframes emojiDance1{0%,100%{transform:translateY(0) rotate(0deg) scale(1)}25%{transform:translateY(-12px) rotate(-8deg) scale(1.1)}50%{transform:translateY(-2px) rotate(0deg) scale(0.95)}75%{transform:translateY(-10px) rotate(8deg) scale(1.08)}}
+      @keyframes emojiDance2{0%,100%{transform:translateY(0) rotate(0deg) scale(1)}20%{transform:translateY(-8px) rotate(10deg) scale(1.05)}40%{transform:translateY(-15px) rotate(-5deg) scale(1.12)}60%{transform:translateY(-4px) rotate(6deg) scale(0.95)}80%{transform:translateY(-11px) rotate(-8deg) scale(1.06)}}
+      @keyframes emojiDance3{0%,100%{transform:translateY(0) rotate(0deg)}33%{transform:translateY(-14px) rotate(-12deg) scale(1.15)}66%{transform:translateY(-6px) rotate(10deg) scale(0.9)}}
+      </style>
+        <div style="font-size:16px;font-weight:900;color:#fff;letter-spacing:-0.5px">my<span style="color:#818cf8">HQ</span></div>
+        <div style="font-size:9px;color:#a5b4fc;font-weight:600;letter-spacing:1px;margin-top:2px">Where the Magic Happens</div>
+        <div style="position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid #312e81"></div>
       </div>
-      <div style="font-size:11px;font-weight:700;color:${park.color}">${park.avgRent}</div>
-      ${isActive ? '<div style="margin-top:6px;padding:3px 12px;background:'+park.color+';color:#fff;border-radius:8px;font-size:10px;font-weight:700;display:inline-block">EXPLORE \u2192</div>' : '<div style="margin-top:6px;font-size:10px;color:#94a3b8;font-weight:600">Coming Soon</div>'}
-      <div style="position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid #fff"></div>
-    </div>
-  `;
+    `;
+  } else {
+    el.innerHTML = `
+      <div style="background:#fff;border-radius:14px;padding:12px 16px;box-shadow:0 4px 20px rgba(0,0,0,0.15);border:2px solid ${park.color};min-width:140px;text-align:center;position:relative">
+        <div style="font-size:14px;font-weight:800;color:#0f172a;margin-bottom:3px">${park.name}</div>
+        <div style="font-size:11px;color:#64748b;margin-bottom:6px">${park.subLocation}</div>
+        <div style="display:flex;gap:6px;justify-content:center;margin-bottom:6px">
+          <span style="padding:2px 8px;background:#f1f5f9;border-radius:6px;font-size:10px;font-weight:600;color:#475569">${park.buildings} bldgs</span>
+          <span style="padding:2px 8px;background:#f1f5f9;border-radius:6px;font-size:10px;font-weight:600;color:#475569">${park.totalArea}</span>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:${park.color}">${park.avgRent}</div>
+        ${isActive ? '<div style="margin-top:6px;padding:3px 12px;background:'+park.color+';color:#fff;border-radius:8px;font-size:10px;font-weight:700;display:inline-block">EXPLORE \u2192</div>' : '<div style="margin-top:6px;font-size:10px;color:#94a3b8;font-weight:600">Coming Soon</div>'}
+        <div style="position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid #fff"></div>
+      </div>
+    `;
+  }
+
   el.addEventListener('click', () => {
-    if (park.hasDetailedView) {
-      // If clicking a different park than currently loaded, reload with park param
+    if (park.isHQ) {
+      showHQModal();
+    } else if (park.hasDetailedView) {
       if (park.id !== 'unitech' && !activePark.includes(park.id)) {
         window.location.href = '?city=' + activeCity + '&park=' + park.id;
         return;
@@ -9375,7 +9652,6 @@ ACTIVE_CITY_PARKS.parks.forEach(park => {
         <div class="pl-stat"><div class="pl-stat-val">${park.totalArea}</div><div class="pl-stat-label">Total Area</div></div>
         <div class="pl-stat"><div class="pl-stat-val">${park.avgRent}</div><div class="pl-stat-label">Avg Rent</div></div>
       `;
-      // Reset notify button
       const notifyBtn = document.querySelector('#park-landing .pl-btn-secondary');
       if (notifyBtn) { notifyBtn.textContent = 'Notify Me'; notifyBtn.style.background = '#fff'; notifyBtn.style.color = '#475569'; notifyBtn.style.borderColor = '#e2e8f0'; }
       document.getElementById('park-landing').classList.add('open');
