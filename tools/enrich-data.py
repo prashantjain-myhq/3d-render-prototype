@@ -42,31 +42,12 @@ def parse_date_to_yyyymm(date_str):
         return None
     date_str = date_str.strip()
 
-    # Try: "31-Dec-24" or "24-Jan-17"
-    for fmt in ("%d-%b-%y", "%b-%y", "%d-%b-%Y", "%B-%y", "%Y-%m"):
-        try:
-            dt = datetime.strptime(date_str, fmt)
-            # Fix 2-digit years: 00-29 -> 2000s, 30-99 -> 1900s (Python default)
-            if dt.year < 100:
-                dt = dt.replace(year=dt.year + 2000 if dt.year < 50 else dt.year + 1900)
-            return dt.strftime("%Y-%m")
-        except ValueError:
-            continue
-
-    # Try: "April-24" or "9-April-33"
-    for fmt in ("%B-%y", "%d-%B-%y"):
+    # All formats in one pass — no duplicates
+    for fmt in ("%d-%b-%y", "%d-%b-%Y", "%b-%y", "%B-%y", "%d-%B-%y", "%Y-%m"):
         try:
             dt = datetime.strptime(date_str, fmt)
             if dt.year < 100:
                 dt = dt.replace(year=dt.year + 2000 if dt.year < 50 else dt.year + 1900)
-            return dt.strftime("%Y-%m")
-        except ValueError:
-            continue
-
-    # Try CREMatrix format: "28-Feb-34", "31-May-34"
-    for fmt in ("%d-%b-%y",):
-        try:
-            dt = datetime.strptime(date_str, fmt)
             return dt.strftime("%Y-%m")
         except ValueError:
             continue
@@ -266,12 +247,20 @@ def parse_transactions():
             transactions.append(txn)
 
             # Index by building + floor for matching
-            try:
-                floor_num = int(floor_str)
-                by_building_floor[(full_building, floor_num)].append(txn)
-            except ValueError:
-                # Some floors are like "Lower Ground", "Mezzanine" etc.
-                by_building_floor[(full_building, floor_str)].append(txn)
+            # Handle: "Ground" → 0, "Lower Ground" → -1, "Mezzanine" → -1
+            # Handle: comma-separated multi-floor like "8,9,10,11,13"
+            FLOOR_NAME_MAP = {'ground': 0, 'lower ground': -1, 'mezzanine': -1, 'terrace': -2}
+            floor_parts = [f.strip() for f in floor_str.split(',')]
+            for fp in floor_parts:
+                fp_lower = fp.lower()
+                if fp_lower in FLOOR_NAME_MAP:
+                    by_building_floor[(full_building, FLOOR_NAME_MAP[fp_lower])].append(txn)
+                else:
+                    try:
+                        floor_num = int(fp)
+                        by_building_floor[(full_building, floor_num)].append(txn)
+                    except ValueError:
+                        by_building_floor[(full_building, fp)].append(txn)
 
     return transactions, by_building_floor
 
@@ -299,9 +288,18 @@ def fuzzy_tenant_match(floor_tenant, txn_brand, txn_spv):
     tb_key = tb_words - stop_words
     ts_key = ts_words - stop_words
 
-    if ft_key and tb_key and len(ft_key & tb_key) >= 1:
+    # Require 2+ word overlap, or 1 word if it's 6+ characters
+    def strong_match(set_a, set_b):
+        overlap = set_a & set_b
+        if len(overlap) >= 2:
+            return True
+        if len(overlap) == 1 and len(list(overlap)[0]) >= 6:
+            return True
+        return False
+
+    if ft_key and tb_key and strong_match(ft_key, tb_key):
         return True
-    if ft_key and ts_key and len(ft_key & ts_key) >= 1:
+    if ft_key and ts_key and strong_match(ft_key, ts_key):
         return True
 
     return False
@@ -381,7 +379,7 @@ def calculate_vacancy_duration(txn):
         return None
     try:
         expiry_dt = datetime.strptime(expiry, "%Y-%m")
-        now = datetime(2026, 4, 1)  # Current approximate date
+        now = datetime.now()
         if expiry_dt < now:
             months = (now.year - expiry_dt.year) * 12 + (now.month - expiry_dt.month)
             if months <= 6:
@@ -428,7 +426,7 @@ def enrich_floor(floor_entry, txn_lookup):
         best_txn = active_txn
         # Backfill rent from active deal
         if not enriched.get('rentPerSqft') or enriched['rentPerSqft'] == 69:
-            enriched['rentPerSqft'] = active_txn.get('startingRent') or active_txn.get('effectiveRent')
+            enriched['rentPerSqft'] = active_txn.get('currentRent') or active_txn.get('effectiveRent') or active_txn.get('startingRent')
         enriched['leaseStart'] = active_txn.get('commencementDate')
         enriched['leaseEnd'] = active_txn.get('leaseExpiryDate')
         enriched['vacancyDuration'] = None
@@ -449,7 +447,7 @@ def enrich_floor(floor_entry, txn_lookup):
 
     # Backfill rent from CREMatrix if missing
     if not enriched.get('rentPerSqft') and best_txn:
-        enriched['rentPerSqft'] = best_txn.get('startingRent') or best_txn.get('effectiveRent')
+        enriched['rentPerSqft'] = best_txn.get('currentRent') or best_txn.get('effectiveRent') or best_txn.get('startingRent')
 
     # Property condition: CREMatrix 5-tier > Status fallback
     if best_txn and best_txn.get('propertyCondition') and best_txn['propertyCondition'] != 'Not Given':
@@ -579,7 +577,6 @@ def aggregate_floors(floor_entries, building_info, txn_lookup=None):
             # Build tenants array with FULL CRE enrichment per tenant
             # Fuzzy dedup key: strip common suffixes and normalize
             def tenant_key(name):
-                import re
                 k = name.lower().strip()
                 for s in ['private limited', 'pvt. ltd.', 'pvt ltd', 'pvt. ltd', 'pvt', 'ltd', 'limited', 'llp', '(india)', 'india', '(p)']:
                     k = k.replace(s, '')
@@ -629,7 +626,7 @@ def aggregate_floors(floor_entries, building_info, txn_lookup=None):
                     if t.get('occupancy'):
                         t['occupancy'] = round(t['occupancy'] * scale, 1)
             # Check each tenant's lease expiry — mark expired tenants as Vacant
-            now_str = '2026-04'
+            now_str = datetime.now().strftime('%Y-%m')
             active_tenants = []
             expired_count = 0
             for t in tenant_list:
@@ -646,18 +643,16 @@ def aggregate_floors(floor_entries, building_info, txn_lookup=None):
 
             agg['tenants'] = active_tenants
 
-            # Recalculate floor occupancy from non-vacant tenants
-            if expired_count > 0:
-                non_vacant = [t for t in active_tenants if t.get('name') != 'Vacant']
-                if not non_vacant:
-                    # All tenants expired → fully vacant
-                    agg['occupancy'] = 0
-                    agg['tenant'] = 'Vacant'
-                    agg['status'] = 'Vacant'
-                else:
-                    # Some tenants active — recalculate occupancy
-                    total_occ = sum(t.get('occupancy', 0) for t in non_vacant)
-                    agg['occupancy'] = min(100, round(total_occ, 1))
+            # Always recalculate floor occupancy from non-vacant tenants (not just when expired)
+            non_vacant = [t for t in active_tenants if t.get('name') != 'Vacant']
+            if not non_vacant:
+                agg['occupancy'] = 0
+                agg['tenant'] = 'Vacant'
+                agg['status'] = 'Vacant'
+            else:
+                total_occ = sum(t.get('occupancy', 0) for t in non_vacant)
+                agg['occupancy'] = min(100, round(total_occ, 1))
+                if expired_count > 0:
                     primary = max(non_vacant, key=lambda t: t.get('occupancy', 0))
                     others = len(non_vacant) - 1
                     agg['tenant'] = primary['name'] + (' + ' + str(others) + ' more' if others > 0 else '')
@@ -687,9 +682,8 @@ def build_floor_object(entry, floor_plate, all_entries, txn_lookup=None):
         try:
             exp_parts = lease_expiry.split('-')
             if len(exp_parts) >= 2:
-                from datetime import datetime
                 exp_date = datetime(int(exp_parts[0]), int(exp_parts[1]), 1)
-                now = datetime(2026, 4, 1)
+                now = datetime.now()
                 if exp_date < now and not is_vacant:
                     is_vacant = True
                     source = 'CRE Matrix' if has_cre else 'Sales Team CSV'
@@ -697,7 +691,8 @@ def build_floor_object(entry, floor_plate, all_entries, txn_lookup=None):
                     _ep = lease_expiry.split('-')
                     _fmt = f'{_ep[0]}-{_mo[int(_ep[1])-1]}' if len(_ep) >= 2 else lease_expiry
                     entry['vacancyReason'] = f'Lease expired {_fmt} ({source})'
-        except: pass
+        except (ValueError, IndexError) as e:
+            print(f"  Warning: could not parse lease expiry '{lease_expiry}' for {tenant_name}: {e}")
 
     if is_vacant:
         tenant_name = 'Vacant'
@@ -840,10 +835,16 @@ def build_deal_history(transactions, building_full_name):
 # STEP 7: Build sector mix per building
 # ============================================================
 def build_sector_mix(transactions, building_full_name):
-    """Build sector distribution for a building."""
+    """Build sector distribution for a building. Deduplicates by tenant+commencement."""
     bldg_txns = [t for t in transactions if t['building'] == building_full_name]
     sector_area = defaultdict(int)
+    seen_deals = set()
     for txn in bldg_txns:
+        # Deduplicate: same tenant + same commencement date = same deal across floors
+        dedup_key = (txn.get('tenantBrand', ''), txn.get('commencementDate', ''))
+        if dedup_key in seen_deals:
+            continue
+        seen_deals.add(dedup_key)
         sector = txn.get('sector')
         if not sector or sector == '-':
             sector = 'Unclassified'
