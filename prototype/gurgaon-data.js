@@ -3156,7 +3156,7 @@ const VATIKA_TECH_PARK_DATA = {
         },
         {
           floor: 9,
-          tenant: "Stryker Global Technology Center + 1 more",
+          tenant: "Undisclosed Tenant + 1 more",
           occupancy: 100,
           rentPerSqft: 60.7,
           area: 26900,
@@ -3198,7 +3198,7 @@ const VATIKA_TECH_PARK_DATA = {
           dataConflict: "CRE Stryker lease expired Nov 2024. Sales Team CSV shows floor as occupied (Stryker 50% + HeidelbergCement 50%). Using Sales Team data — may have renewed outside CRE tracking.",
           vacancyReason: null,
           allLandlords: ["SH Tech Park Developers", "Vatika Limited"],
-          tenants: [{"name": "Stryker Global Technology Center", "occupancy": 50.0, "area": 13450, "rentPerSqft": 69.0, "sector": "Commercial & Professional Services", "landlord": "SH Tech Park Developers", "propertyCondition": "Fitted Out", "effectiveRent": 60.7, "startingRent": 61.6, "leaseExpiryRent": null, "dealType": "Renewal", "leaseStart": "2021-12", "leaseExpiryDate": null, "lockInPeriod": "-", "rentEscalation": 15.0, "escalationPeriod": 36, "agreementType": "Lease Deed", "landlordContact": null}, {"name": "HeidelbergCement India Limited", "occupancy": 50.0, "area": 13450, "rentPerSqft": null, "sector": "Capital Goods", "landlord": "Vatika Limited", "propertyCondition": "Fitted Out", "effectiveRent": null, "startingRent": null, "leaseExpiryRent": null, "dealType": null, "leaseStart": null, "leaseExpiryDate": null, "lockInPeriod": null, "rentEscalation": null, "escalationPeriod": null, "agreementType": null, "landlordContact": null}],
+          tenants: [{"name": "Undisclosed Tenant", "occupancy": 50.0, "area": 13450, "rentPerSqft": 69.0, "sector": null, "landlord": "SH Tech Park Developers", "propertyCondition": "Fitted Out", "effectiveRent": null, "startingRent": 69.0, "leaseExpiryRent": null, "dealType": null, "leaseStart": null, "leaseExpiryDate": null, "lockInPeriod": null, "rentEscalation": null, "escalationPeriod": null, "agreementType": null, "landlordContact": null}, {"name": "HeidelbergCement India Limited", "occupancy": 50.0, "area": 13450, "rentPerSqft": null, "sector": "Capital Goods", "landlord": "Vatika Limited", "propertyCondition": "Fitted Out", "effectiveRent": null, "startingRent": null, "leaseExpiryRent": null, "dealType": null, "leaseStart": null, "leaseExpiryDate": null, "lockInPeriod": null, "rentEscalation": null, "escalationPeriod": null, "agreementType": null, "landlordContact": null}],
           floorDealHistory: [{"date": "2021-12", "tenant": "Stryker Global Technology Center", "type": "Renewal", "rent": 61.6, "effectiveRent": 60.7, "expiry": "2024-11", "area": 117215, "sector": "Commercial & Professional Services"}, {"date": "2016-09", "tenant": "Stryker Global Technology Center", "type": "Renewal", "rent": 56.9, "effectiveRent": 56.2, "expiry": "2019-09", "area": 108209, "sector": "Commercial & Professional Services"}, {"date": "2010-09", "tenant": "Stryker Global Technology Center", "type": "New", "rent": 43.0, "effectiveRent": 49.1, "expiry": "2019-09", "area": 108209, "sector": "Commercial & Professional Services"}],
         },
         {
