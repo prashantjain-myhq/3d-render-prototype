@@ -9025,13 +9025,13 @@ function openTenantAnalysis() {
             '<div style="width:4px;height:32px;border-radius:2px;background:' + typeColor + ';flex-shrink:0"></div>' +
             '<div style="flex:1;min-width:0">' +
               '<div style="font-size:11px;font-weight:700;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + (d.tenant || 'Unknown') + '</div>' +
-              '<div style="font-size:9px;color:#64748b">' + (d.building || '') + ' F' + (d.floor ?? '') + ' · ' + (d.date || '') + ' · ' + (d.type || '-') + (d.sector ? ' · ' + d.sector : '') + '</div>' +
+              '<div style="font-size:9px;color:#64748b">' + (d.building || '') + ' F' + (d.floor ?? '') + ' · ' + (d.date ? fmtDate(d.date) : '') + ' · ' + (d.type || '-') + (d.sector ? ' · ' + d.sector : '') + '</div>' +
             '</div>' +
             '<div style="text-align:right;flex-shrink:0">' +
               (d.rent ? '<div style="font-size:12px;font-weight:700;color:#0f172a">₹' + d.rent + '</div>' : '') +
               (d.area ? '<div style="font-size:9px;color:#64748b">' + d.area.toLocaleString() + ' sqft</div>' : '') +
             '</div>' +
-            (d.expiry ? '<div style="font-size:9px;color:#94a3b8;flex-shrink:0;width:55px;text-align:right">' + d.expiry + '</div>' : '') +
+            (d.expiry ? '<div style="font-size:9px;color:#94a3b8;flex-shrink:0;width:60px;text-align:right">' + fmtDate(d.expiry) + '</div>' : '') +
           '</div>';
         }).join('') +
         (recentDeals.length > 20 ? '<div style="font-size:10px;color:#94a3b8;text-align:center;padding:4px">+ ' + (recentDeals.length - 20) + ' more deals</div>' : '') +
