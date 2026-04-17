@@ -8991,6 +8991,47 @@ function openTenantAnalysis() {
     </div>
   </div>
 
+  <!-- Recent Deals Detail (Last 3 Years) -->
+  <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin-top:16px">
+    <div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:12px">Recent Deals — Last 3 Years${tip('Individual lease transactions from CREMatrix for the last 3 years. Shows tenant name, building, floor, deal type, rent, area, and lease expiry.')}</div>
+    ${(() => {
+      const cutoffYear = new Date().getFullYear() - 3;
+      const recentDeals = [];
+      ACTIVE_DATA.buildings.forEach(b => {
+        (b.floors || []).forEach(f => {
+          (f.floorDealHistory || []).forEach(d => {
+            if (!d.date) return;
+            const yr = parseInt(d.date.split('-')[0]);
+            if (yr >= cutoffYear) {
+              recentDeals.push({ ...d, building: b.name, floor: f.floor });
+            }
+          });
+        });
+      });
+      recentDeals.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+      if (recentDeals.length === 0) return '<div style="font-size:12px;color:#94a3b8;text-align:center;padding:12px">No recent deals</div>';
+      return '<div style="display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto">' +
+        recentDeals.slice(0, 20).map(d => {
+          const typeColor = (d.type || '').toLowerCase() === 'new' ? '#6366f1' : (d.type || '').toLowerCase() === 'renewal' ? '#22c55e' : '#94a3b8';
+          const typeBg = (d.type || '').toLowerCase() === 'new' ? '#eef2ff' : (d.type || '').toLowerCase() === 'renewal' ? '#f0fdf4' : '#f8fafc';
+          return '<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:' + typeBg + ';border:1px solid #e2e8f0;border-radius:8px">' +
+            '<div style="width:4px;height:32px;border-radius:2px;background:' + typeColor + ';flex-shrink:0"></div>' +
+            '<div style="flex:1;min-width:0">' +
+              '<div style="font-size:11px;font-weight:700;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + (d.tenant || 'Unknown') + '</div>' +
+              '<div style="font-size:9px;color:#64748b">' + (d.building || '') + ' F' + (d.floor ?? '') + ' \\u00B7 ' + (d.date || '') + ' \\u00B7 ' + (d.type || '-') + (d.sector ? ' \\u00B7 ' + d.sector : '') + '</div>' +
+            '</div>' +
+            '<div style="text-align:right;flex-shrink:0">' +
+              (d.rent ? '<div style="font-size:12px;font-weight:700;color:#0f172a">\\u20B9' + d.rent + '</div>' : '') +
+              (d.area ? '<div style="font-size:9px;color:#64748b">' + d.area.toLocaleString() + ' sqft</div>' : '') +
+            '</div>' +
+            (d.expiry ? '<div style="font-size:9px;color:#94a3b8;flex-shrink:0;width:55px;text-align:right">' + d.expiry + '</div>' : '') +
+          '</div>';
+        }).join('') +
+        (recentDeals.length > 20 ? '<div style="font-size:10px;color:#94a3b8;text-align:center;padding:4px">+ ' + (recentDeals.length - 20) + ' more deals</div>' : '') +
+      '</div>';
+    })()}
+  </div>
+
   <div style="margin-top:16px;padding:6px 10px;background:#f0f4ff;border:1px solid #c7d2fe;border-radius:6px;display:inline-block">
     <span style="font-size:9px;font-weight:700;color:#4338ca;text-transform:uppercase;letter-spacing:0.5px">Sources: </span>
     ${ACTIVE_DATA.dataSources ? ACTIVE_DATA.dataSources.map(s => '<span style="display:inline-block;padding:1px 5px;background:#fff;border:1px solid #e2e8f0;border-radius:3px;margin:1px;font-size:8px;font-weight:500;color:#64748b">' + s.name + '</span>').join('') : ''}
