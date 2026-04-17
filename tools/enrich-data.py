@@ -617,6 +617,42 @@ def aggregate_floors(floor_entries, building_info, txn_lookup=None):
                         'agreementType': e.get('agreementType'),
                         'landlordContact': e.get('landlordContact'),
                     }
+            # Check for CRE tenants NOT in our CSV — add them as extra tenants
+            if txn_lookup:
+                bldg = entries[0].get('building', '')
+                floor_num = entries[0].get('floor', 0)
+                floor_txns = txn_lookup.get((bldg, floor_num), [])
+                now_check = datetime.now().strftime('%Y-%m')
+                for txn in floor_txns:
+                    txn_name = txn.get('tenantBrand', '')
+                    if not txn_name: continue
+                    # Only consider active leases
+                    if txn.get('leaseExpiryDate') and txn['leaseExpiryDate'] < now_check: continue
+                    # Check if this tenant is already in our list
+                    txn_key = tenant_key(txn_name)
+                    if txn_key not in seen_keys:
+                        seen_keys[txn_key] = txn_name
+                        seen_tenants[txn_name] = {
+                            'name': txn_name,
+                            'occupancy': 0,  # unknown from CSV
+                            'area': txn.get('chargeableArea'),
+                            'rentPerSqft': txn.get('currentRent') or txn.get('startingRent'),
+                            'sector': txn.get('sector'),
+                            'landlord': txn.get('landlord'),
+                            'propertyCondition': txn.get('propertyCondition'),
+                            'effectiveRent': txn.get('effectiveRent'),
+                            'startingRent': txn.get('startingRent'),
+                            'leaseExpiryRent': txn.get('leaseExpiryRent'),
+                            'dealType': txn.get('dealType'),
+                            'leaseStart': txn.get('commencementDate'),
+                            'leaseExpiryDate': txn.get('leaseExpiryDate'),
+                            'lockInPeriod': f"{txn['lockInPeriod']} months" if txn.get('lockInPeriod') else None,
+                            'rentEscalation': txn.get('rentEscalation'),
+                            'escalationPeriod': txn.get('escalationPeriod'),
+                            'agreementType': txn.get('agreementType'),
+                            'landlordContact': txn.get('landlordContact'),
+                        }
+
             tenant_list = list(seen_tenants.values())
             # Normalize occupancy so tenants sum to 100% (conflict overrides can inflate)
             raw_total = sum(t.get('occupancy') or 0 for t in tenant_list)
