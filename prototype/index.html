@@ -9090,48 +9090,78 @@ function openTransactions() {
   ACTIVE_DATA.buildings.forEach(b => {
     b.floors.forEach(f => {
       if (f.tenant === 'Vacant' || f.occupancy === 0) return;
-      let rent = getFloorRent(f);
-      // Rent is charged on super built-up/chargeable area, not carpet
-      let dealArea = f.superBuiltUp || f.area || 0;
-      let displayArea = f.area || 0;
-      // Clean tenant name — show primary tenant (by area, not occupancy)
-      let tenantName = f.tenant;
-      if (f.tenants && f.tenants.length > 0) {
-        const primary = f.tenants.filter(t => t.name !== 'Vacant').sort((a,b) => (b.area||0) - (a.area||0))[0];
-        if (primary) {
-          tenantName = primary.name;
-          // Use primary tenant's actual area + rent for deal value
-          if (primary.area) { dealArea = primary.area; displayArea = primary.area; }
-          if (primary.rentPerSqft) rent = primary.rentPerSqft;
+
+      // Multi-tenant floors: one card per tenant
+      const activeTenants = f.tenants ? f.tenants.filter(t => t.name !== 'Vacant') : [];
+
+      if (activeTenants.length > 1) {
+        activeTenants.forEach(t => {
+          const tRent = t.rentPerSqft || t.effectiveRent || getFloorRent(f);
+          const tArea = t.area || 0;
+          const annualDeal = tRent * tArea * 12;
+          let duration = '';
+          if (t.leaseStart && t.leaseExpiryDate) {
+            const sM = t.leaseStart.match(/(\d{4})/);
+            const eM = t.leaseExpiryDate.match(/(\d{4})/);
+            if (sM && eM) duration = (parseInt(eM[1]) - parseInt(sM[1])) + ' yrs';
+          } else if (f.leaseStart && f.leaseExpiryDate) {
+            const sM = f.leaseStart.match(/(\d{4})/);
+            const eM = f.leaseExpiryDate.match(/(\d{4})/);
+            if (sM && eM) duration = (parseInt(eM[1]) - parseInt(sM[1])) + ' yrs';
+          }
+          transactions.push({
+            tenant: (t.name || 'Unknown').substring(0, 35),
+            type: t.dealType || f.dealType || '',
+            building: b.name,
+            floor: 'F' + f.floor,
+            area: tArea,
+            rent: tRent,
+            annualDeal: annualDeal,
+            expiry: t.leaseExpiryDate || f.leaseExpiryDate || '',
+            start: t.leaseStart || f.leaseStart || '',
+            sector: t.sector || f.sector || '',
+            condition: t.propertyCondition || f.propertyCondition || '',
+            escalation: t.rentEscalation || f.rentEscalation || 0,
+            landlord: t.landlord || f.landlord || '',
+            lockIn: t.lockInPeriod || f.lockInPeriod || '',
+            duration: duration,
+            multiTenant: true,
+            tenantCount: activeTenants.length,
+          });
+        });
+      } else {
+        // Single tenant or no tenants array
+        const rent = getFloorRent(f);
+        const dealArea = f.superBuiltUp || f.area || 0;
+        const annualDeal = rent * dealArea * 12;
+        let duration = '';
+        if (f.leaseStart && f.leaseExpiryDate) {
+          const sM = f.leaseStart.match(/(\d{4})/);
+          const eM = f.leaseExpiryDate.match(/(\d{4})/);
+          if (sM && eM) duration = (parseInt(eM[1]) - parseInt(sM[1])) + ' yrs';
         }
+        let tenantName = f.tenant;
+        if (activeTenants.length === 1) tenantName = activeTenants[0].name;
+        transactions.push({
+          tenant: tenantName.substring(0, 35),
+          type: f.dealType || '',
+          building: b.name,
+          floor: 'F' + f.floor,
+          area: f.area || 0,
+          rent: rent,
+          annualDeal: annualDeal,
+          expiry: f.leaseExpiryDate || '',
+          start: f.leaseStart || '',
+          sector: f.sector || '',
+          condition: f.propertyCondition || '',
+          escalation: f.rentEscalation || 0,
+          landlord: f.landlord || '',
+          lockIn: f.lockInPeriod || '',
+          duration: duration,
+          multiTenant: false,
+          tenantCount: 1,
+        });
       }
-      const annualDeal = rent * dealArea * 12;
-      // Calculate lease duration in years
-      let duration = '';
-      if (f.leaseStart && f.leaseExpiryDate) {
-        const sM = f.leaseStart.match(/(\d{4})/);
-        const eM = f.leaseExpiryDate.match(/(\d{4})/);
-        if (sM && eM) duration = (parseInt(eM[1]) - parseInt(sM[1])) + ' yrs';
-      }
-      transactions.push({
-        tenant: tenantName.substring(0, 35),
-        type: f.dealType || '',
-        building: b.name,
-        floor: 'F' + f.floor,
-        area: displayArea,
-        rent: rent,
-        annualDeal: annualDeal,
-        expiry: f.leaseExpiryDate || '',
-        start: f.leaseStart || '',
-        sector: f.sector || '',
-        condition: f.propertyCondition || '',
-        escalation: f.rentEscalation || 0,
-        landlord: f.landlord || '',
-        lockIn: f.lockInPeriod || '',
-        duration: duration,
-        multiTenant: f.tenants && f.tenants.filter(t => t.name !== 'Vacant').length > 1,
-        tenantCount: f.tenants ? f.tenants.filter(t => t.name !== 'Vacant').length : 1,
-      });
     });
   });
   transactions.sort((a, b) => (b.annualDeal || 0) - (a.annualDeal || 0));
