@@ -8993,7 +8993,14 @@ function openTenantAnalysis() {
 
   <!-- Recent Deals Detail (Last 3 Years) -->
   <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin-top:16px">
-    <div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:12px">Recent Deals — Last 3 Years${tip('Individual lease transactions from CREMatrix for the last 3 years. Shows tenant name, building, floor, deal type, rent, area, and lease expiry.')}</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div style="font-size:13px;font-weight:700;color:#0f172a">Recent Deals - Last 3 Years${tip('Individual lease transactions from CREMatrix for the last 3 years. Shows tenant name, building, floor, deal type, rent, area, and lease expiry.')}</div>
+      <div style="display:flex;gap:10px;font-size:10px">
+        <span><span style="display:inline-block;width:8px;height:8px;background:#6366f1;border-radius:2px;margin-right:3px;vertical-align:middle"></span>New Lease</span>
+        <span><span style="display:inline-block;width:8px;height:8px;background:#22c55e;border-radius:2px;margin-right:3px;vertical-align:middle"></span>Renewal</span>
+        <span><span style="display:inline-block;width:8px;height:8px;background:#94a3b8;border-radius:2px;margin-right:3px;vertical-align:middle"></span>Other</span>
+      </div>
+    </div>
     ${(() => {
       const cutoffYear = new Date().getFullYear() - 3;
       const recentDeals = [];
