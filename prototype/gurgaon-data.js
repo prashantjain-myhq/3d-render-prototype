@@ -3486,7 +3486,7 @@ const VATIKA_TECH_PARK_DATA = {
           monthlyRevenue: 3510000,
           annualRevenue: 42120000,
           // CREMatrix enrichment
-          sector: null,
+          sector: "Commercial & Professional Services",
           landlord: "Multiple (4 owners)",
           landlordContact: "Ram Parkash Yadav (217D), RKM Infracare, SH Tech Park Developers, Vatika Limited",
           landlordLinkedIn: null,
