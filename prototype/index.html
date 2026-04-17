@@ -1953,7 +1953,7 @@
     <div style="text-align:center;max-width:900px;padding:0 20px">
       <div style="font-size:11px;color:#818cf8;font-weight:700;letter-spacing:4px;margin-bottom:32px;opacity:0.5">my<span style="color:#fff">HQ</span> <span style="color:#475569">presents</span></div>
       <div style="font-size:13px;color:#818cf8;font-weight:800;letter-spacing:8px;text-transform:uppercase;margin-bottom:24px">What If</div>
-      <div style="font-size:48px;font-weight:900;color:#fff;line-height:1.15;margin-bottom:24px;font-family:system-ui">You could <span style="color:#818cf8;animation:introGlow 2s ease infinite">explore</span> any tech park from your browser?</div>
+      <div style="font-size:48px;font-weight:900;color:#fff;line-height:1.15;margin-bottom:24px;font-family:system-ui">You could <span style="color:#818cf8;animation:introGlow 2s ease infinite">explore</span> any office space from your browser?</div>
       <div style="font-size:19px;color:#94a3b8;line-height:1.7;font-weight:500">Every floor. Every tenant. Every deal.<br>Verified. Visualized. Interactive.</div>
       <!-- Building Construction Animation -->
       <div id="build-construct" style="margin-top:32px;height:200px;display:flex;align-items:flex-end;justify-content:center;gap:10px"></div>
@@ -2173,13 +2173,13 @@
     // === SCENE TIMELINE ===
     // Scene 0: Logo         0.2s →  4.3s  (4.1s)
     // Scene 1: Problem      4.8s → 11.2s  (6.4s)
-    // Sheet:  Spreadsheet  11.5s → 19.0s  (7.5s — build, scan, verdict, red, +2s hold, shake, shatter)
-    // Scene 2: Vision      19.5s → 26.5s  (7.0s — buildings + cursor click + panel)
-    // Scene 3: Data        27.0s → 32.5s  (5.5s)
-    // Scene 4: Features    33.0s → 40.0s  (7.0s)
-    // Scene 5: Tagline     40.5s → 46.0s  (5.5s)
-    // Final: Cities        46.5s
-    // Total: ~48 seconds
+    // Sheet:  Spreadsheet  11.5s → 20.0s  (8.5s — build, scan, verdict, red, hold, shake+1s, shatter)
+    // Scene 2: Vision      20.2s → 29.7s  (9.5s — text alone 2s → buildings → cursor → widgets)
+    // Scene 3: Data        30.0s → 35.5s  (5.5s)
+    // Scene 4: Features    36.0s → 43.0s  (7.0s)
+    // Scene 5: Tagline     43.5s → 49.0s  (5.5s)
+    // Final: Cities        49.5s
+    // Total: ~51 seconds
     var introTimeline = [
       // Scene 0: Logo reveal (0.2 → 3.5)
       { at: 200, action: function() { document.getElementById('scene-0').style.opacity='1'; }},
@@ -2351,14 +2351,14 @@
         });
       }},
       // Shake hard
-      { at: 17200, action: function() {
+      { at: 18200, action: function() {
         var grid = document.getElementById('sheet-grid');
         grid.style.animation = 'shakeIt 0.6s ease';
         // Red screen flash
         document.getElementById('scene-sheet').style.background = 'radial-gradient(circle at center, rgba(239,68,68,0.12) 0%, transparent 70%)';
       }},
       // Fracture — cells crack apart from center, brief freeze
-      { at: 17500, action: function() {
+      { at: 18500, action: function() {
         var tbl = document.getElementById('sheet-table');
         tbl.style.borderCollapse = 'separate';
         tbl.style.borderSpacing = '2px';
@@ -2376,7 +2376,7 @@
         });
       }},
       // Shatter — cells fly outward slowly
-      { at: 18000, action: function() {
+      { at: 19000, action: function() {
         var tbl = document.getElementById('sheet-table');
         var cells = tbl.querySelectorAll('td');
         var rect = tbl.getBoundingClientRect();
@@ -2417,7 +2417,7 @@
         }
       }},
       // Scene 2 fades in AS cells fly — simultaneous transition
-      { at: 18200, action: function() {
+      { at: 19200, action: function() {
         // Fade out spreadsheet scene
         document.getElementById('scene-sheet').style.transition = 'opacity 1.2s ease';
         document.getElementById('scene-sheet').style.opacity = '0';
@@ -2438,7 +2438,7 @@
         })();
         addBurst();
       }},
-      { at: 20000, action: function() {
+      { at: 22200, action: function() {
         var container = document.getElementById('build-construct');
         var buildings = [
           { w: 36, floors: 7, color: '99,102,241', wins: 2, startDelay: 150 },
@@ -2482,7 +2482,7 @@
         });
       }},
       // Cursor clicks a floor → mini panel slides in (21.0 → 24.0)
-      { at: 23000, action: function() {
+      { at: 25200, action: function() {
         var container = document.getElementById('build-construct');
         // Find the tallest building (3rd one, index 2 — the 56px wide one)
         var cols = container.children;
@@ -2561,21 +2561,47 @@
             + '</div>';
           scene2.appendChild(w3);
 
-          // Stagger the 3 widgets sliding in
-          [w1, w2, w3].forEach(function(w, i) {
+          // Widget 4: Occupancy Overview — LEFT side, below floor detail
+          var w4 = document.createElement('div');
+          w4.style.cssText = wBase + ';left:4%;top:72%;transform:translateX(-30px);width:220px;padding:14px';
+          w4.innerHTML = '<div style="font-size:9px;color:#818cf8;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Occupancy Overview</div>'
+            + '<div style="display:flex;gap:12px;align-items:center;margin-bottom:10px">'
+            + '<div style="position:relative;width:50px;height:50px"><svg width="50" height="50" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="rgba(99,102,241,0.1)" stroke-width="4"/><circle cx="25" cy="25" r="20" fill="none" stroke="#22c55e" stroke-width="4" stroke-dasharray="100.5 125.7" stroke-linecap="round" transform="rotate(-90 25 25)"/></svg><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#22c55e">80%</div></div>'
+            + '<div style="flex:1;display:flex;flex-direction:column;gap:4px">'
+            + '<div style="display:flex;justify-content:space-between"><span style="font-size:9px;color:#64748b">Occupied</span><span style="font-size:10px;color:#22c55e;font-weight:700">7 floors</span></div>'
+            + '<div style="display:flex;justify-content:space-between"><span style="font-size:9px;color:#64748b">Vacant</span><span style="font-size:10px;color:#ef4444;font-weight:700">2 floors</span></div>'
+            + '<div style="display:flex;justify-content:space-between"><span style="font-size:9px;color:#64748b">Avg Rent</span><span style="font-size:10px;color:#fff;font-weight:700">\u20B985/sqft</span></div>'
+            + '</div></div>';
+          scene2.appendChild(w4);
+
+          // Widget 5: Sector Breakdown — bottom center
+          var w5 = document.createElement('div');
+          w5.style.cssText = wBase + ';left:50%;bottom:8%;transform:translateX(-50%) translateY(20px);width:320px;padding:14px';
+          w5.innerHTML = '<div style="font-size:9px;color:#818cf8;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Sector Breakdown</div>'
+            + '<div style="display:flex;gap:6px;flex-wrap:wrap">'
+            + '<div style="flex:1;min-width:60px"><div style="height:4px;border-radius:2px;background:#818cf8;width:100%;margin-bottom:4px"></div><div style="font-size:9px;color:#818cf8;font-weight:600">IT/ITeS</div><div style="font-size:8px;color:#475569">44%</div></div>'
+            + '<div style="flex:1;min-width:60px"><div style="height:4px;border-radius:2px;background:#22c55e;width:75%;margin-bottom:4px"></div><div style="font-size:9px;color:#22c55e;font-weight:600">BFSI</div><div style="font-size:8px;color:#475569">22%</div></div>'
+            + '<div style="flex:1;min-width:60px"><div style="height:4px;border-radius:2px;background:#f59e0b;width:50%;margin-bottom:4px"></div><div style="font-size:9px;color:#f59e0b;font-weight:600">F&B</div><div style="font-size:8px;color:#475569">15%</div></div>'
+            + '<div style="flex:1;min-width:60px"><div style="height:4px;border-radius:2px;background:#a855f7;width:35%;margin-bottom:4px"></div><div style="font-size:9px;color:#a855f7;font-weight:600">Co-Working</div><div style="font-size:8px;color:#475569">12%</div></div>'
+            + '<div style="flex:1;min-width:60px"><div style="height:4px;border-radius:2px;background:#64748b;width:20%;margin-bottom:4px"></div><div style="font-size:9px;color:#94a3b8;font-weight:600">Others</div><div style="font-size:8px;color:#475569">7%</div></div>'
+            + '</div>';
+          scene2.appendChild(w5);
+
+          // Stagger all 5 widgets sliding in
+          [w1, w2, w3, w4, w5].forEach(function(w, i) {
             setTimeout(function() {
               requestAnimationFrame(function(){ requestAnimationFrame(function(){
                 w.style.opacity = '1';
-                w.style.transform = w.style.transform.replace(/translateX\([^)]+\)/,'translateX(0)');
+                w.style.transform = w.style.transform.replace(/translateX\([^)]+\)/,'translateX(0)').replace(/translateY\([^)]+\)/,'translateY(0)');
               });});
-            }, i * 350);
+            }, i * 300);
           });
         }, 900);
       }},
-      { at: 26500, action: function() { document.getElementById('scene-2').style.opacity='0'; addBurst(); }},
+      { at: 29700, action: function() { document.getElementById('scene-2').style.opacity='0'; addBurst(); }},
 
-      // Scene 3: Data Counters (27.0 → 32.5 = 5.5s)
-      { at: 27000, action: function() {
+      // Scene 3: Data Counters (30.0 → 35.5 = 5.5s)
+      { at: 30000, action: function() {
         document.getElementById('scene-3').style.opacity='1';
         sceneColor = { r: 34, g: 197, b: 94 }; // green
         var container = document.getElementById('data-streams');
@@ -2588,7 +2614,7 @@
           container.appendChild(el);
         }
       }},
-      { at: 27500, action: function() {
+      { at: 30500, action: function() {
         document.querySelectorAll('.counter').forEach(function(el) {
           var target = parseInt(el.dataset.target), current = 0;
           var step = Math.max(1, Math.floor(target/50));
@@ -2599,14 +2625,14 @@
           ring.style.strokeDashoffset = '0';
         });
       }},
-      { at: 32500, action: function() { document.getElementById('scene-3').style.opacity='0'; addBurst(); }},
+      { at: 35500, action: function() { document.getElementById('scene-3').style.opacity='0'; addBurst(); }},
 
-      // Scene 4: Features (33.0 → 40.0 = 7.0s)
-      { at: 33000, action: function() {
+      // Scene 4: Features (36.0 → 43.0 = 7.0s)
+      { at: 36000, action: function() {
         document.getElementById('scene-4').style.opacity='1';
         sceneColor = { r: 99, g: 102, b: 241 }; // indigo
       }},
-      { at: 33500, action: function() {
+      { at: 36500, action: function() {
         document.querySelectorAll('.feat-card-v2').forEach(function(c,i) {
           setTimeout(function() {
             c.classList.add('visible');
@@ -2614,14 +2640,14 @@
           }, i*350);
         });
       }},
-      { at: 40000, action: function() { document.getElementById('scene-4').style.opacity='0'; addBurst(); }},
+      { at: 43000, action: function() { document.getElementById('scene-4').style.opacity='0'; addBurst(); }},
 
-      // Scene 5: Tagline Slam (40.5 → 46.0 = 5.5s)
-      { at: 40500, action: function() {
+      // Scene 5: Tagline Slam (43.5 → 49.0 = 5.5s)
+      { at: 43500, action: function() {
         document.getElementById('scene-5').style.opacity='1';
         sceneColor = { r: 129, g: 140, b: 248 }; // light indigo
       }},
-      { at: 41000, action: function() {
+      { at: 44000, action: function() {
         var words = ['The','Future','of','<br>','<span style="background:linear-gradient(135deg,#818cf8,#6366f1,#4f46e5);background-size:300% 300%;animation:gradientShift 3s ease infinite;-webkit-background-clip:text;-webkit-text-fill-color:transparent">Office</span>','<span style="background:linear-gradient(135deg,#818cf8,#6366f1,#4f46e5);background-size:300% 300%;animation:gradientShift 3s ease infinite;-webkit-background-clip:text;-webkit-text-fill-color:transparent">Leasing</span>'];
         var container = document.getElementById('slam-text');
         words.forEach(function(w,i) {
@@ -2639,10 +2665,10 @@
           flare.style.transition='left 1.5s ease';flare.style.left='200%';
         },2800);
       }},
-      { at: 46000, action: function() { document.getElementById('scene-5').style.opacity='0'; }},
+      { at: 49000, action: function() { document.getElementById('scene-5').style.opacity='0'; }},
 
-      // Final: City Selection (46.5)
-      { at: 46500, action: function() {
+      // Final: City Selection (49.5)
+      { at: 49500, action: function() {
         document.getElementById('intro-final').style.opacity='1';
         document.getElementById('intro-pause-btn').style.display='none';
         sceneColor = { r: 99, g: 102, b: 241 };
