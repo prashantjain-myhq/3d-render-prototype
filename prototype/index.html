@@ -1951,10 +1951,10 @@
   <!-- Scene 2: The Vision -->
   <div class="intro-scene" id="scene-2" style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 1.2s">
     <div style="text-align:center;max-width:900px;padding:0 20px">
-      <div style="font-size:11px;color:#818cf8;font-weight:700;letter-spacing:4px;margin-bottom:32px;opacity:0.5">my<span style="color:#fff">HQ</span> <span style="color:#475569">presents</span></div>
-      <div style="font-size:13px;color:#818cf8;font-weight:800;letter-spacing:8px;text-transform:uppercase;margin-bottom:24px">What If</div>
-      <div style="font-size:48px;font-weight:900;color:#fff;line-height:1.15;margin-bottom:24px;font-family:system-ui">You could <span style="color:#818cf8;animation:introGlow 2s ease infinite">explore</span> any office space from your browser?</div>
-      <div id="scene2-subtext" style="font-size:19px;color:#94a3b8;line-height:1.7;font-weight:500;opacity:0;transition:opacity 1s">Every floor. Every tenant. Every deal.<br>Verified. Visualized. Interactive.</div>
+      <div id="scene2-header" style="font-size:11px;color:#818cf8;font-weight:700;letter-spacing:4px;margin-bottom:32px;opacity:0">my<span style="color:#fff">HQ</span> <span style="color:#475569">presents</span></div>
+      <div id="scene2-label" style="font-size:13px;color:#818cf8;font-weight:800;letter-spacing:8px;text-transform:uppercase;margin-bottom:24px;opacity:0">What If</div>
+      <div id="scene2-question" style="font-size:48px;font-weight:900;color:#fff;line-height:1.15;margin-bottom:24px;font-family:system-ui;opacity:0">You could <span style="color:#818cf8;animation:introGlow 2s ease infinite">explore</span> any office space from your browser?</div>
+      <div id="scene2-subtext" style="font-size:19px;color:#94a3b8;line-height:1.7;font-weight:500;opacity:0">Every floor. Every tenant. Every deal.<br>Verified. Visualized. Interactive.</div>
       <!-- Building Construction Animation -->
       <div id="build-construct" style="margin-top:32px;height:0;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;gap:10px;opacity:0;transition:opacity 0.8s,height 0.5s"></div>
     </div>
@@ -2438,9 +2438,22 @@
         })();
         addBurst();
       }},
-      // Subtext fades in 1s after "What If" text
-      { at: 20500, action: function() {
-        document.getElementById('scene2-subtext').style.opacity = '1';
+      // Staged reveal: header → label → question → subtext
+      { at: 19500, action: function() {
+        var h = document.getElementById('scene2-header');
+        h.style.transition = 'opacity 0.6s'; h.style.opacity = '0.5';
+      }},
+      { at: 19800, action: function() {
+        var l = document.getElementById('scene2-label');
+        l.style.transition = 'opacity 0.5s'; l.style.opacity = '1';
+      }},
+      { at: 20200, action: function() {
+        var q = document.getElementById('scene2-question');
+        q.style.transition = 'opacity 0.8s'; q.style.opacity = '1';
+      }},
+      { at: 21500, action: function() {
+        var s = document.getElementById('scene2-subtext');
+        s.style.transition = 'opacity 0.8s'; s.style.opacity = '1';
       }},
       // Buildings appear 3s after text
       { at: 22200, action: function() {
