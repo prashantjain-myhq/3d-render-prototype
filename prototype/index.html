@@ -1956,7 +1956,7 @@
       <div style="font-size:48px;font-weight:900;color:#fff;line-height:1.15;margin-bottom:24px;font-family:system-ui">You could <span style="color:#818cf8;animation:introGlow 2s ease infinite">explore</span> any office space from your browser?</div>
       <div style="font-size:19px;color:#94a3b8;line-height:1.7;font-weight:500">Every floor. Every tenant. Every deal.<br>Verified. Visualized. Interactive.</div>
       <!-- Building Construction Animation -->
-      <div id="build-construct" style="margin-top:32px;height:200px;display:flex;align-items:flex-end;justify-content:center;gap:10px"></div>
+      <div id="build-construct" style="margin-top:32px;height:200px;display:flex;align-items:flex-end;justify-content:center;gap:10px;opacity:0;transition:opacity 0.8s"></div>
     </div>
   </div>
 
@@ -2440,6 +2440,7 @@
       }},
       { at: 22200, action: function() {
         var container = document.getElementById('build-construct');
+        container.style.opacity = '1';
         var buildings = [
           { w: 36, floors: 7, color: '99,102,241', wins: 2, startDelay: 150 },
           { w: 44, floors: 10, color: '99,102,241', wins: 3, startDelay: 0 },
@@ -2563,7 +2564,7 @@
 
           // Widget 4: Occupancy Overview — LEFT side, below floor detail
           var w4 = document.createElement('div');
-          w4.style.cssText = wBase + ';left:4%;top:72%;transform:translateX(-30px);width:220px;padding:14px';
+          w4.style.cssText = wBase + ';left:4%;top:76%;transform:translateX(-30px);width:220px;padding:12px';
           w4.innerHTML = '<div style="font-size:9px;color:#818cf8;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Occupancy Overview</div>'
             + '<div style="display:flex;gap:12px;align-items:center;margin-bottom:10px">'
             + '<div style="position:relative;width:50px;height:50px"><svg width="50" height="50" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="rgba(99,102,241,0.1)" stroke-width="4"/><circle cx="25" cy="25" r="20" fill="none" stroke="#22c55e" stroke-width="4" stroke-dasharray="100.5 125.7" stroke-linecap="round" transform="rotate(-90 25 25)"/></svg><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#22c55e">80%</div></div>'
@@ -2576,7 +2577,7 @@
 
           // Widget 5: Sector Breakdown — bottom center
           var w5 = document.createElement('div');
-          w5.style.cssText = wBase + ';left:50%;bottom:8%;transform:translateX(-50%) translateY(20px);width:320px;padding:14px';
+          w5.style.cssText = wBase + ';left:30%;bottom:6%;transform:translateX(-50%) translateY(20px);width:300px;padding:12px';
           w5.innerHTML = '<div style="font-size:9px;color:#818cf8;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Sector Breakdown</div>'
             + '<div style="display:flex;gap:6px;flex-wrap:wrap">'
             + '<div style="flex:1;min-width:60px"><div style="height:4px;border-radius:2px;background:#818cf8;width:100%;margin-bottom:4px"></div><div style="font-size:9px;color:#818cf8;font-weight:600">IT/ITeS</div><div style="font-size:8px;color:#475569">44%</div></div>'
