@@ -2170,15 +2170,16 @@
     });
 
     // === SCENE TIMELINE ===
-    // Scene 0: Logo         0.2s →  4.3s  (4.1s — logo + subtitle + hold)
-    // Scene 1: Problem      4.8s → 11.2s  (6.4s — text + strikethrough + read subtext)
-    // Sheet:  Spreadsheet  11.5s → 17.0s  (5.5s — build, scan, verdict, red, shake, shatter)
-    // Scene 2: Vision      17.5s → 24.5s  (7.0s — buildings + cursor click + panel)
-    // Scene 3: Data        25.0s → 30.5s  (5.5s)
-    // Scene 4: Features    31.0s → 38.0s  (7.0s)
-    // Scene 5: Tagline     38.5s → 44.0s  (5.5s)
-    // Final: Cities        44.5s
-    // Total: ~46 seconds
+    // === SCENE TIMELINE ===
+    // Scene 0: Logo         0.2s →  4.3s  (4.1s)
+    // Scene 1: Problem      4.8s → 11.2s  (6.4s)
+    // Sheet:  Spreadsheet  11.5s → 19.0s  (7.5s — build, scan, verdict, red, +2s hold, shake, shatter)
+    // Scene 2: Vision      19.5s → 26.5s  (7.0s — buildings + cursor click + panel)
+    // Scene 3: Data        27.0s → 32.5s  (5.5s)
+    // Scene 4: Features    33.0s → 40.0s  (7.0s)
+    // Scene 5: Tagline     40.5s → 46.0s  (5.5s)
+    // Final: Cities        46.5s
+    // Total: ~48 seconds
     var introTimeline = [
       // Scene 0: Logo reveal (0.2 → 3.5)
       { at: 200, action: function() { document.getElementById('scene-0').style.opacity='1'; }},
@@ -2350,14 +2351,14 @@
         });
       }},
       // Shake hard
-      { at: 15200, action: function() {
+      { at: 17200, action: function() {
         var grid = document.getElementById('sheet-grid');
         grid.style.animation = 'shakeIt 0.6s ease';
         // Red screen flash
         document.getElementById('scene-sheet').style.background = 'radial-gradient(circle at center, rgba(239,68,68,0.12) 0%, transparent 70%)';
       }},
       // Fracture — cells crack apart from center, brief freeze
-      { at: 15500, action: function() {
+      { at: 17500, action: function() {
         var tbl = document.getElementById('sheet-table');
         tbl.style.borderCollapse = 'separate';
         tbl.style.borderSpacing = '2px';
@@ -2375,7 +2376,7 @@
         });
       }},
       // Shatter — cells fly outward slowly
-      { at: 16000, action: function() {
+      { at: 18000, action: function() {
         var tbl = document.getElementById('sheet-table');
         var cells = tbl.querySelectorAll('td');
         var rect = tbl.getBoundingClientRect();
@@ -2416,7 +2417,7 @@
         }
       }},
       // Scene 2 fades in AS cells fly — simultaneous transition
-      { at: 16200, action: function() {
+      { at: 18200, action: function() {
         // Fade out spreadsheet scene
         document.getElementById('scene-sheet').style.transition = 'opacity 1.2s ease';
         document.getElementById('scene-sheet').style.opacity = '0';
@@ -2437,7 +2438,7 @@
         })();
         addBurst();
       }},
-      { at: 18000, action: function() {
+      { at: 20000, action: function() {
         var container = document.getElementById('build-construct');
         var buildings = [
           { w: 36, floors: 7, color: '99,102,241', wins: 2, startDelay: 150 },
@@ -2481,7 +2482,7 @@
         });
       }},
       // Cursor clicks a floor → mini panel slides in (21.0 → 24.0)
-      { at: 21000, action: function() {
+      { at: 23000, action: function() {
         var container = document.getElementById('build-construct');
         // Find the tallest building (3rd one, index 2 — the 56px wide one)
         var cols = container.children;
@@ -2571,10 +2572,10 @@
           });
         }, 900);
       }},
-      { at: 24500, action: function() { document.getElementById('scene-2').style.opacity='0'; addBurst(); }},
+      { at: 26500, action: function() { document.getElementById('scene-2').style.opacity='0'; addBurst(); }},
 
-      // Scene 3: Data Counters (25.0 → 30.5 = 5.5s)
-      { at: 25000, action: function() {
+      // Scene 3: Data Counters (27.0 → 32.5 = 5.5s)
+      { at: 27000, action: function() {
         document.getElementById('scene-3').style.opacity='1';
         sceneColor = { r: 34, g: 197, b: 94 }; // green
         var container = document.getElementById('data-streams');
@@ -2587,7 +2588,7 @@
           container.appendChild(el);
         }
       }},
-      { at: 25500, action: function() {
+      { at: 27500, action: function() {
         document.querySelectorAll('.counter').forEach(function(el) {
           var target = parseInt(el.dataset.target), current = 0;
           var step = Math.max(1, Math.floor(target/50));
@@ -2598,14 +2599,14 @@
           ring.style.strokeDashoffset = '0';
         });
       }},
-      { at: 30500, action: function() { document.getElementById('scene-3').style.opacity='0'; addBurst(); }},
+      { at: 32500, action: function() { document.getElementById('scene-3').style.opacity='0'; addBurst(); }},
 
-      // Scene 4: Features (31.0 → 38.0 = 7.0s)
-      { at: 31000, action: function() {
+      // Scene 4: Features (33.0 → 40.0 = 7.0s)
+      { at: 33000, action: function() {
         document.getElementById('scene-4').style.opacity='1';
         sceneColor = { r: 99, g: 102, b: 241 }; // indigo
       }},
-      { at: 31500, action: function() {
+      { at: 33500, action: function() {
         document.querySelectorAll('.feat-card-v2').forEach(function(c,i) {
           setTimeout(function() {
             c.classList.add('visible');
@@ -2613,14 +2614,14 @@
           }, i*350);
         });
       }},
-      { at: 38000, action: function() { document.getElementById('scene-4').style.opacity='0'; addBurst(); }},
+      { at: 40000, action: function() { document.getElementById('scene-4').style.opacity='0'; addBurst(); }},
 
-      // Scene 5: Tagline Slam (38.5 → 44.0 = 5.5s)
-      { at: 38500, action: function() {
+      // Scene 5: Tagline Slam (40.5 → 46.0 = 5.5s)
+      { at: 40500, action: function() {
         document.getElementById('scene-5').style.opacity='1';
         sceneColor = { r: 129, g: 140, b: 248 }; // light indigo
       }},
-      { at: 39000, action: function() {
+      { at: 41000, action: function() {
         var words = ['The','Future','of','<br>','<span style="background:linear-gradient(135deg,#818cf8,#6366f1,#4f46e5);background-size:300% 300%;animation:gradientShift 3s ease infinite;-webkit-background-clip:text;-webkit-text-fill-color:transparent">Office</span>','<span style="background:linear-gradient(135deg,#818cf8,#6366f1,#4f46e5);background-size:300% 300%;animation:gradientShift 3s ease infinite;-webkit-background-clip:text;-webkit-text-fill-color:transparent">Leasing</span>'];
         var container = document.getElementById('slam-text');
         words.forEach(function(w,i) {
@@ -2638,10 +2639,10 @@
           flare.style.transition='left 1.5s ease';flare.style.left='200%';
         },2800);
       }},
-      { at: 44000, action: function() { document.getElementById('scene-5').style.opacity='0'; }},
+      { at: 46000, action: function() { document.getElementById('scene-5').style.opacity='0'; }},
 
-      // Final: City Selection (44.5)
-      { at: 44500, action: function() {
+      // Final: City Selection (46.5)
+      { at: 46500, action: function() {
         document.getElementById('intro-final').style.opacity='1';
         document.getElementById('intro-pause-btn').style.display='none';
         sceneColor = { r: 99, g: 102, b: 241 };
@@ -7391,7 +7392,7 @@ function animate() {
   } else {
     // Sine wave auto-rotate — camera swoops up/down while orbiting
     if (autoRotating) {
-      sineRotAngle += 0.008;
+      sineRotAngle += 0.0068;
       var r = sineRotBaseRadius + Math.sin(sineRotAngle * 3) * 5;
       var y = sineRotBaseY + Math.sin(sineRotAngle * 2) * 8;
       camera.position.x = controls.target.x + Math.cos(sineRotAngle) * r;
