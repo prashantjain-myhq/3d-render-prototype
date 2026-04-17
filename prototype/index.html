@@ -1954,9 +1954,9 @@
       <div style="font-size:11px;color:#818cf8;font-weight:700;letter-spacing:4px;margin-bottom:32px;opacity:0.5">my<span style="color:#fff">HQ</span> <span style="color:#475569">presents</span></div>
       <div style="font-size:13px;color:#818cf8;font-weight:800;letter-spacing:8px;text-transform:uppercase;margin-bottom:24px">What If</div>
       <div style="font-size:48px;font-weight:900;color:#fff;line-height:1.15;margin-bottom:24px;font-family:system-ui">You could <span style="color:#818cf8;animation:introGlow 2s ease infinite">explore</span> any office space from your browser?</div>
-      <div style="font-size:19px;color:#94a3b8;line-height:1.7;font-weight:500">Every floor. Every tenant. Every deal.<br>Verified. Visualized. Interactive.</div>
+      <div id="scene2-subtext" style="font-size:19px;color:#94a3b8;line-height:1.7;font-weight:500;opacity:0;transition:opacity 1s">Every floor. Every tenant. Every deal.<br>Verified. Visualized. Interactive.</div>
       <!-- Building Construction Animation -->
-      <div id="build-construct" style="margin-top:32px;height:200px;display:none;align-items:flex-end;justify-content:center;gap:10px;opacity:0;transition:opacity 0.8s"></div>
+      <div id="build-construct" style="margin-top:32px;height:0;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;gap:10px;opacity:0;transition:opacity 0.8s,height 0.5s"></div>
     </div>
   </div>
 
@@ -2438,12 +2438,15 @@
         })();
         addBurst();
       }},
+      // Subtext fades in 1s after "What If" text
+      { at: 20500, action: function() {
+        document.getElementById('scene2-subtext').style.opacity = '1';
+      }},
+      // Buildings appear 3s after text
       { at: 22200, action: function() {
         var container = document.getElementById('build-construct');
-        container.style.display = 'flex';
-        requestAnimationFrame(function(){ requestAnimationFrame(function(){
-          container.style.opacity = '1';
-        });});
+        container.style.height = '200px';
+        container.style.opacity = '1';
         var buildings = [
           { w: 36, floors: 7, color: '99,102,241', wins: 2, startDelay: 150 },
           { w: 44, floors: 10, color: '99,102,241', wins: 3, startDelay: 0 },
@@ -2565,40 +2568,14 @@
             + '</div>';
           scene2.appendChild(w3);
 
-          // Widget 4: Occupancy Overview — LEFT side, below floor detail
-          var w4 = document.createElement('div');
-          w4.style.cssText = wBase + ';right:4%;top:85%;transform:translateX(30px);width:240px;padding:12px';
-          w4.innerHTML = '<div style="font-size:9px;color:#818cf8;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Occupancy Overview</div>'
-            + '<div style="display:flex;gap:12px;align-items:center;margin-bottom:10px">'
-            + '<div style="position:relative;width:50px;height:50px"><svg width="50" height="50" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="rgba(99,102,241,0.1)" stroke-width="4"/><circle cx="25" cy="25" r="20" fill="none" stroke="#22c55e" stroke-width="4" stroke-dasharray="100.5 125.7" stroke-linecap="round" transform="rotate(-90 25 25)"/></svg><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#22c55e">80%</div></div>'
-            + '<div style="flex:1;display:flex;flex-direction:column;gap:4px">'
-            + '<div style="display:flex;justify-content:space-between"><span style="font-size:9px;color:#64748b">Occupied</span><span style="font-size:10px;color:#22c55e;font-weight:700">7 floors</span></div>'
-            + '<div style="display:flex;justify-content:space-between"><span style="font-size:9px;color:#64748b">Vacant</span><span style="font-size:10px;color:#ef4444;font-weight:700">2 floors</span></div>'
-            + '<div style="display:flex;justify-content:space-between"><span style="font-size:9px;color:#64748b">Avg Rent</span><span style="font-size:10px;color:#fff;font-weight:700">\u20B985/sqft</span></div>'
-            + '</div></div>';
-          scene2.appendChild(w4);
-
-          // Widget 5: Sector Breakdown — bottom center
-          var w5 = document.createElement('div');
-          w5.style.cssText = wBase + ';left:4%;top:76%;transform:translateX(-30px);width:220px;padding:12px';
-          w5.innerHTML = '<div style="font-size:9px;color:#818cf8;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Sector Breakdown</div>'
-            + '<div style="display:flex;gap:6px;flex-wrap:wrap">'
-            + '<div style="flex:1;min-width:60px"><div style="height:4px;border-radius:2px;background:#818cf8;width:100%;margin-bottom:4px"></div><div style="font-size:9px;color:#818cf8;font-weight:600">IT/ITeS</div><div style="font-size:8px;color:#475569">44%</div></div>'
-            + '<div style="flex:1;min-width:60px"><div style="height:4px;border-radius:2px;background:#22c55e;width:75%;margin-bottom:4px"></div><div style="font-size:9px;color:#22c55e;font-weight:600">BFSI</div><div style="font-size:8px;color:#475569">22%</div></div>'
-            + '<div style="flex:1;min-width:60px"><div style="height:4px;border-radius:2px;background:#f59e0b;width:50%;margin-bottom:4px"></div><div style="font-size:9px;color:#f59e0b;font-weight:600">F&B</div><div style="font-size:8px;color:#475569">15%</div></div>'
-            + '<div style="flex:1;min-width:60px"><div style="height:4px;border-radius:2px;background:#a855f7;width:35%;margin-bottom:4px"></div><div style="font-size:9px;color:#a855f7;font-weight:600">Co-Working</div><div style="font-size:8px;color:#475569">12%</div></div>'
-            + '<div style="flex:1;min-width:60px"><div style="height:4px;border-radius:2px;background:#64748b;width:20%;margin-bottom:4px"></div><div style="font-size:9px;color:#94a3b8;font-weight:600">Others</div><div style="font-size:8px;color:#475569">7%</div></div>'
-            + '</div>';
-          scene2.appendChild(w5);
-
-          // Stagger all 5 widgets sliding in
-          [w1, w2, w3, w4, w5].forEach(function(w, i) {
+          // Stagger the 3 widgets sliding in
+          [w1, w2, w3].forEach(function(w, i) {
             setTimeout(function() {
               requestAnimationFrame(function(){ requestAnimationFrame(function(){
                 w.style.opacity = '1';
-                w.style.transform = w.style.transform.replace(/translateX\([^)]+\)/,'translateX(0)').replace(/translateY\([^)]+\)/,'translateY(0)');
+                w.style.transform = w.style.transform.replace(/translateX\([^)]+\)/,'translateX(0)');
               });});
-            }, i * 300);
+            }, i * 350);
           });
         }, 900);
       }},
