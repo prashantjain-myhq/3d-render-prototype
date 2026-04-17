@@ -9091,15 +9091,17 @@ function openTransactions() {
     b.floors.forEach(f => {
       if (f.tenant === 'Vacant' || f.occupancy === 0) return;
       let rent = getFloorRent(f);
-      let dealArea = f.carpetArea || f.area || 0;
+      // Rent is charged on super built-up/chargeable area, not carpet
+      let dealArea = f.superBuiltUp || f.area || 0;
+      let displayArea = f.area || 0;
       // Clean tenant name — show primary tenant (by area, not occupancy)
       let tenantName = f.tenant;
       if (f.tenants && f.tenants.length > 0) {
         const primary = f.tenants.filter(t => t.name !== 'Vacant').sort((a,b) => (b.area||0) - (a.area||0))[0];
         if (primary) {
           tenantName = primary.name;
-          // Use primary tenant's actual area + rent for deal value (not full floor)
-          if (primary.area) dealArea = primary.area;
+          // Use primary tenant's actual area + rent for deal value
+          if (primary.area) { dealArea = primary.area; displayArea = primary.area; }
           if (primary.rentPerSqft) rent = primary.rentPerSqft;
         }
       }
@@ -9116,7 +9118,7 @@ function openTransactions() {
         type: f.dealType || '',
         building: b.name,
         floor: 'F' + f.floor,
-        area: f.area || 0,
+        area: displayArea,
         rent: rent,
         annualDeal: annualDeal,
         expiry: f.leaseExpiryDate || '',
